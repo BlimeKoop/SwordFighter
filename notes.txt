@@ -1,0 +1,6 @@
+https://robotacademy.net.au/lesson/inverse-kinematics-for-a-2-joint-robot-arm-using-geometry/
+
+A2 = B2+C2 - 2BCcosa
+
+
+
