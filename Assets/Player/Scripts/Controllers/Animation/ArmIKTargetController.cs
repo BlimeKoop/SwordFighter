@@ -25,7 +25,7 @@ public class ArmIKTargetController : MonoBehaviour
 	private void Update()
 	{
 		Vector3 armBonePosition = animationController.GetArmBone(true).position;
-		Vector3 targetPosition = targetPosition = animationController.ArmIKTargetPosition();
+		Vector3 targetPosition = animationController.ArmIKTargetPosition();
 		
 		if (locking)
 			StartUnlock();
@@ -38,7 +38,7 @@ public class ArmIKTargetController : MonoBehaviour
 			lockPosition = transform.position;
 			lockRotation = transform.rotation;
 		}
-
+		
 		transform.position = Vector3.Lerp(lockPosition, targetPosition, followAmount);
 		
 		Quaternion targetRotation = Quaternion.LookRotation(transform.position - armBonePosition);
@@ -48,7 +48,7 @@ public class ArmIKTargetController : MonoBehaviour
 	
 	private void StartUnlock()
 	{
-		followAmount = Mathf.Max(FollowAmountMin, followAmount - Time.deltaTime * 3.4f);
+		followAmount = Mathf.Max(FollowAmountMin, followAmount - Time.deltaTime * 3.2f);
 		
 		if (followAmount == FollowAmountMin)
 		{
@@ -64,9 +64,7 @@ public class ArmIKTargetController : MonoBehaviour
 		if (followAmount == 1f)
 			unlocking = false;
 	}
-	
-	public bool GetLocked() { return locking || unlocking; }
-	
+
 	public void Lock()
 	{
 		if (unlocking)
@@ -80,4 +78,6 @@ public class ArmIKTargetController : MonoBehaviour
 	public void SetSword(Transform sword) { this.sword = sword; }
 	public void SetAnimationController(PlayerAnimationController animationController) { this.animationController = animationController; }
 	public void SetFollowAmount(float followAmount) { this.followAmount = followAmount; }
+
+	public bool GetLocked() { return locking || unlocking; }
 }

@@ -57,7 +57,7 @@ public class PlayerAnimationController : MonoBehaviour
 		float d = playerController.GetSwordDistance();
 		
 		if (d >= armLength - 0.01f)
-			return rightArmBone.position + (playerController.GetSwordRigidbody().position - rightArmBone.position).normalized * humerusLength;
+			return rightArmBone.position + (playerController.GetSwordRigidbody().position - rightArmBone.position).normalized * armLength;
 		
 		float hA = HumerusAngle(d);
 		
@@ -69,11 +69,16 @@ public class PlayerAnimationController : MonoBehaviour
 		
 		Vector3 rotatedDir = Vector3.RotateTowards(rotateFrom, rotateTo, hA, 1f).normalized;
 		
-		return rightArmBone.position + rotatedDir * humerusLength;
+		return rightArmBone.position + rotatedDir * armLength;
 	}
 	
 	public Vector3 SwordAimDirection()
 	{
+		return rightForeArmBone.up;
+		
+		// This is all IK stuff below
+
+/*
 		float armLength = GetArmLength();
 		float d = playerController.GetSwordDistance();
 
@@ -91,6 +96,7 @@ public class PlayerAnimationController : MonoBehaviour
 		Vector3 rotatedDir = Vector3.RotateTowards(rotateFrom, rotateTo, fA, 1f).normalized;
 		
 		return rotatedDir;
+*/		
 	}
 	
 	private float HumerusAngle(float distance)

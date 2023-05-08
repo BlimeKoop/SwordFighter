@@ -181,17 +181,19 @@ public class PlayerSwordMovement
 		Vector3 currentPosition = swordController.GetRigidbody().position;
 		Vector3 clampedPosition = currentPosition;
 		
-		Vector3 armPos = playerController.GetArm(true).position;
-		Vector3 fromArm = currentPosition - armPos;
+		Vector3 pos = playerController.GetArm(true).position;
+		Vector3 fromPos = currentPosition - pos;
 		
-		if (fromArm.magnitude > playerController.GetArmLength())
-			clampedPosition += fromArm.normalized * (playerController.GetArmLength() - fromArm.magnitude);
+		float maxLength = playerController.GetArmLength();
+		
+		if (fromPos.magnitude > maxLength)
+			clampedPosition += fromPos.normalized * (maxLength - fromPos.magnitude);
 
 		return (clampedPosition - currentPosition) / Time.fixedDeltaTime;
 	}
 	
 	public static Vector3 ForeArmClamping(PlayerController playerController, PlayerSwordController swordController)
-	{
+	{	
 		Vector3 currentPosition = swordController.GetRigidbody().position;
 		
 		Transform rightShoulder = playerController.GetShoulder(true);
@@ -200,7 +202,7 @@ public class PlayerSwordMovement
 		Vector3 fromForeArm = currentPosition - rightForeArm.position;
 		Vector3 clampedPosition = currentPosition;
 		
-		float maxAngle = 90f;
+		float maxAngle = 100f;
 		float angle = Vector3.Angle(fromForeArm, -rightShoulder.right);
 		
 		if (angle > maxAngle)

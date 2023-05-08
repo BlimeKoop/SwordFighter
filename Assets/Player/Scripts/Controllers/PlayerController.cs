@@ -120,6 +120,7 @@ public class PlayerController : MonoBehaviour
 	public Vector3 ForeArmToSword() { return swordController.GetRigidbody().position - animationController.GetForeArmBone(true).position; }
 	
 	public float GetArmLength() { return animationController.GetArmLength(); }
+	public float GetForeArmLength() { return animationController.GetForeArmLength(); }
 	public float GetHoldDistance() { return animationController.GetArmLength() * (0.5f + (1f - swordController.GetArmBendAmount()) * 0.5f); }
 	public float GetSwordDistance() { return Vector3.Distance(GetArm(true).position, swordController.GetRigidbody().position); }
 	public float GetArmBendAmount() { return swordController.GetArmBendAmount(); }

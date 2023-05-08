@@ -215,7 +215,7 @@ public class PlayerSwordController : MonoBehaviour
 		// Negate velocity against distanceClamping
 		velocity += distanceClamping.normalized * Mathf.Max(0f, Vector3.Dot(velocity, -distanceClamping.normalized));
 
-		Vector3 clamping = distanceClamping + foreArmClamping * 0.25f;
+		Vector3 clamping = distanceClamping; // + foreArmClamping * 0.25f;
 
 		physicsController.ZeroVelocity();
 		physicsController.MoveSword(playerMovement + velocity, clamping);
@@ -320,7 +320,7 @@ public class PlayerSwordController : MonoBehaviour
 		Quaternion rotationR = Quaternion.identity;
 		Transform cam = playerController.GetCamera();
 		
-		Vector3 up = AimDirection();
+		Vector3 up = SwordAimDirection();
 		Vector3 upR = up.y < 1f ? Vector3.up : Vectors.FlattenVector(-cam.forward).normalized;
 
 		if (playerController.GetAlignStab() || playerController.GetStab() || playerController.GetHoldStab())
@@ -444,7 +444,7 @@ public class PlayerSwordController : MonoBehaviour
 		armBendAmount = 1.0f;
 	}
 	
-	private Vector3 AimDirection() { return animationController.SwordAimDirection(); }
+	private Vector3 SwordAimDirection() { return animationController.SwordAimDirection(); }
 	
 	public Vector3 GetActiveVelocity() { return physicsController.GetActiveVelocity(); }
 	

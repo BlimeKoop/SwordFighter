@@ -14,7 +14,7 @@ public class PlayerInputController : MonoBehaviour
 	private Vector2 swingInputStore;
 	private Vector2 swingInputActive;
 	
-	private float SwingInputMult = 0.08f;
+	private float SwingInputMult = 1f;
 	
 	private int consecutiveSwingInputCount;
 	private int ConsecutiveSwingZeroCount = 6;
