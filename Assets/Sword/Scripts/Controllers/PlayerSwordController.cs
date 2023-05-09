@@ -210,12 +210,13 @@ public class PlayerSwordController : MonoBehaviour
 		velocity = Vector3.Lerp(velocity, movement, t);
 		
 		Vector3 distanceClamping = PlayerSwordMovement.DistanceClamping(playerController, this);
+		Vector3 armClamping = PlayerSwordMovement.ArmClamping(playerController, this);
 		Vector3 foreArmClamping = PlayerSwordMovement.ForeArmClamping(playerController, this);
-		
-		// Negate velocity against distanceClamping
-		velocity += distanceClamping.normalized * Mathf.Max(0f, Vector3.Dot(velocity, -distanceClamping.normalized));
 
-		Vector3 clamping = distanceClamping; // + foreArmClamping * 0.25f;
+		Vector3 clamping = distanceClamping + armClamping * 0.25f; // + foreArmClamping * 0.25f;
+
+		// Negate velocity against clamping
+		velocity += clamping.normalized * Mathf.Max(0f, Vector3.Dot(velocity, -clamping.normalized));
 
 		physicsController.ZeroVelocity();
 		physicsController.MoveSword(playerMovement + velocity, clamping);

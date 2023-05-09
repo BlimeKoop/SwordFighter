@@ -176,6 +176,7 @@ public class PlayerSwordMovement
 		
 		return (targetPosition - currentPosition) * 6f;
 	}
+	
 	public static Vector3 DistanceClamping(PlayerController playerController, PlayerSwordController swordController)
 	{
 		Vector3 currentPosition = swordController.GetRigidbody().position;
@@ -189,6 +190,84 @@ public class PlayerSwordMovement
 		if (fromPos.magnitude > maxLength)
 			clampedPosition += fromPos.normalized * (maxLength - fromPos.magnitude);
 
+		return (clampedPosition - currentPosition) / Time.fixedDeltaTime;
+	}
+	
+	public static Vector3 ArmClamping(PlayerController playerController, PlayerSwordController swordController)
+	{
+		Vector3 currentPosition = swordController.GetRigidbody().position;
+		
+		Transform rightArm = playerController.GetArm(true);
+		
+		Vector3 verticalClamping = VerticalArmClamping(currentPosition, rightArm.position);
+		Vector3 horizontalClamping = HorizontalArmClamping(currentPosition, rightArm.position, playerController.transform);
+		Vector3 clampedPosition = currentPosition + (verticalClamping + horizontalClamping) * Time.fixedDeltaTime;
+
+		return (clampedPosition - currentPosition) / Time.fixedDeltaTime;
+	}
+	
+	private static Vector3 VerticalArmClamping(Vector3 currentPosition, Vector3 armPosition)
+	{
+		Vector3 fromArm = currentPosition - armPosition;
+		Vector3 clampedPosition = currentPosition;
+		
+		float angleV = Vector3.Angle(fromArm, -Vector3.up);
+		float minAngleV = 30f;
+		
+		if (angleV < minAngleV)
+		{
+			Vector3 clampedDir = Vector3.RotateTowards(fromArm, Vector3.up, (minAngleV - angleV) * Mathf.Deg2Rad, 1f).normalized;
+			clampedPosition = currentPosition + clampedDir * fromArm.magnitude;
+		}
+		
+		return (clampedPosition - currentPosition) / Time.fixedDeltaTime;
+	}
+	
+	private static Vector3 HorizontalArmClamping(Vector3 currentPosition, Vector3 armPosition, Transform playerTransform)
+	{
+		Vector3 fromArm = currentPosition - armPosition;
+		
+		float frontN1P1 = MathFunctions.FloatN1P1(Vector3.Dot(fromArm.normalized, playerTransform.forward));
+		
+		if (frontN1P1 > 0)
+			return ForwardHorizontalArmClamping(currentPosition, fromArm, playerTransform);
+		else
+			return BackwardHorizontalArmClamping(currentPosition, fromArm, playerTransform);
+	}
+	
+	private static Vector3 ForwardHorizontalArmClamping(Vector3 currentPosition, Vector3 fromArm, Transform playerTransform)
+	{
+		Vector3 clampedPosition = currentPosition;
+		Vector3 rotateTo = new Vector3(playerTransform.forward.x, fromArm.y, playerTransform.forward.z);
+		
+		float angleH = Vector3.Angle(Vectors.FlattenVector(fromArm), Vectors.FlattenVector(playerTransform.right));
+		float maxAngleH = 145f;
+		
+		if (angleH > maxAngleH)
+		{
+			Vector3 clampedDir = Vector3.RotateTowards(fromArm, rotateTo, (angleH - maxAngleH) * Mathf.Deg2Rad, 1f).normalized;
+			
+			clampedPosition = currentPosition + clampedDir * fromArm.magnitude;
+		}
+		
+		return (clampedPosition - currentPosition) / Time.fixedDeltaTime;
+	}
+
+	private static Vector3 BackwardHorizontalArmClamping(Vector3 currentPosition, Vector3 fromArm, Transform playerTransform)
+	{
+		Vector3 clampedPosition = currentPosition;
+		Vector3 rotateTo = new Vector3(-playerTransform.forward.x, fromArm.y, -playerTransform.forward.z);
+		
+		float angleH = Vector3.Angle(Vectors.FlattenVector(fromArm), Vectors.FlattenVector(playerTransform.right));
+		float maxAngleH = 90f;
+		
+		if (angleH > maxAngleH)
+		{
+			Vector3 clampedDir = Vector3.RotateTowards(fromArm, rotateTo, (angleH - maxAngleH) * Mathf.Deg2Rad, 1f).normalized;
+			
+			clampedPosition = currentPosition + clampedDir * fromArm.magnitude;
+		}
+		
 		return (clampedPosition - currentPosition) / Time.fixedDeltaTime;
 	}
 	
