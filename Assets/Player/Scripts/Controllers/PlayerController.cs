@@ -9,8 +9,9 @@ using DynamicMeshCutter;
 
 public class PlayerController : MonoBehaviour
 {
-	private PlayerInputController inputController;
-	private PlayerAnimationController animationController;
+	
+	[HideInInspector] public PlayerInputController inputController;
+	[HideInInspector] public PlayerAnimationController animationController;
 	private PlayerPhysicsController physicsController;
 	private PlayerCollisionController collisionController;
     private PlayerSwordController swordController;
@@ -18,25 +19,28 @@ public class PlayerController : MonoBehaviour
 	private PlayerInput input;
 	
 	private Camera _cam;
-	private Transform cam;
+	[SerializeField] public Transform cam;
 	
-	[SerializeField] private Transform swordObject;
+	public Transform sword;
+	[HideInInspector] public Transform swordObject;
+	
 	[SerializeField] private float movementSpeed = 7.0f;
+	public float swingSpeed = 9.0f;
 
-	private Vector3 movement;
+	[HideInInspector] public Vector3 movement; 
 	
 	private bool block;
 	private bool alignStab, stab, holdStab;
 	
-	private float stabHoldTimer;
-	private float StabHoldDuration = 0.4f;
+	[HideInInspector] public float stabHoldTimer;
+	[HideInInspector] public float StabHoldDuration = 0.2f;
 
     void Awake()
     {
 		Cursor.visible = false;
 		Cursor.lockState = CursorLockMode.Locked;
 		
-		inputController = GetComponent<PlayerInputController>();
+		inputController = PlayerControllerInitialization.InputController(this);
 
 		input = GetComponent<PlayerInput>();
 
@@ -53,6 +57,8 @@ public class PlayerController : MonoBehaviour
 		
 		swordController = PlayerControllerInitialization.SwordController(this);
 		swordController.Initialize(this, inputController, animationController);
+		
+		swordObject = swordController.transform;
 	}
 
 	void FixedUpdate()
@@ -65,33 +71,32 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-		Vector2 movementInput = inputController.GetMovementInput();
+		movement = inputController.SwingDirection() * movementSpeed * Time.fixedDeltaTime;
 		
-		Vector3 camRightFlat = new Vector3(cam.right.x, 0f, cam.right.z).normalized;
-		Vector3 camForwardFlat = new Vector3(cam.forward.x, 0f, cam.forward.z).normalized;		
+		animationController.SetFloat("Speed", physicsController.GetRigidbody().velocity.magnitude * 0.35f);
+		animationController.SetLayerWeight(1, physicsController.GetRigidbody().velocity.magnitude / movementSpeed);
 		
-		Vector3 moveDir = camRightFlat * movementInput.x + camForwardFlat * movementInput.y;
-		movement = moveDir * movementSpeed * Time.fixedDeltaTime;
+		// if (!block && swordController.GetInputAngleChange() > 50f)
+			// animationController.LockArmIKTargetController();
 		
-		Animator a = GetComponent<Animator>();
-		
-		a.SetFloat("Speed", physicsController.GetRigidbody().velocity.magnitude * 0.35f);
-		a.SetLayerWeight(1, physicsController.GetRigidbody().velocity.magnitude / movementSpeed);
-		
-		if (!block && swordController.GetInputAngleChange() > 50f)
-			animationController.LockArmIKTargetController();
-		
-		if (stab && GetSwordDistance() >= animationController.GetArmLength())
+		if (stab && ArmToSword().magnitude >= animationController.GetArmLength())
 			HoldStab();
 		
 		if (holdStab && stabHoldTimer < 0f)
 			StopStab();
-		
+
 		swordController.DoUpdate();
-		swordController.MoveSword(block, alignStab, stab, holdStab);
+		swordController.CalculateSwordMovement(block, alignStab, stab, holdStab);
+		
+		if (!stab)
+			swordController.CalculateSwordClamping();
+		
+		animationController.DoUpdate();
+		// swordController.UpdateRotation();
 		
 		stabHoldTimer -= Time.deltaTime;
     }
+
 	
 	public void Block() { block = true; }
 	public void StopBlock() { block = false; }
@@ -108,7 +113,8 @@ public class PlayerController : MonoBehaviour
 	public Rigidbody GetRigidbody() { return physicsController.GetRigidbody(); }
 	public Rigidbody GetSwordRigidbody() { return swordController.GetRigidbody(); }
 	
-	public Transform GetSwordModel() { return swordObject; }
+	public Transform GetSwordModel() { return sword; }
+	public Transform GetSwordObject() { return swordObject; }
 	
 	public Transform GetChest() { return animationController.GetChestBone(); }
 	public Transform GetShoulder(bool right) { return animationController.GetShoulderBone(right); }
@@ -116,15 +122,43 @@ public class PlayerController : MonoBehaviour
 	public Transform GetForeArm(bool right) { return animationController.GetForeArmBone(right); }
 	public Transform GetHand(bool right) { return animationController.GetHandBone(right); }
 	
-	public Vector3 ArmToSword() { return swordController.GetRigidbody().position - animationController.GetArmBone(true).position; }
-	public Vector3 ForeArmToSword() { return swordController.GetRigidbody().position - animationController.GetForeArmBone(true).position; }
+	public Vector3 ToSword() {
+		return swordController.GetRigidbody().position - transform.position;
+	}
+	
+	public Vector3 ArmToSword() {
+		return swordController.GetRigidbody().position - animationController.GetArmBone(true).position;
+	}
+
+	public Vector3 ApproximateArmToSword() {
+		return swordController.GetRigidbody().position - animationController.ApproximateArmPosition();
+	}
+	
+	public Vector3 ForeArmToSword() {
+		return swordController.GetRigidbody().position - animationController.GetForeArmBone(true).position;
+	}
+	
+	public Vector3 ChestToSword() {
+		return swordController.GetRigidbody().position - animationController.GetChestBone().position;
+	}
+
+	public Vector3 ApproximateChestToSword() {
+		return swordController.GetRigidbody().position - animationController.ApproximateChestPosition();
+	}
 	
 	public float GetArmLength() { return animationController.GetArmLength(); }
 	public float GetForeArmLength() { return animationController.GetForeArmLength(); }
 	public float GetHoldDistance() { return animationController.GetArmLength() * (0.5f + (1f - swordController.GetArmBendAmount()) * 0.5f); }
-	public float GetSwordDistance() { return Vector3.Distance(GetArm(true).position, swordController.GetRigidbody().position); }
+
 	public float GetArmBendAmount() { return swordController.GetArmBendAmount(); }
 	public float GetArmBendAngle() { return animationController.GetArmBendAngle(); }
+	
+	public bool SwordFront() {
+		return MathFunctions.FloatN1P1(Vector3.Dot(ArmToSword().normalized, transform.forward)) > 0;
+	}
+	public bool SwordRight() {
+		return MathFunctions.FloatN1P1(Vector3.Dot(ArmToSword().normalized, transform.right)) > 0;
+	}
 	
 	public bool GetBlock() { return block; }
 	public bool GetAlignStab() { return alignStab; }

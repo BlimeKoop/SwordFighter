@@ -4,6 +4,16 @@ using UnityEngine;
 
 public class PlayerControllerInitialization : MonoBehaviour
 {
+	public static PlayerInputController InputController(PlayerController playerController)
+	{
+		PlayerInputController picReturn = playerController.GetComponent<PlayerInputController>();
+
+		if (picReturn == null)
+			picReturn = playerController.gameObject.AddComponent<PlayerInputController>();
+		
+		return picReturn;
+	}
+	
 	public static PlayerAnimationController AnimationController(PlayerController playerController)
 	{
 		PlayerAnimationController pacReturn = playerController.GetComponent<PlayerAnimationController>();

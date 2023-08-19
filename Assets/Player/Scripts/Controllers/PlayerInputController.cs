@@ -14,7 +14,7 @@ public class PlayerInputController : MonoBehaviour
 	private Vector2 swingInputStore;
 	private Vector2 swingInputActive;
 	
-	private float SwingInputMult = 1f;
+	private float SwingInputMult = 0.1f;
 	
 	private int consecutiveSwingInputCount;
 	private int ConsecutiveSwingZeroCount = 6;
@@ -68,6 +68,8 @@ public class PlayerInputController : MonoBehaviour
 		
 		swingInputStore = swingInput;
 		swingInput = playerInputActions.PlayerMap.Swing.ReadValue<Vector2>() * SwingInputMult;
+		
+		// Debug.Log(swingInput.magnitude);
 	}
 
 	private IEnumerator EnableInput(float delay)
@@ -95,6 +97,16 @@ public class PlayerInputController : MonoBehaviour
 		if (swingInput.magnitude > 0.0f)
 			swingInputActive = swingInput;
     }
+	
+	public Vector3 SwingDirection() {
+		Vector2 movementInput = GetMovementInput();
+		
+		Transform cam = playerController.GetCamera();
+
+		return (
+		Vectors.FlattenVector(cam.right) * movementInput.x +
+		Vectors.FlattenVector(cam.forward) * movementInput.y);
+	}
 	
 	public Vector2 GetMovementInput() { return movementInput; }
 	public Vector2 GetSwingInput() { return swingInput; }

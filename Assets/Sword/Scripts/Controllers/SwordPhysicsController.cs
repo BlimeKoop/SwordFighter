@@ -51,12 +51,15 @@ public class SwordPhysicsController : MonoBehaviour
 	}
 
 	public void ZeroVelocity()
+	{		
+		rb.velocity *= 0f;
+		rb.angularVelocity *= 0f;
+	}
+	
+	public void ZeroStoredVelocity()
 	{
 		lastVelocity = rb.velocity;
 		lastAngularVelocity = rb.angularVelocity;
-		
-		rb.velocity *= 0f;
-		rb.angularVelocity *= 0f;
 	}
 
 	public void RevertVelocity()
@@ -71,14 +74,24 @@ public class SwordPhysicsController : MonoBehaviour
 		rb.MoveRotation(lastRotation);		
 	}
 
-	public void MoveSword(Vector3 movement, Vector3 clamping)
+	public void MoveSword(Vector3 movement, Vector3 playerMovement, Vector3 clamping)
 	{
-		if (!colliding)
-		{
-			rb.velocity = movement + clamping;
+		float t = 0.12f;
+
+		// if (rb.velocity.sqrMagnitude < movement.sqrMagnitude)
+			// t += 0.05f * (1.0f - Mathf.Clamp01(movement.magnitude - rb.velocity.magnitude / 2f));
+		
+		Vector3 newMovement = movement; // Vector3.Lerp(rb.velocity, movement, t);
+		
+		// playerMovement -= clamping * Mathf.Min(Vector3.Dot(playerMovement, clamping), 0f);
+		
+		// if (!colliding) {
+			rb.velocity = newMovement + playerMovement + clamping;
 
 			return;
-		}
+		// }
+		
+		/*
 
 		ContactPoint contact = collision.contacts[0];
 		
@@ -101,6 +114,7 @@ public class SwordPhysicsController : MonoBehaviour
 		movement -= vertical * Vector3.Dot(movement, vertical);
 		
 		rb.velocity = movement + clamping;
+		*/
 	}
 	
 	public void RotateSword(Quaternion rotateTo)
@@ -121,6 +135,11 @@ public class SwordPhysicsController : MonoBehaviour
 	}
 
 	public Rigidbody GetRigidbody() { return rb; }
+	
+	public Vector3 GetNextPosition() { return rb.position + rb.velocity * Time.fixedDeltaTime; }
+	public Vector3 GetNextPosition(Vector3 movement) {
+		return rb.position + (rb.velocity + movement) * Time.fixedDeltaTime;
+	}
 	
 	public Vector3 GetLastVelocity() { return lastVelocity; }
 	public Vector3 GetLastAngularVelocity() { return lastAngularVelocity; }

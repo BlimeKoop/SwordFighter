@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CameraPivotController : MonoBehaviour
 {
-	public GameObject _followTarget;
 	private Transform followTarget;
 	
 	private Vector3 targetDirection;
@@ -20,7 +19,7 @@ public class CameraPivotController : MonoBehaviour
 	private bool initialized;
 	private int rotateLRN1P1 = 1;
 	
-    public void Initialize()
+    public void Initialize(GameObject _followTarget)
     {
         followTarget = _followTarget.transform;
 		targetDirection = followTarget.forward;

@@ -78,6 +78,7 @@ public class SwordCollisionController : MonoBehaviour
 		
 		physicsController.FreezeRigidbodyUntilFixedUpdate();
 		physicsController.ZeroVelocity();
+		physicsController.ZeroStoredVelocity();
 		
 		playerController.Collide(col);
 		swordController.Collide(col);

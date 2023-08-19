@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class ArmIKTargetController : MonoBehaviour
 {
-	public Transform sword;
-
 	private PlayerAnimationController animationController;
 	
 	private bool locking;
@@ -14,70 +12,77 @@ public class ArmIKTargetController : MonoBehaviour
 	private Vector3 lockPosition;
 	private Quaternion lockRotation;
 	
-	private float followAmount = 1.0f;
+	private float followFactor = 1.0f;
 	private float FollowAmountMin = 0.55f;
 
 	private void Awake()
 	{
-		followAmount = 1.0f;
+		followFactor = 1.0f;
 	}
 	
-	private void Update()
+	public void DoUpdate()
 	{
-		Vector3 armBonePosition = animationController.GetArmBone(true).position;
-		Vector3 targetPosition = animationController.ArmIKTargetPosition();
-		
 		if (locking)
-			StartUnlock();
+			FinishLocking();
 		
 		if (unlocking)
-			Unlock();
+			FinishUnlocking();
 		
-		if (!locking && !unlocking)
-		{
-			lockPosition = transform.position;
-			lockRotation = transform.rotation;
-		}
+		transform.position = CalculatePosition();
+		transform.rotation = CalculateRotation();
+	}
+
+	public virtual Vector3 CalculatePosition()
+	{
+		Vector3 targetPosition = PlayerAnimation.ArmIKTargetPosition(animationController, animationController.playerController);
 		
-		transform.position = Vector3.Lerp(lockPosition, targetPosition, followAmount);
-		
-		Quaternion targetRotation = Quaternion.LookRotation(transform.position - armBonePosition);
-		
-		transform.rotation = Quaternion.Lerp(lockRotation, targetRotation, followAmount);
+		return Vector3.Lerp(lockPosition, targetPosition, followFactor);
 	}
 	
-	private void StartUnlock()
+	public virtual Quaternion CalculateRotation()
 	{
-		followAmount = Mathf.Max(FollowAmountMin, followAmount - Time.deltaTime * 3.2f);
-		
-		if (followAmount == FollowAmountMin)
-		{
-			locking = false;
-			unlocking = true;
-		}
-	}
-	
-	private void Unlock()
-	{
-		followAmount = Mathf.Min(followAmount + Time.deltaTime * 2f, 1f);
-		
-		if (followAmount == 1f)
-			unlocking = false;
+		return Quaternion.LookRotation(transform.position - animationController.GetArmBone(true).position);
 	}
 
 	public void Lock()
 	{
-		if (unlocking)
-			return;
-		
 		locking = true;
+		
+		SetLockData();
 	}
 	
-	// public void Unlock() { locked = false; }
+	private bool FinishLocking()
+	{
+		followFactor = Mathf.Max(FollowAmountMin, followFactor - Time.deltaTime * 3.2f);
+		
+		if (followFactor == FollowAmountMin)
+			StartUnlocking();
+		
+		return !locking;
+	}
 	
-	public void SetSword(Transform sword) { this.sword = sword; }
+	private void StartUnlocking()
+	{
+		locking = false;
+		unlocking = true;
+	}
+
+	private void FinishUnlocking()
+	{
+		followFactor = Mathf.Min(followFactor + Time.deltaTime * 2f, 1f);
+		
+		if (followFactor == 1f)
+			unlocking = false;
+	}
+
+	private void SetLockData()
+	{
+		lockPosition = transform.position;
+		lockRotation = transform.rotation;
+	}
+
 	public void SetAnimationController(PlayerAnimationController animationController) { this.animationController = animationController; }
-	public void SetFollowAmount(float followAmount) { this.followAmount = followAmount; }
+	public void SetFollowAmount(float followFactor) { this.followFactor = followFactor; }
 
 	public bool GetLocked() { return locking || unlocking; }
 }

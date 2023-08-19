@@ -6,10 +6,15 @@ public class CameraController : MonoBehaviour
 {
 	CameraInputController cameraInputController;
 	
-	public GameObject pivot;
+	public GameObject target;
+	private Transform pivot;
+	
 	private CameraPivotController cameraPivotController;
 	
 	private float directionChangeTimer;
+	
+	private bool followingPlayer;
+	private PlayerController playerController;
 
     void Start()
     {
@@ -18,16 +23,18 @@ public class CameraController : MonoBehaviour
 		cameraInputController.Initialize(this);
 		
 		transform.parent = pivot.transform;
+		
+		playerController = target.GetComponent<PlayerController>();
+		followingPlayer = playerController != null;
     }
 
 	private CameraPivotController InitializeCameraPivotController()
 	{
-		CameraPivotController cpcReturn = pivot.GetComponent<CameraPivotController>();
+		pivot = new GameObject($"{gameObject.name} Pivot").transform;
 		
-		if (cpcReturn == null)
-			cpcReturn = pivot.AddComponent<CameraPivotController>();
+		CameraPivotController cpcReturn = pivot.gameObject.AddComponent<CameraPivotController>();
 		
-		cpcReturn.Initialize();
+		cpcReturn.Initialize(target);
 		
 		return cpcReturn;
 	}
@@ -47,16 +54,26 @@ public class CameraController : MonoBehaviour
 		if (!cameraPivotController.ForwardAligned())
 			return;
 		
-		Vector2 aimInput = cameraInputActions.CameraMap.Aim.ReadValue<Vector2>();
+		if (!followingPlayer)
+			cameraPivotController.SetTargetDirection(NonPlayerAimDirection(cameraInputActions)); 
+		else
+			cameraPivotController.SetTargetDirection(
+			Vectors.FlattenVector(playerController.GetSwordObject().forward).normalized);
+			
+	}
+	
+	private Vector3 NonPlayerAimDirection(CameraInputActions cameraInputActions) {
+		Vector3 aimInput = cameraInputActions.CameraMap.Aim.ReadValue<Vector2>();
+		float inputX = aimInput.x;
 		
 		if (aimInput.sqrMagnitude == 0)
-			return;
+			return transform.forward;
 		
 		Vector3 rightFlat = new Vector3(transform.right.x, 0f, transform.right.z).normalized;
 		Vector3 forwardFlat = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;	
 		
-		Vector3 aimDirection = rightFlat * aimInput.x + forwardFlat * aimInput.y;
+		Vector3 directionR = (rightFlat * inputX + forwardFlat * (1.0f - Mathf.Abs(inputX))).normalized;
 		
-		cameraPivotController.SetTargetDirection(aimDirection);
+		return directionR;
 	}
 }

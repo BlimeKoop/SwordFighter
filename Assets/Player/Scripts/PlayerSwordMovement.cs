@@ -11,8 +11,9 @@ public class PlayerSwordMovement
 		float inputSpeed = Mathf.Min(inputController.GetSwingInput().magnitude, 150f);
 		
 		Vector3 movementR = direction * inputSpeed;
-		movementR += DistanceMovement(playerController, swordController);
 		movementR *= Mathf.Max(0.0f, 1.0f - swordController.GetWeight());
+		movementR *= playerController.swingSpeed;
+		movementR += DistanceMovement(playerController, swordController) * 0.5f;
 		movementR /= Time.fixedDeltaTime;
 
 		return movementR;
@@ -26,7 +27,7 @@ public class PlayerSwordMovement
 
 		Transform cam = playerController.GetCamera();
 		
-		Vector3 horizontal = Vector3.Lerp(orbitDirections[0], cam.right, 0.4f);
+		Vector3 horizontal = Vector3.Lerp(orbitDirections[0], Vectors.FlattenVector(cam.right), 0.4f);
 		Vector3 vertical = Vector3.Lerp(orbitDirections[1], cam.up, 0.4f);
 		
 		Vector3 direction = (horizontal * swingInputActive.x + vertical * swingInputActive.y).normalized;
@@ -34,8 +35,9 @@ public class PlayerSwordMovement
 		float inputSpeed = Mathf.Min(inputController.GetSwingInput().magnitude, 150f);
 		
 		Vector3 movementR = direction * inputSpeed;
-		movementR += DistanceMovement(playerController, swordController);
 		movementR *= Mathf.Max(0.0f, 1.0f - swordController.GetWeight());
+		movementR *= playerController.swingSpeed;
+		movementR += DistanceMovement(playerController, swordController) * 0.5f;
 		movementR /= Time.fixedDeltaTime;
 		
 		return movementR;
@@ -49,22 +51,6 @@ public class PlayerSwordMovement
 	public static Vector3 StabMovement(PlayerController playerController, PlayerSwordController swordController, PlayerInputController inputController)
 	{
 		return SwingMovement(playerController, swordController, inputController);
-/*
-		Vector2 swingInputActive = inputController.GetSwingInputActive();
-		
-		Transform cam = playerController.GetCamera();
-		
-		Vector3 direction = (cam.right * swingInputActive.x + cam.forward * swingInputActive.y).normalized;
-		
-		float inputSpeed = Mathf.Min(inputController.GetSwingInput().magnitude, 150f);
-		
-		Vector3 movementR = direction * inputSpeed;
-		movementR += DistanceMovement(playerController, swordController);
-		movementR *= Mathf.Max(0.0f, 1.0f - swordController.GetWeight());
-		movementR /= Time.fixedDeltaTime;
-		
-		return movementR;
-*/		
 	}
 	
 	public static Vector3 SwingDirection(PlayerController playerController, PlayerSwordController swordController, PlayerInputController inputController)
@@ -74,7 +60,7 @@ public class PlayerSwordMovement
 		
 		Vector2 swingInputActive = inputController.GetSwingInputActive();
 				
-		Vector3[] orbitDirections = ForeArmOrbitDirections(playerController, swordController);
+		Vector3[] orbitDirections = ShoulderOrbitDirections(playerController, swordController);
 		
 		Vector3 directionR = orbitDirections[0] * swingInputActive.x + orbitDirections[1] * swingInputActive.y;
 		
@@ -89,7 +75,7 @@ public class PlayerSwordMovement
 	{
 		Transform cam = playerController.GetCamera();
 		
-		Vector3 camSwingDir = cam.right * swingInputActive.x + cam.up * swingInputActive.y;
+		Vector3 camSwingDir = Vectors.FlattenVector(cam.right) * swingInputActive.x + cam.up * swingInputActive.y;
 		Vector3 cross = Vector3.Cross(cam.forward, camSwingDir);
 		cross.Normalize();
 
@@ -102,19 +88,19 @@ public class PlayerSwordMovement
 	public static Vector3[] ShoulderOrbitDirections(PlayerController playerController, PlayerSwordController swordController)
 	{
 		Vector3 armPos = playerController.GetArm(true).position;
-		Vector3 currentPosition = swordController.GetRigidbody().position;
+		Vector3 swordPos = swordController.GetRigidbody().position;
 		
-		return OrbitDirections(playerController, swordController, armPos, currentPosition);
+		return OrbitDirections(playerController, swordController, armPos, swordPos);
 	}
 	
 	public static Vector3[] ForeArmOrbitDirections(PlayerController playerController, PlayerSwordController swordController)
 	{
 		Vector3 foreArmPos = playerController.GetForeArm(true).position;
-		Vector3 currentPosition = swordController.GetRigidbody().position;
+		Vector3 swordPos = swordController.GetRigidbody().position;
 		
-		// Debug.DrawLine(foreArmPos, currentPosition, Color.blue);
+		// Debug.DrawLine(foreArmPos, swordPos, Color.blue);
 		
-		return OrbitDirections(playerController, swordController, foreArmPos, currentPosition);
+		return OrbitDirections(playerController, swordController, foreArmPos, swordPos);
 	}
 	
 	private static Vector3[] OrbitDirections(PlayerController playerController, PlayerSwordController swordController, Vector3 fromPos, Vector3 toPos)
@@ -132,13 +118,12 @@ public class PlayerSwordMovement
 	
 	public static Vector3 DistanceMovement(PlayerController playerController, PlayerSwordController swordController)
 	{
-		Vector3 currentPosition = swordController.GetRigidbody().position;
-		Vector3 targetPosition = currentPosition;
+		Vector3 swordPos = swordController.GetRigidbody().position;
+		Vector3 movementR = new Vector3();
 
 		float targetDistance = playerController.GetHoldDistance();
 		
-		Vector3 armPos = playerController.GetArm(true).position;
-		Vector3 fromArm = currentPosition - armPos;
+		Vector3 fromArm = playerController.ApproximateArmToSword();
 		
 		bool block = playerController.GetBlock();
 		bool alignStab = playerController.GetAlignStab();
@@ -146,20 +131,19 @@ public class PlayerSwordMovement
 		
 		if (block)
 		{
-			Vector3 forward = playerController.transform.forward;
-			float forwardDistance = Vector3.Dot(fromArm, forward);
+			Vector3 chestToSwordDirApprox = playerController.ApproximateChestToSword().normalized;
+			float distance = Vector3.Dot(fromArm, chestToSwordDirApprox);
 			
-			if (forwardDistance > targetDistance)
-				targetPosition -= forward * (forwardDistance - targetDistance);
+			if (!Mathf.Approximately(distance, targetDistance))
+				movementR -= chestToSwordDirApprox * (distance - targetDistance);
 		}
 		else if (alignStab)
 		{
-			Vector3 fromArmF = Vectors.FlattenVector(fromArm);
+			Vector3 chestToSwordDirApprox = playerController.ApproximateChestToSword().normalized;
+			float distance = Vector3.Dot(fromArm, chestToSwordDirApprox);
 			
-			float distanceXZ = Mathf.Abs(fromArmF.x) + Mathf.Abs(fromArmF.z);
-			
-			if (distanceXZ != targetDistance)
-				targetPosition += fromArmF.normalized * (targetDistance - distanceXZ);
+			if (!Mathf.Approximately(distance, targetDistance))
+				movementR -= chestToSwordDirApprox * (distance - targetDistance);
 		}
 		else if (stab)
 		{
@@ -167,49 +151,48 @@ public class PlayerSwordMovement
 			float forwardDistance = Vector3.Dot(fromArm, forward);
 			
 			if (forwardDistance < targetDistance)
-				targetPosition += forward * (targetDistance - forwardDistance);
+				movementR += forward * (targetDistance - forwardDistance);
 		}
 		else
 		{
-			targetPosition += fromArm.normalized * (targetDistance - fromArm.magnitude);
+			movementR += fromArm.normalized * (targetDistance - fromArm.magnitude);
 		}
 		
-		return (targetPosition - currentPosition) * 6f;
+		return movementR;
 	}
 	
-	public static Vector3 DistanceClamping(PlayerController playerController, PlayerSwordController swordController)
+	public static Vector3 DistanceClamping(PlayerController playerController, PlayerSwordController swordController,
+	Vector3 clamping)
 	{
-		Vector3 currentPosition = swordController.GetRigidbody().position;
-		Vector3 clampedPosition = currentPosition;
+		Vector3 swordPos = swordController.GetRigidbody().position;
+		Vector3 clampedPos = swordPos;
+		Vector3 armToSword = playerController.ArmToSword();
 		
-		Vector3 pos = playerController.GetArm(true).position;
-		Vector3 fromPos = currentPosition - pos;
-		
+		float minLength = playerController.GetArmLength() / 5;
 		float maxLength = playerController.GetArmLength();
 		
-		if (fromPos.magnitude > maxLength)
-			clampedPosition += fromPos.normalized * (maxLength - fromPos.magnitude);
+		if (armToSword.magnitude < minLength)
+			return armToSword.normalized * (minLength - armToSword.magnitude) / Time.fixedDeltaTime;
+		else if (armToSword.magnitude > maxLength)
+			return armToSword.normalized * (maxLength - armToSword.magnitude) / Time.fixedDeltaTime;
 
-		return (clampedPosition - currentPosition) / Time.fixedDeltaTime;
+		return Vector3.zero;
 	}
 	
-	public static Vector3 ArmClamping(PlayerController playerController, PlayerSwordController swordController)
+	public static Vector3 ArmClamping(PlayerController playerController, PlayerSwordController swordController,
+	Vector3 clamping)
 	{
-		Transform rightArm = playerController.GetArm(true);
-		
-		Vector3 verticalClamping = VerticalArmClamping(swordController, rightArm.position);
-		Vector3 horizontalClamping = HorizontalArmClamping(swordController, rightArm.position, playerController);
-		Vector3 currentPosition = swordController.GetRigidbody().position;
-		Vector3 clampedPosition = currentPosition + (verticalClamping + horizontalClamping) * Time.fixedDeltaTime;
+		Vector3 verticalClamping = VerticalArmClamping(playerController, clamping);
+		Vector3 horizontalClamping = HorizontalArmClamping(swordController, playerController, clamping);
 
-		return (clampedPosition - currentPosition) / Time.fixedDeltaTime;
+		return horizontalClamping; // + (verticalClamping + horizontalClamping);
 	}
 	
-	private static Vector3 VerticalArmClamping(PlayerSwordController swordController, Vector3 armPosition)
+	private static Vector3 VerticalArmClamping(PlayerController playerController, Vector3 clamping)
 	{
-		Vector3 currentPosition = swordController.GetRigidbody().position;
-		Vector3 fromArm = currentPosition - armPosition;
-		Vector3 clampedPosition = currentPosition;
+		Vector3 swordPos = playerController.GetSwordRigidbody().position;
+		Vector3 fromArm = playerController.ArmToSword();
+		Vector3 clampedPos = swordPos;
 		
 		float angleV = Vector3.Angle(fromArm, -Vector3.up);
 		float minAngleV = 30f;
@@ -217,81 +200,95 @@ public class PlayerSwordMovement
 		if (angleV < minAngleV)
 		{
 			Vector3 clampedDir = Vector3.RotateTowards(fromArm, Vector3.up, (minAngleV - angleV) * Mathf.Deg2Rad, 1f).normalized;
-			clampedPosition = currentPosition + clampedDir * fromArm.magnitude;
+			clampedPos = swordPos + clampedDir * fromArm.magnitude;
 		}
 		
-		return (clampedPosition - currentPosition) / Time.fixedDeltaTime;
+		return (clampedPos - swordPos) / Time.fixedDeltaTime;
 	}
 	
-	private static Vector3 HorizontalArmClamping(PlayerSwordController swordController, Vector3 armPosition, PlayerController playerController)
-	{
-		Vector3 currentPosition = swordController.GetRigidbody().position;
-		Vector3 fromArm = currentPosition - armPosition;
-		
-		float frontN1P1 = MathFunctions.FloatN1P1(Vector3.Dot(fromArm.normalized, playerController.transform.forward));
-		
-		if (frontN1P1 > 0)
-			return ForwardHorizontalArmClamping(currentPosition, fromArm, playerController);
-		else
-			return BackwardHorizontalArmClamping(currentPosition, fromArm, playerController);
+	private static Vector3 HorizontalArmClamping(PlayerSwordController swordController,
+	PlayerController playerController, Vector3 clamping)
+	{		
+		if (!playerController.SwordRight())
+			return FoldedHorizontalArmClamping(playerController, swordController, clamping);
+		else if (!playerController.SwordFront())
+			return BackwardHorizontalArmClamping(playerController, swordController, clamping);
+	
+		return new Vector3();
 	}
 	
-	private static Vector3 ForwardHorizontalArmClamping(Vector3 currentPosition, Vector3 fromArm, PlayerController playerController)
-	{
+	private static Vector3 FoldedHorizontalArmClamping(PlayerController playerController, PlayerSwordController swordController, Vector3 clamping)
+	{ 
 		Transform player = playerController.transform;
+
+		Vector3 fromArmN = (
+		swordController.GetPhysicsController().GetNextPosition() -
+		playerController.animationController.ApproximateArmPosition()).normalized;
+
+		Vector3 fromArmC = Vector3.Cross(Vector3.up, fromArmN).normalized;
+		Vector3 rotateTo = (
+			fromArmC * MathFunctions.FloatN1P1(Vector3.Dot(player.forward, fromArmC)));
 		
-		Vector3 clampedPosition = currentPosition;
-		Vector3 rotateTo = new Vector3(player.forward.x, fromArm.y, player.forward.z);
+		float angle = Vector3.Angle(Vectors.FlattenVector(fromArmN), Vectors.FlattenVector(player.forward));
+		float angleMax = 20f;
+		// float minBlockAngleH = 10f;
 		
-		float angleH = Vector3.Angle(Vectors.FlattenVector(fromArm), Vectors.FlattenVector(player.right));
-		float maxAngleH = 145f;
-		float minBlockAngleH = 10f;
-		
-		if (angleH > maxAngleH)
+		if (angle > angleMax)
 		{
-			Vector3 clampedDir = Vector3.RotateTowards(fromArm, rotateTo, (angleH - maxAngleH) * Mathf.Deg2Rad, 1f).normalized;
+			Vector3 clampedDir = Vector3.RotateTowards(
+			fromArmN, rotateTo, (angle - angleMax) * Mathf.Deg2Rad, 1.0f).normalized;
 			
-			clampedPosition = currentPosition + clampedDir * fromArm.magnitude;
-		}
+			return ((clampedDir - fromArmN) *
+			fromArmN.magnitude * swordController.movement.magnitude);
+		} /*
 		else if (playerController.GetBlock() && angleH < minBlockAngleH)
 		{
 			Vector3 clampedDir = Vector3.RotateTowards(fromArm, rotateTo, (minBlockAngleH - angleH) * Mathf.Deg2Rad, 1f).normalized;
+			Vector3 clampedPos = armPos + clampedDir * fromArm.magnitude;
 			
-			clampedPosition = currentPosition + clampedDir * fromArm.magnitude;
-		}
+			return (clampedPos - swordPosN) / Time.fixedDeltaTime;
+		} */
 
-		return (clampedPosition - currentPosition) / Time.fixedDeltaTime;
+		return Vector3.zero;
 	}
 
-	private static Vector3 BackwardHorizontalArmClamping(Vector3 currentPosition, Vector3 fromArm, PlayerController playerController)
+	private static Vector3 BackwardHorizontalArmClamping(PlayerController playerController, PlayerSwordController swordController, Vector3 clamping)
 	{
 		Transform player = playerController.transform;
 		
-		Vector3 clampedPosition = currentPosition;
-		Vector3 rotateTo = new Vector3(-player.forward.x, fromArm.y, -player.forward.z);
+		Vector3 fromArmN = (
+		swordController.GetPhysicsController().GetNextPosition() -
+		playerController.animationController.ApproximateArmPosition()).normalized;
 		
-		float angleH = Vector3.Angle(Vectors.FlattenVector(fromArm), Vectors.FlattenVector(player.right));
-		float maxAngleH = 90f;
+		Vector3 fromArmC = Vector3.Cross(Vector3.up, fromArmN).normalized;
+		Vector3 rotateTo = (
+			fromArmC * MathFunctions.FloatN1P1(Vector3.Dot(player.forward, fromArmC)));
 		
-		if (angleH > maxAngleH)
+		float angle = Vector3.Angle(Vectors.FlattenVector(fromArmN), Vectors.FlattenVector(player.right));
+		float angleMax = 8f;
+		
+		if (angle > angleMax)
 		{
-			Vector3 clampedDir = Vector3.RotateTowards(fromArm, rotateTo, (angleH - maxAngleH) * Mathf.Deg2Rad, 1f).normalized;
+			Vector3 clampedDir = Vector3.RotateTowards(
+			fromArmN, rotateTo, (angle - angleMax) * Mathf.Deg2Rad, 1.0f).normalized;
 			
-			clampedPosition = currentPosition + clampedDir * fromArm.magnitude;
+			return ((clampedDir - fromArmN) *
+			fromArmN.magnitude * swordController.movement.magnitude);
 		}
 		
-		return (clampedPosition - currentPosition) / Time.fixedDeltaTime;
+		return Vector3.zero;
 	}
 	
-	public static Vector3 ForeArmClamping(PlayerController playerController, PlayerSwordController swordController)
+	public static Vector3 ForeArmClamping(PlayerController playerController, PlayerSwordController swordController,
+	Vector3 clamping)
 	{	
-		Vector3 currentPosition = swordController.GetRigidbody().position;
+		Vector3 swordPos = swordController.GetRigidbody().position;
 		
 		Transform rightShoulder = playerController.GetShoulder(true);
 		Transform rightForeArm = playerController.GetForeArm(true);
 		
-		Vector3 fromForeArm = currentPosition - rightForeArm.position;
-		Vector3 clampedPosition = currentPosition;
+		Vector3 fromForeArm = swordPos - rightForeArm.position;
+		Vector3 clampedPos = swordPos;
 		
 		float maxAngle = 100f;
 		float angle = Vector3.Angle(fromForeArm, -rightShoulder.right);
@@ -299,11 +296,11 @@ public class PlayerSwordMovement
 		if (angle > maxAngle)
 		{
 			Vector3 clampedDir = Vector3.RotateTowards(fromForeArm, -rightShoulder.right, (angle - maxAngle) * Mathf.Deg2Rad, 1f).normalized;
-			clampedPosition = rightForeArm.position + clampedDir * fromForeArm.magnitude;
+			clampedPos = rightForeArm.position + clampedDir * fromForeArm.magnitude;
 			
 			// Debug.DrawRay(rightShoulder.position, -rightShoulder.right, Color.red, 1f);
 		}
 
-		return (clampedPosition - currentPosition) / Time.fixedDeltaTime;
+		return (clampedPos - swordPos) / Time.fixedDeltaTime;
 	}
 }
