@@ -7,7 +7,7 @@ public class SwordPhysicsController : MonoBehaviour
 {
 	PlayerSwordController swordController;
 	
-	private Rigidbody rb;
+	[HideInInspector] public Rigidbody rb;
 
 	private bool colliding;
 	private Collision collision;
@@ -74,19 +74,25 @@ public class SwordPhysicsController : MonoBehaviour
 		rb.MoveRotation(lastRotation);		
 	}
 
-	public void MoveSword(Vector3 movement, Vector3 playerMovement, Vector3 clamping)
+	public void MoveSword(PlayerController playerController, PlayerSwordController swordController)
 	{
+		Vector3 playerMovement = playerController.movement;
+		Vector3 swordMovement = swordController.movement;
+		
+		/*
 		float t = 0.12f;
 
-		// if (rb.velocity.sqrMagnitude < movement.sqrMagnitude)
-			// t += 0.05f * (1.0f - Mathf.Clamp01(movement.magnitude - rb.velocity.magnitude / 2f));
+		if (rb.velocity.sqrMagnitude < swordMovement.sqrMagnitude)
+			t += 0.05f * (1.0f - Mathf.Clamp01(swordMovement.magnitude - rb.velocity.magnitude / 2f));
 		
-		Vector3 newMovement = movement; // Vector3.Lerp(rb.velocity, movement, t);
+		var newMovement = Vector3.Lerp(rb.velocity, swordMovement, t); */
+		var newMovement = new Vector3();
 		
-		// playerMovement -= clamping * Mathf.Min(Vector3.Dot(playerMovement, clamping), 0f);
+		newMovement += swordMovement;
+		newMovement += playerMovement;
 		
 		// if (!colliding) {
-			rb.velocity = newMovement + playerMovement + clamping;
+			rb.velocity = newMovement;
 
 			return;
 		// }
@@ -140,7 +146,14 @@ public class SwordPhysicsController : MonoBehaviour
 	public Vector3 GetNextPosition(Vector3 movement) {
 		return rb.position + (rb.velocity + movement) * Time.fixedDeltaTime;
 	}
-	
+
+/*
+	public Vector3 GetNextUpdatePosition() { return transform.position + rb.velocity * Time.fixedDeltaTime; }
+	public Vector3 GetNextUpdatePosition(Vector3 movement) {
+		return transform.position + movement * Time.fixedDeltaTime;
+	}
+*/
+
 	public Vector3 GetLastVelocity() { return lastVelocity; }
 	public Vector3 GetLastAngularVelocity() { return lastAngularVelocity; }
 	

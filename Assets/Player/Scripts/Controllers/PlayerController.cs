@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
 	private PlayerInput input;
 	
 	private Camera _cam;
-	[SerializeField] public Transform cam;
+	public Transform cam;
 	
 	public Transform sword;
 	[HideInInspector] public Transform swordObject;
@@ -86,10 +86,7 @@ public class PlayerController : MonoBehaviour
 			StopStab();
 
 		swordController.DoUpdate();
-		swordController.CalculateSwordMovement(block, alignStab, stab, holdStab);
-		
-		if (!stab)
-			swordController.CalculateSwordClamping();
+		swordController.CalculateMovement(block, alignStab, stab, holdStab);
 		
 		animationController.DoUpdate();
 		// swordController.UpdateRotation();

@@ -8,14 +8,14 @@ public class PlayerSwordController : MonoBehaviour
 	[SerializeField]
 	private Material cutMaterial;
 	
-	private SwordPlayerConstraint swordPlayerConstraint;
-	private SwordPhysicsController physicsController;
+	[HideInInspector] public SwordPlayerConstraint swordPlayerConstraint;
+	[HideInInspector] public SwordPhysicsController physicsController;
 	
-	private PlayerController playerController;
-	private PlayerAnimationController animationController;
-	private PlayerInputController inputController;
-	private SwordCollisionController collisionController;
-	private SwordCutterBehaviour swordCutterBehaviour;
+	[HideInInspector] public PlayerController playerController;
+	[HideInInspector] public PlayerAnimationController animationController;
+	[HideInInspector] public PlayerInputController inputController;
+	[HideInInspector] public SwordCollisionController collisionController;
+	[HideInInspector] public SwordCutterBehaviour swordCutterBehaviour;
 	
 	private Transform rollController;
 	private Rigidbody rb;
@@ -37,9 +37,8 @@ public class PlayerSwordController : MonoBehaviour
 	
 	private float inputAngleChange = 0f;
 
-	private Vector3 swingDirection;
-	public Vector3 movement;
-	public Vector3 clamping;
+	[HideInInspector] public Vector3 swingDirection;
+	[HideInInspector] public Vector3 movement;
 	
 	private Vector3 playerPosStore;
 
@@ -200,14 +199,13 @@ public class PlayerSwordController : MonoBehaviour
 		Vector3 velocityStore = rb.velocity;		
 		Vector3 playerMovement = swordPlayerConstraint.GetPlayerPositionOffset() * 1.425f / Time.fixedDeltaTime;
 
-		physicsController.MoveSword(movement, playerMovement, clamping);
+		physicsController.MoveSword(playerController, this);
 
 		UpdateRotation();
 
 		rb.angularVelocity = Vector3.zero;
 		
 		movement = Vector3.zero;
-		clamping = Vector3.zero;
 	}
 	
 	public void UpdateRotation() {
@@ -228,14 +226,14 @@ public class PlayerSwordController : MonoBehaviour
 			straightenTimer = straightenDuration;
 		
 		if (playerController.GetBlock())
-			armBendAmount = 1f; // Mathf.Min(armBendAmount + Time.deltaTime * 3.5f, 1f);
+			armBendAmount = 1f;
 		else if (playerController.GetAlignStab())
-			armBendAmount = 1f; // Mathf.Min(armBendAmount + Time.deltaTime * 3.5f, 0.6f);
+			armBendAmount = 1f;
 		else if (playerController.GetStab())
-			armBendAmount = 0f; // Mathf.Max(0f, armBendAmount - Time.deltaTime * 5f);
+			armBendAmount = 0f;
 		else
-			armBendAmount = 0f; // Mathf.Max(0f, armBendAmount - Time.deltaTime * 4f);
-
+			armBendAmount = 0f;
+/*
 		bool heldBackwardsStore = heldBackwards;
 		
 		heldBackwards = Vector3.Dot(playerController.ForeArmToSword(), Vectors.FlattenVector(playerController.GetCamera().forward)) < 0f;
@@ -247,7 +245,7 @@ public class PlayerSwordController : MonoBehaviour
 		}
 		
 		if (backwardFlip)
-			backwardFlip = MaintainGimbleLock();
+			backwardFlip = MaintainGimbleLock(); */
 
 		straightenTimer -= Time.deltaTime;
 		hitCooldownTimer -= Time.deltaTime;
@@ -273,37 +271,29 @@ public class PlayerSwordController : MonoBehaviour
 		return foreArmToSwordDir.y >= VerticalY;
 	}
 
-	public void CalculateSwordMovement(bool block, bool alignStab, bool stab, bool holdStab)
+	public void CalculateMovement(bool block, bool alignStab, bool stab, bool holdStab)
 	{
 		if (block)
-		{
 			movement = PlayerSwordMovement.BlockMovement(playerController, this, inputController);
-			return;
-		}
-		
-		if (alignStab)
-		{
+		else if (alignStab)
 			movement = PlayerSwordMovement.AlignStabMovement(playerController, this, inputController);
-			return;
-		}
-
-		if (stab || holdStab)
-		{
+		else if (stab || holdStab)
 			movement = PlayerSwordMovement.StabMovement(playerController, this, inputController);
-			return;
-		}
+		else
+			movement = PlayerSwordMovement.SwingMovement(playerController, this, inputController);
 		
-		movement = PlayerSwordMovement.SwingMovement(playerController, this, inputController);
+		if (!stab)
+			movement = ClampMovement(movement);
 	}
 	
-	public void CalculateSwordClamping() {
-		Vector3 newClamping = new Vector3();
+	public Vector3 ClampMovement(Vector3 _movement) {
+		Vector3 movementR = _movement;
 		
-		newClamping += PlayerSwordMovement.ArmClamping(playerController, this, newClamping);
-		// newClamping += PlayerSwordMovement.ForeArmClamping(playerController, this, newClamping);
-		// newClamping +=  PlayerSwordMovement.DistanceClamping(playerController, this, newClamping);
+		movementR = PlayerSwordMovement.ArmClampedMovement(playerController, this, movementR);
+		// movementR = PlayerSwordMovement.ForeArmClampedMovement(playerController, this, movementR);
+		// movementR = PlayerSwordMovement.DistanceClampedMovement(playerController, this, movementR);
 		
-		clamping = newClamping;
+		return movementR;
 	}
 
 	private Quaternion CalculateRotation()

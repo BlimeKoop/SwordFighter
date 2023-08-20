@@ -124,6 +124,10 @@ public class PlayerAnimationController : MonoBehaviour
 		
 		return ApproximateChestPosition() + camRightRotated * chestArmDistance;
 	}
+	
+	public Vector3 ArmRestPosition() {
+		return ApproximateChestPosition() + playerController.cam.right * horizontalArmDistance;
+	}
 
 	public float GetHumerusLength() { return humerusLength; }
 	public float GetForeArmLength() { return foreArmLength; }
