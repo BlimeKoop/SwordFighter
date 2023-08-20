@@ -12,9 +12,9 @@ public class PlayerController : MonoBehaviour
 	
 	[HideInInspector] public PlayerInputController inputController;
 	[HideInInspector] public PlayerAnimationController animationController;
-	private PlayerPhysicsController physicsController;
-	private PlayerCollisionController collisionController;
-    private PlayerSwordController swordController;
+	[HideInInspector] public PlayerPhysicsController physicsController;
+	[HideInInspector] public PlayerCollisionController collisionController;
+    [HideInInspector] public PlayerSwordController swordController;
 	
 	private PlayerInput input;
 	
@@ -29,8 +29,7 @@ public class PlayerController : MonoBehaviour
 
 	[HideInInspector] public Vector3 movement; 
 	
-	private bool block;
-	private bool alignStab, stab, holdStab;
+	[HideInInspector] public bool block, alignStab, stab, holdStab;
 	
 	[HideInInspector] public float stabHoldTimer;
 	[HideInInspector] public float StabHoldDuration = 0.2f;
@@ -71,7 +70,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-		movement = inputController.SwingDirection() * movementSpeed * Time.fixedDeltaTime;
+		movement = inputController.SwingDirection() * movementSpeed;
 		
 		animationController.SetFloat("Speed", physicsController.GetRigidbody().velocity.magnitude * 0.35f);
 		animationController.SetLayerWeight(1, physicsController.GetRigidbody().velocity.magnitude / movementSpeed);
@@ -151,10 +150,10 @@ public class PlayerController : MonoBehaviour
 	public float GetArmBendAngle() { return animationController.GetArmBendAngle(); }
 	
 	public bool SwordFront() {
-		return MathFunctions.FloatN1P1(Vector3.Dot(ArmToSword().normalized, transform.forward)) > 0;
+		return MathFunctions.FloatN1P1(Vector3.Dot(ArmToSword().normalized, cam.forward)) > 0;
 	}
 	public bool SwordRight() {
-		return MathFunctions.FloatN1P1(Vector3.Dot(ArmToSword().normalized, transform.right)) > 0;
+		return MathFunctions.FloatN1P1(Vector3.Dot(ArmToSword().normalized, cam.right)) > 0;
 	}
 	
 	public bool GetBlock() { return block; }

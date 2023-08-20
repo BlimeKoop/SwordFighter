@@ -21,7 +21,7 @@ public class PlayerAnimation : MonoBehaviour
 		
 		// Vector3 swingDir = playerController.inputController.SwingDirection().normalized;
 
-		Vector3 rotateFrom = armToSwordApprox;
+		Vector3 rotateFrom = armToSwordApprox.normalized;
 		Vector3 rotateTo = Vector3.Cross(Vector3.up, armToSwordApprox).normalized;
 		
 		rotateTo += (Vector3.up - rotateTo) * Mathf.Min(armToSwordApprox.normalized.y, 0f) * -.25f;

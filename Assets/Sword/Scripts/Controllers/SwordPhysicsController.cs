@@ -76,7 +76,7 @@ public class SwordPhysicsController : MonoBehaviour
 
 	public void MoveSword(PlayerController playerController, PlayerSwordController swordController)
 	{
-		Vector3 playerMovement = playerController.movement;
+		Vector3 playerMovement = playerController.physicsController.rb.velocity;
 		Vector3 swordMovement = swordController.movement;
 		
 		/*
@@ -89,7 +89,7 @@ public class SwordPhysicsController : MonoBehaviour
 		var newMovement = new Vector3();
 		
 		newMovement += swordMovement;
-		newMovement += playerMovement;
+		newMovement += playerMovement * 1.45f;
 		
 		// if (!colliding) {
 			rb.velocity = newMovement;

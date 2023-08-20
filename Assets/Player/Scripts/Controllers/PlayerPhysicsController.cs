@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class PlayerPhysicsController : MonoBehaviour
 {
-	private PlayerController playerController;
-	private PlayerInputController inputController;
-	private PlayerAnimationController animationController;
+	[HideInInspector] public PlayerController playerController;
+	[HideInInspector] public PlayerInputController inputController;
+	[HideInInspector] public PlayerAnimationController animationController;
 	
-	private Rigidbody rb;
+	[HideInInspector] public Rigidbody rb;
 	
 	private bool colliding;
 	private Collision collision;
@@ -36,13 +36,12 @@ public class PlayerPhysicsController : MonoBehaviour
 	
 	public void MoveRigidbody(Vector3 movement)
 	{
-		Vector3 interpolatedMovement = Vector3.Lerp(rb.velocity * Time.fixedDeltaTime, movement, 0.1f);
+		Vector3 interpolatedMovement = Vector3.Lerp(rb.velocity, movement, 0.1f);
 		
 		if (colliding)
 			interpolatedMovement += collision.contacts[0].normal * Mathf.Max(0f, Vector3.Dot(interpolatedMovement, -collision.contacts[0].normal));
 		
-		Vector3 newPosition = rb.position + interpolatedMovement;
-		newPosition.y = rb.position.y;
+		Vector3 newPosition = rb.position + Vector3.Scale(interpolatedMovement, new Vector3(1.0f, 0.0f, 1.0f)) * Time.fixedDeltaTime;
 		
 		rb.MovePosition(newPosition);	
 	}

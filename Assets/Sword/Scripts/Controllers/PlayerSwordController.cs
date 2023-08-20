@@ -51,7 +51,6 @@ public class PlayerSwordController : MonoBehaviour
 	
 	private ArmIKHelperController ikHelperController;
 	
-	private bool backwardFlip;
 	private bool heldBackwards;
 	
 	public void Initialize(
@@ -233,42 +232,9 @@ public class PlayerSwordController : MonoBehaviour
 			armBendAmount = 0f;
 		else
 			armBendAmount = 0f;
-/*
-		bool heldBackwardsStore = heldBackwards;
-		
-		heldBackwards = Vector3.Dot(playerController.ForeArmToSword(), Vectors.FlattenVector(playerController.GetCamera().forward)) < 0f;
-
-		if (heldBackwards != heldBackwardsStore && playerController.ForeArmToSword().normalized.y > 0.7f)
-		{
-			backwardFlip = !backwardFlip;
-			// Debug.Log("backwardFlip toggled");
-		}
-		
-		if (backwardFlip)
-			backwardFlip = MaintainGimbleLock(); */
 
 		straightenTimer -= Time.deltaTime;
 		hitCooldownTimer -= Time.deltaTime;
-	}
-	
-	private bool MaintainGimbleLock()
-	{
-		Vector3 foreArmToSword = playerController.ForeArmToSword();
-		
-		if (foreArmToSword.normalized.y < -0.6f)
-			return false;
-		
-		if (!heldBackwards && (inputAngleChange > 45f || inputController.GetSwingInput().magnitude < 0.01f))
-			return false;
-
-		return true;
-	}
-
-	public bool SwordHeldVertically()
-	{
-		Vector3 foreArmToSwordDir = playerController.ForeArmToSword().normalized;
-		
-		return foreArmToSwordDir.y >= VerticalY;
 	}
 
 	public void CalculateMovement(bool block, bool alignStab, bool stab, bool holdStab)
@@ -291,7 +257,7 @@ public class PlayerSwordController : MonoBehaviour
 		
 		movementR = PlayerSwordMovement.ArmClampedMovement(playerController, this, movementR);
 		// movementR = PlayerSwordMovement.ForeArmClampedMovement(playerController, this, movementR);
-		// movementR = PlayerSwordMovement.DistanceClampedMovement(playerController, this, movementR);
+		movementR = PlayerSwordMovement.DistanceClampedMovement(playerController, this, movementR);
 		
 		return movementR;
 	}
@@ -452,8 +418,6 @@ public class PlayerSwordController : MonoBehaviour
 	
 	public float GetGrabPointRatio() { return grabPointRatio; }
 	public float GetArmBendAmount() { return armBendAmount; }
-	
-	public bool GetGimbleLock() { return backwardFlip; }
 	
 	public SwordPhysicsController GetPhysicsController() { return physicsController; }
 	public Rigidbody GetRigidbody() { return physicsController.GetRigidbody(); }
