@@ -188,8 +188,8 @@ namespace DynamicMeshCutter
 
             if (target.CreateRigidbody[bt])
             {
-                var rb = parent.gameObject.AddComponent<Rigidbody>();
-                rb.interpolation = RigidbodyInterpolation.Interpolate;
+                var rigidbody = parent.gameObject.AddComponent<Rigidbody>();
+                rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 				
 				var targetRB = target.GetComponentInParent<Rigidbody>();
 				
@@ -203,10 +203,10 @@ namespace DynamicMeshCutter
 					var size = mesh.bounds.size;
 					float density = (targetSize.x * targetSize.y * targetSize.z) / targetRB.mass;
 					
-					rb.mass = Mathf.Max(0.1f, (size.x * size.y * size.z) / density);
+					rigidbody.mass = Mathf.Max(0.1f, (size.x * size.y * size.z) / density);
 				}
 		
-                // rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+                // rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
             }
             if (target.CreateMeshCollider[bt])
             {
@@ -386,11 +386,11 @@ namespace DynamicMeshCutter
                     continue;
                 if (parts[j].Joint.connectedBody == null)
                 {
-                    var rb = parts[j].GetComponentInParentIgnoreSelf<Rigidbody>();
+                    var rigidbody = parts[j].GetComponentInParentIgnoreSelf<Rigidbody>();
 
-                    if (rb != null)
+                    if (rigidbody != null)
                     {
-                        parts[j].Joint.connectedBody = rb;
+                        parts[j].Joint.connectedBody = rigidbody;
                     }
                     else
                     {
@@ -529,10 +529,10 @@ namespace DynamicMeshCutter
                 Vector3 translation = sign * plane.WorldNormal.normalized * separation;
 				Vector3 positionStore = createdObject.transform.position;
 				
-				Rigidbody rb = createdObject.GetComponent<Rigidbody>();
+				Rigidbody rigidbody = createdObject.GetComponent<Rigidbody>();
 				
-				if (rb != null)
-					rb.position = positionStore + translation;
+				if (rigidbody != null)
+					rigidbody.position = positionStore + translation;
 
 				createdObject.transform.position = positionStore + translation;
             }

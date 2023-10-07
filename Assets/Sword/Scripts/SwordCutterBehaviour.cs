@@ -6,21 +6,16 @@ namespace DynamicMeshCutter
 {
 	public class SwordCutterBehaviour : CutterBehaviour
 	{
-		public void Cut(GameObject obj, GameObject swordObj, Vector3 swordVelocity)
+		public void CutObject(GameObject obj, GameObject swordObj, Vector3 swordVelocity)
 		{
 			// Debug.Log("In Cut(), obj = " + obj);			
 		
 			if (obj.GetComponent<Renderer>() == null && obj.transform.childCount > 0)
-				Cut(obj.transform.GetChild(0).gameObject, swordObj, swordVelocity);
+				CutObject(obj.transform.GetChild(0).gameObject, swordObj, swordVelocity);
 		
 			if (obj.GetComponent<Renderer>() == null)
 				return;
 			
-			Vector3 rendBoundsSize = obj.GetComponent<Renderer>().bounds.size;
-
-			if (rendBoundsSize.x + rendBoundsSize.y + rendBoundsSize.z > 16f)
-				return;
-		
 			MeshTarget meshTarget = InitializeMeshTarget(obj);
 
 			Vector3 cutPlane = Vector3.Cross(swordVelocity, swordObj.transform.forward).normalized;
@@ -33,7 +28,7 @@ namespace DynamicMeshCutter
 			MeshTarget meshTargetR = obj.AddComponent<MeshTarget>();
 			
 			meshTargetR.GameobjectRoot = obj;
-			meshTargetR.SeparateMeshes = true;
+			meshTargetR.SeparateMeshes = false;
 			
 			return meshTargetR;
 		}

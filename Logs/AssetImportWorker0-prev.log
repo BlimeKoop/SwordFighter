@@ -1,0 +1,766 @@
+Using pre-set license
+Built from '2021.3/staging' branch; Version is '2021.3.19f1 (c9714fde33b6) revision 13201743'; Using compiler version '192829333'; Build Type 'Release'
+OS: 'Windows 10  (10.0.19045) 64bit Professional' Language: 'en' Physical Memory: 32472 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1, IsPro: 1
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\2021.3.19f1\Editor\Unity.exe
+-adb2
+-batchMode
+-noUpm
+-name
+AssetImportWorker0
+-projectPath
+C:/Users/Ben/Projects/Repositories/SwordGame
+-logFile
+Logs/AssetImportWorker0.log
+-srvPort
+49322
+Successfully changed project path to: C:/Users/Ben/Projects/Repositories/SwordGame
+C:/Users/Ben/Projects/Repositories/SwordGame
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gfx=262144"
+Player connection [29664] Host "[IP] 192.168.56.1 [Port] 0 [Flags] 2 [Guid] 1340831021 [EditorId] 1340831021 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-H6HINOU) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" joined multi-casting on [225.0.0.222:54997]...
+
+Player connection [29664] Host "[IP] 192.168.56.1 [Port] 0 [Flags] 2 [Guid] 1340831021 [EditorId] 1340831021 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-H6HINOU) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" joined alternative multi-casting on [225.0.0.222:34997]...
+
+Refreshing native plugins compatible for Editor in 97.95 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 2021.3.19f1 (c9714fde33b6)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/2021.3.19f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/Users/Ben/Projects/Repositories/SwordGame/Assets
+GfxDevice: creating device client; threaded=0; jobified=0
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 3050 Ti Laptop GPU (ID=0x25a0)
+    Vendor:   NVIDIA
+    VRAM:     3976 MB
+    Driver:   31.0.15.2849
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/2021.3.19f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/2021.3.19f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/2021.3.19f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56928
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/2021.3.19f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
+Register platform support module: C:/Program Files/Unity/Hub/Editor/2021.3.19f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.007639 seconds.
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 98.04 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.682 seconds
+Domain Reload Profiling:
+	ReloadAssembly (683ms)
+		BeginReloadAssembly (75ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (0ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (0ms)
+		EndReloadAssembly (492ms)
+			LoadAssemblies (74ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (105ms)
+			ReleaseScriptCaches (0ms)
+			RebuildScriptCaches (28ms)
+			SetupLoadedEditorAssemblies (305ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (10ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (98ms)
+				BeforeProcessingInitializeOnLoad (1ms)
+				ProcessInitializeOnLoadAttributes (149ms)
+				ProcessInitializeOnLoadMethodAttributes (47ms)
+				AfterProcessingInitializeOnLoad (0ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (0ms)
+Platform modules already initialized, skipping
+Registering precompiled user dll's ...
+Registered in 0.006618 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image C:\Users\Ben\Projects\Repositories\SwordGame\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
+Symbol file LoadedFromMemory doesn't match image C:\Users\Ben\Projects\Repositories\SwordGame\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 104.77 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.447 seconds
+Domain Reload Profiling:
+	ReloadAssembly (1447ms)
+		BeginReloadAssembly (120ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (6ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (19ms)
+		EndReloadAssembly (1198ms)
+			LoadAssemblies (96ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (324ms)
+			ReleaseScriptCaches (1ms)
+			RebuildScriptCaches (67ms)
+			SetupLoadedEditorAssemblies (657ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (7ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (105ms)
+				BeforeProcessingInitializeOnLoad (122ms)
+				ProcessInitializeOnLoadAttributes (349ms)
+				ProcessInitializeOnLoadMethodAttributes (67ms)
+				AfterProcessingInitializeOnLoad (8ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (6ms)
+Platform modules already initialized, skipping
+========================================================================
+Worker process is ready to serve import requests
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.04 seconds
+Refreshing native plugins compatible for Editor in 0.61 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 5109 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 35 unused Assets / (343.5 KB). Loaded Objects now: 5563.
+Memory consumption went from 186.8 MB to 186.5 MB.
+Total: 3.504700 ms (FindLiveObjects: 0.350800 ms CreateObjectMapping: 0.173100 ms MarkObjects: 2.881000 ms  DeleteObjects: 0.098900 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Import Request.
+  Time since last request: 313153.136863 seconds.
+  path: Assets/Player/very_human.fbx
+  artifactKey: Guid(38e3008ac1ab80945978e86ba8c14903) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/very_human.fbx using Guid(38e3008ac1ab80945978e86ba8c14903) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9301a0b3265ab25b49695f1ec7aa1513') in 0.205871 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 25.520364 seconds.
+  path: Assets/Player/very_human.fbx
+  artifactKey: Guid(38e3008ac1ab80945978e86ba8c14903) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/very_human.fbx using Guid(38e3008ac1ab80945978e86ba8c14903) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7aa5bd9a8a6ae2fed39f03ef519c453f') in 0.032327 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 25.163357 seconds.
+  path: Assets/Player/very_human.fbx
+  artifactKey: Guid(38e3008ac1ab80945978e86ba8c14903) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/very_human.fbx using Guid(38e3008ac1ab80945978e86ba8c14903) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2dd92cc5bc0b03848ce215ec944a4d9c') in 0.034166 seconds 
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.006735 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image C:\Users\Ben\Projects\Repositories\SwordGame\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
+Symbol file LoadedFromMemory doesn't match image C:\Users\Ben\Projects\Repositories\SwordGame\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 1.06 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Error saving file Library/StateCache/LayerSettings/9e/9ecc5c3c162a7aba29bafa64c8b94b7c.json. Error: System.IO.IOException: Sharing violation on path C:\Users\Ben\Projects\Repositories\SwordGame\Library\StateCache\LayerSettings\9e\9ecc5c3c162a7aba29bafa64c8b94b7c.json
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean anonymous, System.IO.FileOptions options) [0x0019e] in <03bd9b261dff4c2b8b568aca27f561b2>:0 
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.IO.FileOptions options) [0x00000] in <03bd9b261dff4c2b8b568aca27f561b2>:0 
+  at (wrapper remoting-invoke-with-check) System.IO.FileStream..ctor(string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,System.IO.FileOptions)
+  at System.IO.StreamWriter..ctor (System.String path, System.Boolean append, System.Text.Encoding encoding, System.Int32 bufferSize) [0x00055] in <03bd9b261dff4c2b8b568aca27f561b2>:0 
+  at System.IO.StreamWriter..ctor (System.String path, System.Boolean append, System.Text.Encoding encoding) [0x00000] in <03bd9b261dff4c2b8b568aca27f561b2>:0 
+  at (wrapper remoting-invoke-with-check) System.IO.StreamWriter..ctor(string,bool,System.Text.Encoding)
+  at System.IO.File.WriteAllText (System.String path, System.String contents, System.Text.Encoding encoding) [0x00034] in <03bd9b261dff4c2b8b568aca27f561b2>:0 
+  at UnityEditor.StateCache`1[T].SetState (UnityEngine.Hash128 key, T obj) [0x0004b] in <7fef092428a04dc89d2aa6ad3ce5d856>:0 
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogError (object)
+UnityEditor.StateCache`1<UnityEditor.Tools/LayerSettings>:SetState (UnityEngine.Hash128,UnityEditor.Tools/LayerSettings)
+UnityEditor.Tools:set_lockedLayers (int)
+UnityEditor.Tools:OnEnable ()
+UnityEngine.ScriptableObject:CreateInstance (System.Type)
+UnityEngine.ScriptableObject:CreateInstance<UnityEditor.Tools> ()
+UnityEditor.Tools:get_get ()
+UnityEditor.Tools:get_visibleLayers ()
+UnityEditor.Animations.Rigging.BoneRendererUtils:.cctor () (at Library/PackageCache/com.unity.animation.rigging@1.1.1/Editor/Utils/BoneRendererUtils.cs:121)
+System.Runtime.CompilerServices.RuntimeHelpers:RunClassConstructor (System.RuntimeTypeHandle)
+UnityEditor.EditorAssemblies:ProcessInitializeOnLoadAttributes (System.Type[])
+
+(Filename: Library/PackageCache/com.unity.animation.rigging@1.1.1/Editor/Utils/BoneRendererUtils.cs Line: 121)
+
+Mono: successfully reloaded assembly
+- Completed reload, in  1.343 seconds
+Domain Reload Profiling:
+	ReloadAssembly (1344ms)
+		BeginReloadAssembly (155ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (5ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (43ms)
+		EndReloadAssembly (1074ms)
+			LoadAssemblies (101ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (332ms)
+			ReleaseScriptCaches (2ms)
+			RebuildScriptCaches (53ms)
+			SetupLoadedEditorAssemblies (531ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (18ms)
+				SetLoadedEditorAssemblies (1ms)
+				RefreshPlugins (1ms)
+				BeforeProcessingInitializeOnLoad (96ms)
+				ProcessInitializeOnLoadAttributes (332ms)
+				ProcessInitializeOnLoadMethodAttributes (73ms)
+				AfterProcessingInitializeOnLoad (9ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (10ms)
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 3.05 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 5090 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 26 unused Assets / (309.9 KB). Loaded Objects now: 5612.
+Memory consumption went from 204.9 MB to 204.6 MB.
+Total: 3.531600 ms (FindLiveObjects: 0.393400 ms CreateObjectMapping: 0.157100 ms MarkObjects: 2.898000 ms  DeleteObjects: 0.082100 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.007762 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image C:\Users\Ben\Projects\Repositories\SwordGame\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
+Symbol file LoadedFromMemory doesn't match image C:\Users\Ben\Projects\Repositories\SwordGame\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 1.17 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Error saving file Library/StateCache/LayerSettings/9e/9ecc5c3c162a7aba29bafa64c8b94b7c.json. Error: System.IO.IOException: Sharing violation on path C:\Users\Ben\Projects\Repositories\SwordGame\Library\StateCache\LayerSettings\9e\9ecc5c3c162a7aba29bafa64c8b94b7c.json
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean anonymous, System.IO.FileOptions options) [0x0019e] in <03bd9b261dff4c2b8b568aca27f561b2>:0 
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.IO.FileOptions options) [0x00000] in <03bd9b261dff4c2b8b568aca27f561b2>:0 
+  at (wrapper remoting-invoke-with-check) System.IO.FileStream..ctor(string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,System.IO.FileOptions)
+  at System.IO.StreamWriter..ctor (System.String path, System.Boolean append, System.Text.Encoding encoding, System.Int32 bufferSize) [0x00055] in <03bd9b261dff4c2b8b568aca27f561b2>:0 
+  at System.IO.StreamWriter..ctor (System.String path, System.Boolean append, System.Text.Encoding encoding) [0x00000] in <03bd9b261dff4c2b8b568aca27f561b2>:0 
+  at (wrapper remoting-invoke-with-check) System.IO.StreamWriter..ctor(string,bool,System.Text.Encoding)
+  at System.IO.File.WriteAllText (System.String path, System.String contents, System.Text.Encoding encoding) [0x00034] in <03bd9b261dff4c2b8b568aca27f561b2>:0 
+  at UnityEditor.StateCache`1[T].SetState (UnityEngine.Hash128 key, T obj) [0x0004b] in <7fef092428a04dc89d2aa6ad3ce5d856>:0 
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogError (object)
+UnityEditor.StateCache`1<UnityEditor.Tools/LayerSettings>:SetState (UnityEngine.Hash128,UnityEditor.Tools/LayerSettings)
+UnityEditor.Tools:set_lockedLayers (int)
+UnityEditor.Tools:OnEnable ()
+
+Mono: successfully reloaded assembly
+- Completed reload, in  2.027 seconds
+Domain Reload Profiling:
+	ReloadAssembly (2028ms)
+		BeginReloadAssembly (201ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (9ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (53ms)
+		EndReloadAssembly (1658ms)
+			LoadAssemblies (143ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (520ms)
+			ReleaseScriptCaches (2ms)
+			RebuildScriptCaches (79ms)
+			SetupLoadedEditorAssemblies (808ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (27ms)
+				SetLoadedEditorAssemblies (1ms)
+				RefreshPlugins (1ms)
+				BeforeProcessingInitializeOnLoad (148ms)
+				ProcessInitializeOnLoadAttributes (506ms)
+				ProcessInitializeOnLoadMethodAttributes (112ms)
+				AfterProcessingInitializeOnLoad (14ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (23ms)
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 4.03 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 5090 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 26 unused Assets / (309.9 KB). Loaded Objects now: 5616.
+Memory consumption went from 204.9 MB to 204.6 MB.
+Total: 5.179500 ms (FindLiveObjects: 0.488000 ms CreateObjectMapping: 0.262100 ms MarkObjects: 4.333800 ms  DeleteObjects: 0.094200 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Import Request.
+  Time since last request: 213.334835 seconds.
+  path: Assets/DynamicMeshCutter/Content/Animations/DMC_IdleAnimation.fbx
+  artifactKey: Guid(31ff6245fb8009841af6f00ec0bff32a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/DynamicMeshCutter/Content/Animations/DMC_IdleAnimation.fbx using Guid(31ff6245fb8009841af6f00ec0bff32a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'bfd09943b3f6a219e897dafebc3ff885') in 0.049022 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 2.761499 seconds.
+  path: Assets/Player/very_human.fbx
+  artifactKey: Guid(38e3008ac1ab80945978e86ba8c14903) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/very_human.fbx using Guid(38e3008ac1ab80945978e86ba8c14903) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1626aa0ed3c629c28cf3ac9c5b43350d') in 0.081926 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 25.191751 seconds.
+  path: Assets/Player/very_human.fbx
+  artifactKey: Guid(38e3008ac1ab80945978e86ba8c14903) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/very_human.fbx using Guid(38e3008ac1ab80945978e86ba8c14903) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6fc8e28e67dc1bad94318f8d05aa4774') in 0.035227 seconds 
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.008868 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image C:\Users\Ben\Projects\Repositories\SwordGame\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
+Symbol file LoadedFromMemory doesn't match image C:\Users\Ben\Projects\Repositories\SwordGame\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 0.87 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Error saving file Library/StateCache/LayerSettings/9e/9ecc5c3c162a7aba29bafa64c8b94b7c.json. Error: System.IO.IOException: Sharing violation on path C:\Users\Ben\Projects\Repositories\SwordGame\Library\StateCache\LayerSettings\9e\9ecc5c3c162a7aba29bafa64c8b94b7c.json
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean anonymous, System.IO.FileOptions options) [0x0019e] in <03bd9b261dff4c2b8b568aca27f561b2>:0 
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.IO.FileOptions options) [0x00000] in <03bd9b261dff4c2b8b568aca27f561b2>:0 
+  at (wrapper remoting-invoke-with-check) System.IO.FileStream..ctor(string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,System.IO.FileOptions)
+  at System.IO.StreamWriter..ctor (System.String path, System.Boolean append, System.Text.Encoding encoding, System.Int32 bufferSize) [0x00055] in <03bd9b261dff4c2b8b568aca27f561b2>:0 
+  at System.IO.StreamWriter..ctor (System.String path, System.Boolean append, System.Text.Encoding encoding) [0x00000] in <03bd9b261dff4c2b8b568aca27f561b2>:0 
+  at (wrapper remoting-invoke-with-check) System.IO.StreamWriter..ctor(string,bool,System.Text.Encoding)
+  at System.IO.File.WriteAllText (System.String path, System.String contents, System.Text.Encoding encoding) [0x00034] in <03bd9b261dff4c2b8b568aca27f561b2>:0 
+  at UnityEditor.StateCache`1[T].SetState (UnityEngine.Hash128 key, T obj) [0x0004b] in <7fef092428a04dc89d2aa6ad3ce5d856>:0 
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogError (object)
+UnityEditor.StateCache`1<UnityEditor.Tools/LayerSettings>:SetState (UnityEngine.Hash128,UnityEditor.Tools/LayerSettings)
+UnityEditor.Tools:set_lockedLayers (int)
+UnityEditor.Tools:OnEnable ()
+UnityEngine.ScriptableObject:CreateInstance (System.Type)
+UnityEngine.ScriptableObject:CreateInstance<UnityEditor.Tools> ()
+UnityEditor.Tools:get_get ()
+UnityEditor.Tools:get_visibleLayers ()
+UnityEditor.Animations.Rigging.BoneRendererUtils:.cctor () (at Library/PackageCache/com.unity.animation.rigging@1.1.1/Editor/Utils/BoneRendererUtils.cs:121)
+System.Runtime.CompilerServices.RuntimeHelpers:RunClassConstructor (System.RuntimeTypeHandle)
+UnityEditor.EditorAssemblies:ProcessInitializeOnLoadAttributes (System.Type[])
+
+(Filename: Library/PackageCache/com.unity.animation.rigging@1.1.1/Editor/Utils/BoneRendererUtils.cs Line: 121)
+
+Error saving file Library/StateCache/LayerSettings/9e/9ecc5c3c162a7aba29bafa64c8b94b7c.json. Error: System.IO.IOException: Sharing violation on path C:\Users\Ben\Projects\Repositories\SwordGame\Library\StateCache\LayerSettings\9e\9ecc5c3c162a7aba29bafa64c8b94b7c.json
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean anonymous, System.IO.FileOptions options) [0x0019e] in <03bd9b261dff4c2b8b568aca27f561b2>:0 
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.IO.FileOptions options) [0x00000] in <03bd9b261dff4c2b8b568aca27f561b2>:0 
+  at (wrapper remoting-invoke-with-check) System.IO.FileStream..ctor(string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,System.IO.FileOptions)
+  at System.IO.StreamWriter..ctor (System.String path, System.Boolean append, System.Text.Encoding encoding, System.Int32 bufferSize) [0x00055] in <03bd9b261dff4c2b8b568aca27f561b2>:0 
+  at System.IO.StreamWriter..ctor (System.String path, System.Boolean append, System.Text.Encoding encoding) [0x00000] in <03bd9b261dff4c2b8b568aca27f561b2>:0 
+  at (wrapper remoting-invoke-with-check) System.IO.StreamWriter..ctor(string,bool,System.Text.Encoding)
+  at System.IO.File.WriteAllText (System.String path, System.String contents, System.Text.Encoding encoding) [0x00034] in <03bd9b261dff4c2b8b568aca27f561b2>:0 
+  at UnityEditor.StateCache`1[T].SetState (UnityEngine.Hash128 key, T obj) [0x0004b] in <7fef092428a04dc89d2aa6ad3ce5d856>:0 
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogError (object)
+UnityEditor.StateCache`1<UnityEditor.Tools/LayerSettings>:SetState (UnityEngine.Hash128,UnityEditor.Tools/LayerSettings)
+UnityEditor.Tools:set_lockedLayers (int)
+UnityEditor.Tools:OnEnable ()
+
+Mono: successfully reloaded assembly
+- Completed reload, in  1.420 seconds
+Domain Reload Profiling:
+	ReloadAssembly (1420ms)
+		BeginReloadAssembly (163ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (6ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (44ms)
+		EndReloadAssembly (1133ms)
+			LoadAssemblies (112ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (345ms)
+			ReleaseScriptCaches (2ms)
+			RebuildScriptCaches (55ms)
+			SetupLoadedEditorAssemblies (556ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (18ms)
+				SetLoadedEditorAssemblies (1ms)
+				RefreshPlugins (1ms)
+				BeforeProcessingInitializeOnLoad (100ms)
+				ProcessInitializeOnLoadAttributes (352ms)
+				ProcessInitializeOnLoadMethodAttributes (73ms)
+				AfterProcessingInitializeOnLoad (11ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (13ms)
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 2.86 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 5090 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 26 unused Assets / (310.0 KB). Loaded Objects now: 5620.
+Memory consumption went from 205.0 MB to 204.7 MB.
+Total: 3.358900 ms (FindLiveObjects: 0.375000 ms CreateObjectMapping: 0.152600 ms MarkObjects: 2.759200 ms  DeleteObjects: 0.070500 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Import Request.
+  Time since last request: 37.031787 seconds.
+  path: Assets/Player/very_human.fbx
+  artifactKey: Guid(38e3008ac1ab80945978e86ba8c14903) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/very_human.fbx using Guid(38e3008ac1ab80945978e86ba8c14903) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f6dada285d1e6508da81b70f081b11f7') in 0.113208 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 43.497095 seconds.
+  path: Assets/OpenFracture-main
+  artifactKey: Guid(6348e85982349d049b1f567ec788bf1b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/OpenFracture-main using Guid(6348e85982349d049b1f567ec788bf1b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4d0d8b84331a778f634f2b7e67a9c46f') in 0.010024 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 9.060828 seconds.
+  path: Assets/OpenFracture-main/Runtime/Prefabs/Cylinder.prefab
+  artifactKey: Guid(eba92d9629e47984b98f3cf40d678a0e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/OpenFracture-main/Runtime/Prefabs/Cylinder.prefab using Guid(eba92d9629e47984b98f3cf40d678a0e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'bb3147587fd96291a661ecdf926111e3') in 0.028967 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000022 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield 180 turn (2).fbx
+  artifactKey: Guid(0dc7945883507a6448c842cd8c30d19b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield 180 turn (2).fbx using Guid(0dc7945883507a6448c842cd8c30d19b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '51a2b1ee6c10128f296b2a199e294076') in 0.013939 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000024 seconds.
+  path: Assets/OpenFracture-main/Runtime/Prefabs/OpenFractureText.prefab
+  artifactKey: Guid(d5e6eb02a8e13fc488b7cd35ce55fa5e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/OpenFracture-main/Runtime/Prefabs/OpenFractureText.prefab using Guid(d5e6eb02a8e13fc488b7cd35ce55fa5e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '06d8640ad72d227828ebd8eb3c4ff401') in 0.011915 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000023 seconds.
+  path: Assets/OpenFracture-main/Runtime/Meshes/LetterU.obj
+  artifactKey: Guid(bb8dd3c986efdcf428ccb6e9f5641adf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/OpenFracture-main/Runtime/Meshes/LetterU.obj using Guid(bb8dd3c986efdcf428ccb6e9f5641adf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6007830120c0c1c282579d09036ec1de') in 0.036692 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000026 seconds.
+  path: Assets/OpenFracture-main/Runtime/Meshes/LetterT.obj
+  artifactKey: Guid(2ff15ee81a7bc4149a2659ef0877fe7d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/OpenFracture-main/Runtime/Meshes/LetterT.obj using Guid(2ff15ee81a7bc4149a2659ef0877fe7d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'cec4930379c87b412d2870ceec16661d') in 0.035888 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000034 seconds.
+  path: Assets/OpenFracture-main/Runtime/Prefabs/Projectile.prefab
+  artifactKey: Guid(d2432cab66da1d843929aa83abf68288) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/OpenFracture-main/Runtime/Prefabs/Projectile.prefab using Guid(d2432cab66da1d843929aa83abf68288) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '40fd81c2f59d1022e0ed1c6af129a87c') in 0.014240 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000028 seconds.
+  path: Assets/OpenFracture-main/Runtime/Meshes/LetterA.obj
+  artifactKey: Guid(d5d5b157ce3ab3d48b8b8a5a75bdac15) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/OpenFracture-main/Runtime/Meshes/LetterA.obj using Guid(d5d5b157ce3ab3d48b8b8a5a75bdac15) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b49d7aee86be6cf5364fb65d97a3a552') in 0.031771 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000029 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield casting.fbx
+  artifactKey: Guid(1e5b49b16e9941f42af8e555bce24968) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield casting.fbx using Guid(1e5b49b16e9941f42af8e555bce24968) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '652e3580ffe86fea9f7ef6bd26df52f0') in 0.011468 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000034 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield crouch idle.fbx
+  artifactKey: Guid(dc298ddb30ed35443a9d7648e80f23a0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield crouch idle.fbx using Guid(dc298ddb30ed35443a9d7648e80f23a0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'eb92bf2655746f11fa9a48a35a5ae848') in 0.013263 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000023 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sheath sword 1.fbx
+  artifactKey: Guid(ea02496d9da63ae4ea9a56de4d60d6b2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sheath sword 1.fbx using Guid(ea02496d9da63ae4ea9a56de4d60d6b2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2ad2cec35ae5eb8b90c110a9a47a0965') in 0.013161 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000023 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield crouch block idle.fbx
+  artifactKey: Guid(d269ceebbfd47054c9f02a33f0625107) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield crouch block idle.fbx using Guid(d269ceebbfd47054c9f02a33f0625107) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c3ccc69e1d39b0b884c25a20c3d97470') in 0.014748 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000024 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield attack.fbx
+  artifactKey: Guid(fecad56ca7ae8254881dc487f2b23aaf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield attack.fbx using Guid(fecad56ca7ae8254881dc487f2b23aaf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '05ac52f40e5da4c363864f2335321b00') in 0.015142 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000022 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield attack (2).fbx
+  artifactKey: Guid(ff2255c142510284ba54d5a44412a219) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield attack (2).fbx using Guid(ff2255c142510284ba54d5a44412a219) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '60d21b4dd7d743ad35092e17a1f2f68f') in 0.013657 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000023 seconds.
+  path: Assets/Placeholders/katana/katana.fbx
+  artifactKey: Guid(9541578108df780499c683a41a622537) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Placeholders/katana/katana.fbx using Guid(9541578108df780499c683a41a622537) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c801b0b74f7984329ec8ac2aaac0df70') in 0.033165 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000028 seconds.
+  path: Assets/OpenFracture-main/Runtime/Meshes/LetterO.obj
+  artifactKey: Guid(5a3c7b697643a2c49b075221144c1bef) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/OpenFracture-main/Runtime/Meshes/LetterO.obj using Guid(5a3c7b697643a2c49b075221144c1bef) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd59451b284851eac803d8958ff4591d6') in 0.032688 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000036 seconds.
+  path: Assets/Placeholders/katana/katana no case.fbx
+  artifactKey: Guid(647ff186d5dfec84999871e58fde866a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Placeholders/katana/katana no case.fbx using Guid(647ff186d5dfec84999871e58fde866a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '618ed2495a34cd3819c9b774b745d0f2') in 0.031274 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000029 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield block idle.fbx
+  artifactKey: Guid(4103f6c44e9f82c45a6dd0b2a777dbc6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield block idle.fbx using Guid(4103f6c44e9f82c45a6dd0b2a777dbc6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8cd58a085ecc46a86028ba73c51418c1') in 0.013910 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000027 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield crouch.fbx
+  artifactKey: Guid(71cd7efcf8c24f64aba64efb9d8cd061) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield crouch.fbx using Guid(71cd7efcf8c24f64aba64efb9d8cd061) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4962526ae2dd710bcf04bda17d7ce197') in 0.012708 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000031 seconds.
+  path: Assets/OpenFracture-main/Runtime/Meshes/LionStatue.obj
+  artifactKey: Guid(3af81d2753888224b8f27605205b0eb3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/OpenFracture-main/Runtime/Meshes/LionStatue.obj using Guid(3af81d2753888224b8f27605205b0eb3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6ff4b8c31622a720a36376073eb164b7') in 0.031506 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000024 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield attack (3).fbx
+  artifactKey: Guid(e6df3f64a60d1634997d257a3187dcfb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield attack (3).fbx using Guid(e6df3f64a60d1634997d257a3187dcfb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a75113d4d0e63e00e9018cc3cb92e6d7') in 0.013565 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000026 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield block.fbx
+  artifactKey: Guid(815c605dda32f5c439fc12a1efc194fb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield block.fbx using Guid(815c605dda32f5c439fc12a1efc194fb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '67dba237d8a9fa0494f2b122f2258fe9') in 0.015772 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000023 seconds.
+  path: Assets/OpenFracture-main/Runtime/Meshes/LetterP.obj
+  artifactKey: Guid(39df63a223bcdd348b128fdcd574aef5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/OpenFracture-main/Runtime/Meshes/LetterP.obj using Guid(39df63a223bcdd348b128fdcd574aef5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f93a29c45ff32b4cef9632150b7a0953') in 0.062125 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000029 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sheath sword 2.fbx
+  artifactKey: Guid(8e5f73ca0be9c584f918b0f3ba6796a4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sheath sword 2.fbx using Guid(8e5f73ca0be9c584f918b0f3ba6796a4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2092232d208c65c39323f66c79501aa4') in 0.013531 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000040 seconds.
+  path: Assets/OpenFracture-main/Runtime/Meshes/LetterE.obj
+  artifactKey: Guid(c11442b34c10f7d48bcce4ac94efcdbf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/OpenFracture-main/Runtime/Meshes/LetterE.obj using Guid(c11442b34c10f7d48bcce4ac94efcdbf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e79dce32065b2f3c6ed2ac26e3b91048') in 0.031708 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.682063 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield crouching.fbx
+  artifactKey: Guid(c61078e50588efc4980c6d46fcb85c9e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield crouching.fbx using Guid(c61078e50588efc4980c6d46fcb85c9e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'eedbc3dea2ec956d009eba774ad0e315') in 0.013725 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000021 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield idle (2).fbx
+  artifactKey: Guid(76931d1c5d6c73a46bc083565f978ba8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield idle (2).fbx using Guid(76931d1c5d6c73a46bc083565f978ba8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ba83392ebf3562cb1e96cb07edeab567') in 0.012686 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000021 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield idle.fbx
+  artifactKey: Guid(c96d77d41d82f7646841d043cb458f13) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield idle.fbx using Guid(c96d77d41d82f7646841d043cb458f13) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '07cee515534e45890f76e01253b1563b') in 0.013294 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000025 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield impact (3).fbx
+  artifactKey: Guid(92aee286d12049844bdea060745c32c1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield impact (3).fbx using Guid(92aee286d12049844bdea060745c32c1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a9d490a0ce93d2ea7e3a8a94dc3e3987') in 0.013659 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000023 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield crouching (3).fbx
+  artifactKey: Guid(5f8ecc1c51fe71e4aa07e0f723f4e2bc) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield crouching (3).fbx using Guid(5f8ecc1c51fe71e4aa07e0f723f4e2bc) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6ae863d6a0c874b3fe59ef294d536482') in 0.013501 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000022 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield run (2).fbx
+  artifactKey: Guid(760a8d10bcb34f147871f29314b66f91) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield run (2).fbx using Guid(760a8d10bcb34f147871f29314b66f91) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '078e8d1c2351567dd2b1892e241f6d5e') in 0.013601 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000029 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield slash (3).fbx
+  artifactKey: Guid(b72235ac319e97443be03ef3c8bc712b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield slash (3).fbx using Guid(b72235ac319e97443be03ef3c8bc712b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '44f1611a46bbbe83cb4c3a7f0183cf83') in 0.013068 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000041 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield run.fbx
+  artifactKey: Guid(ba5de6681e8c819418198a8e6fc1ff07) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield run.fbx using Guid(ba5de6681e8c819418198a8e6fc1ff07) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'dd2d20c66ef1e582c86d2c41d9857080') in 0.013024 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000023 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield power up.fbx
+  artifactKey: Guid(15da3b0920d78bc44a84e2a688bbef19) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield power up.fbx using Guid(15da3b0920d78bc44a84e2a688bbef19) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'fa4cf701ff2bad8ee79408c0817c8808') in 0.013780 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000025 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield walk (2).fbx
+  artifactKey: Guid(123724412f754d247944b46563324ac7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield walk (2).fbx using Guid(123724412f754d247944b46563324ac7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '909ccce6fba3f8544d786abb5fb50a0c') in 0.013431 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000025 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield kick.fbx
+  artifactKey: Guid(1d5670738edc2aa46b1f116b0017c2f7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield kick.fbx using Guid(1d5670738edc2aa46b1f116b0017c2f7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '528f8eef3c8101bad5687ec7da54021e') in 0.013385 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000023 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield slash (2).fbx
+  artifactKey: Guid(1c86ce3497b06a248a949d198bbe8082) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield slash (2).fbx using Guid(1c86ce3497b06a248a949d198bbe8082) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a40c13bfb5a1dc4a11ea202d1dc06218') in 0.013633 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000023 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield strafe (4).fbx
+  artifactKey: Guid(93a74a5a397015741b8861a4afa1bbf6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield strafe (4).fbx using Guid(93a74a5a397015741b8861a4afa1bbf6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f29edf237bb037defc0a882bff3b039c') in 0.014046 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000025 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield turn.fbx
+  artifactKey: Guid(d1d57b5aad6a6fa46b1a63540625b8d2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield turn.fbx using Guid(d1d57b5aad6a6fa46b1a63540625b8d2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'da957fb9244c11b19f85a1cf2c38f52f') in 0.013308 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000024 seconds.
+  path: Assets/Player/Animations/Sword and Shield Pack/sword and shield jump (2).fbx
+  artifactKey: Guid(b1c2ec3090f47684a849f4cd7df33703) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Player/Animations/Sword and Shield Pack/sword and shield jump (2).fbx using Guid(b1c2ec3090f47684a849f4cd7df33703) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '257942b5192baa00aa8bf8d9da8f5943') in 0.013058 seconds 
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.013814 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image C:\Users\Ben\Projects\Repositories\SwordGame\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
+Symbol file LoadedFromMemory doesn't match image C:\Users\Ben\Projects\Repositories\SwordGame\Library\PackageCache\com.unity.visualscripting@1.8.0\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 1.33 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  2.272 seconds
+Domain Reload Profiling:
+	ReloadAssembly (2273ms)
+		BeginReloadAssembly (216ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (7ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (56ms)
+		EndReloadAssembly (1869ms)
+			LoadAssemblies (157ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (586ms)
+			ReleaseScriptCaches (2ms)
+			RebuildScriptCaches (89ms)
+			SetupLoadedEditorAssemblies (918ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (30ms)
+				SetLoadedEditorAssemblies (1ms)
+				RefreshPlugins (1ms)
+				BeforeProcessingInitializeOnLoad (169ms)
+				ProcessInitializeOnLoadAttributes (575ms)
+				ProcessInitializeOnLoadMethodAttributes (124ms)
+				AfterProcessingInitializeOnLoad (18ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (19ms)
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 5.00 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 5090 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 26 unused Assets / (309.9 KB). Loaded Objects now: 5626.
+Memory consumption went from 205.2 MB to 204.9 MB.
+Total: 5.569900 ms (FindLiveObjects: 0.542600 ms CreateObjectMapping: 0.274600 ms MarkObjects: 4.628000 ms  DeleteObjects: 0.122500 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+Editor requested this worker to shutdown with reason: Scaling down because of idle timeout
+AssetImportWorker is now disconnected from the server
+Process exiting
+Exiting without the bug reporter. Application will terminate with return code 0

@@ -11,7 +11,8 @@ public class SwordCollisionController : MonoBehaviour
 	
 	private BoxCollider boxCol;
 	
-	private bool colliding, cutting, phasing;
+	[HideInInspector] public bool cutting, phasing;
+	[HideInInspector] public Collision collision;
 	
 	private void Start()
 	{
@@ -29,7 +30,7 @@ public class SwordCollisionController : MonoBehaviour
 	
 	private void Update()
 	{
-		if (colliding && !StillColliding())
+		if (collision != null && !StillColliding())
 			StopColliding();
 		
 		if (cutting && !StillColliding())
@@ -39,13 +40,9 @@ public class SwordCollisionController : MonoBehaviour
 	private bool StillColliding()
 	{
 		Vector3 boxColExtents = Objects.BoxColliderExtents(gameObject);
-		Vector3 boxTip = boxCol.bounds.center + transform.forward * (boxColExtents.z + 0.1f);
 		
-		Vector3 boxOrigin = Vector3.Lerp(transform.position, boxTip, 0.5f) + transform.forward * 0.2f;
-		Vector3 boxExtents = boxColExtents;
-		boxExtents.z = Vector3.Distance(boxOrigin, boxTip);
-		
-		return Physics.CheckBox(boxOrigin, boxExtents, transform.rotation, ~(1 << 6));
+		return Physics.CheckBox(
+			boxCol.bounds.center, boxColExtents, physicsController.RigidbodyRotation(), ~(1 << 6));
 	}
 
 	private void OnCollisionEnter(Collision col)
@@ -54,43 +51,33 @@ public class SwordCollisionController : MonoBehaviour
 		
 		if (swordController.TryShatter(col.gameObject))
 		{
-			physicsController.RevertVelocity();
-			
 			return;
 		}
 		
-		if (swordController.TryCut(col.gameObject))
+		if (swordController.TryCut(col))
 		{
 			boxCol.isTrigger = true;
 			cutting = true;
-			
-			physicsController.RevertVelocity();
 			
 			return;
 		}
 
 		if (col.contacts[0].otherCollider.bounds.size.magnitude < 2f)
 			return;
+		
+		// Debug.Log("Sword collision with " + col.gameObject.name);
 
-		boxCol.isTrigger = true;
-		
-		colliding = true;
-		
+		// boxCol.isTrigger = true;
 		physicsController.FreezeRigidbodyUntilFixedUpdate();
 		physicsController.ZeroVelocity();
-		physicsController.ZeroStoredVelocity();
 		
-		playerController.Collide(col);
-		swordController.Collide(col);
+		collision = col;
 	}
 	
 	private void StopColliding()
 	{
 		boxCol.isTrigger = false;
-		colliding = false;
-		
-		playerController.StopColliding();
-		swordController.StopColliding();	
+		collision = null;
 	}
 	
 	private void StopCutting()
@@ -100,6 +87,7 @@ public class SwordCollisionController : MonoBehaviour
 	}
 	
 	public BoxCollider GetCollider() { return boxCol; }
+	public bool Colliding() { return collision != null && collision.contacts.Length > 0; }
 	
 	public void SetPlayerController(PlayerController playerController) { this.playerController = playerController; }
 }

@@ -46,9 +46,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Pause"",
+                    ""name"": ""TogglePause"",
                     ""type"": ""Button"",
-                    ""id"": ""3067e8d4-f772-4998-9677-31e4eedf0f33"",
+                    ""id"": ""f77cea21-c7ee-459f-bb5f-97ecaeafa2ad"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -173,39 +173,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""f3a11c64-ff43-4bc4-8d85-1d21ff34eaa6"",
-                    ""path"": ""<Keyboard>/escape"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Pause"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""434b3078-47d5-477a-9e83-8c9350c5b9b8"",
-                    ""path"": ""<Gamepad>/start"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Pause"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""4ecf137b-7768-4310-aba2-54e18c5aa666"",
-                    ""path"": ""<Keyboard>/escape"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""UnPause"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""7f1e754b-6460-4c38-a3e5-06d5966c19d8"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
@@ -272,12 +239,23 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""fc596f8c-fc56-4a90-abb6-1114e8006804"",
+                    ""id"": ""434b3078-47d5-477a-9e83-8c9350c5b9b8"",
                     ""path"": ""<Gamepad>/start"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""UnPause"",
+                    ""action"": ""TogglePause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4ecf137b-7768-4310-aba2-54e18c5aa666"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TogglePause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -290,7 +268,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_PlayerMap = asset.FindActionMap("PlayerMap", throwIfNotFound: true);
         m_PlayerMap_Swing = m_PlayerMap.FindAction("Swing", throwIfNotFound: true);
         m_PlayerMap_Move = m_PlayerMap.FindAction("Move", throwIfNotFound: true);
-        m_PlayerMap_Pause = m_PlayerMap.FindAction("Pause", throwIfNotFound: true);
+        m_PlayerMap_TogglePause = m_PlayerMap.FindAction("TogglePause", throwIfNotFound: true);
         m_PlayerMap_UnPause = m_PlayerMap.FindAction("UnPause", throwIfNotFound: true);
         m_PlayerMap_Block = m_PlayerMap.FindAction("Block", throwIfNotFound: true);
         m_PlayerMap_Stab = m_PlayerMap.FindAction("Stab", throwIfNotFound: true);
@@ -357,7 +335,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private List<IPlayerMapActions> m_PlayerMapActionsCallbackInterfaces = new List<IPlayerMapActions>();
     private readonly InputAction m_PlayerMap_Swing;
     private readonly InputAction m_PlayerMap_Move;
-    private readonly InputAction m_PlayerMap_Pause;
+    private readonly InputAction m_PlayerMap_TogglePause;
     private readonly InputAction m_PlayerMap_UnPause;
     private readonly InputAction m_PlayerMap_Block;
     private readonly InputAction m_PlayerMap_Stab;
@@ -367,7 +345,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public PlayerMapActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Swing => m_Wrapper.m_PlayerMap_Swing;
         public InputAction @Move => m_Wrapper.m_PlayerMap_Move;
-        public InputAction @Pause => m_Wrapper.m_PlayerMap_Pause;
+        public InputAction @TogglePause => m_Wrapper.m_PlayerMap_TogglePause;
         public InputAction @UnPause => m_Wrapper.m_PlayerMap_UnPause;
         public InputAction @Block => m_Wrapper.m_PlayerMap_Block;
         public InputAction @Stab => m_Wrapper.m_PlayerMap_Stab;
@@ -386,9 +364,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
-            @Pause.started += instance.OnPause;
-            @Pause.performed += instance.OnPause;
-            @Pause.canceled += instance.OnPause;
+            @TogglePause.started += instance.OnTogglePause;
+            @TogglePause.performed += instance.OnTogglePause;
+            @TogglePause.canceled += instance.OnTogglePause;
             @UnPause.started += instance.OnUnPause;
             @UnPause.performed += instance.OnUnPause;
             @UnPause.canceled += instance.OnUnPause;
@@ -408,9 +386,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
             @Move.canceled -= instance.OnMove;
-            @Pause.started -= instance.OnPause;
-            @Pause.performed -= instance.OnPause;
-            @Pause.canceled -= instance.OnPause;
+            @TogglePause.started -= instance.OnTogglePause;
+            @TogglePause.performed -= instance.OnTogglePause;
+            @TogglePause.canceled -= instance.OnTogglePause;
             @UnPause.started -= instance.OnUnPause;
             @UnPause.performed -= instance.OnUnPause;
             @UnPause.canceled -= instance.OnUnPause;
@@ -441,7 +419,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     {
         void OnSwing(InputAction.CallbackContext context);
         void OnMove(InputAction.CallbackContext context);
-        void OnPause(InputAction.CallbackContext context);
+        void OnTogglePause(InputAction.CallbackContext context);
         void OnUnPause(InputAction.CallbackContext context);
         void OnBlock(InputAction.CallbackContext context);
         void OnStab(InputAction.CallbackContext context);

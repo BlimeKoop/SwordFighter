@@ -12,7 +12,7 @@ public class Fracture : MonoBehaviour
     public RefractureOptions refractureOptions;
     public CallbackOptions callbackOptions;
 	
-	private Rigidbody rb;
+	private Rigidbody rigidbody;
 
     /// <summary>
     /// The number of times this fragment has been re-fractured.
@@ -61,7 +61,7 @@ public class Fracture : MonoBehaviour
 		if (fractureOptions.insideMaterial == null && GetComponent<MeshRenderer>() != null)
 			fractureOptions.insideMaterial = GetComponent<MeshRenderer>().material;
 	
-		rb = GetComponent<Rigidbody>();
+		rigidbody = GetComponent<Rigidbody>();
 	}
 
     void OnValidate()
@@ -123,7 +123,7 @@ public class Fracture : MonoBehaviour
     {
         if (triggerOptions.triggerType == TriggerType.Keyboard)
         {
-			if (rb.velocity.magnitude > 0.7f)
+			if (rigidbody.velocity.magnitude > 0.7f)
 			{
 				triggerOptions.triggerType = TriggerType.Collision;
 				triggerOptions.minimumCollisionForce = 30f;

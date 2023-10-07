@@ -24,9 +24,9 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Pause",
+                    "name": "TogglePause",
                     "type": "Button",
-                    "id": "3067e8d4-f772-4998-9677-31e4eedf0f33",
+                    "id": "f77cea21-c7ee-459f-bb5f-97ecaeafa2ad",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -151,39 +151,6 @@
                 },
                 {
                     "name": "",
-                    "id": "f3a11c64-ff43-4bc4-8d85-1d21ff34eaa6",
-                    "path": "<Keyboard>/escape",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Pause",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "434b3078-47d5-477a-9e83-8c9350c5b9b8",
-                    "path": "<Gamepad>/start",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Pause",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "4ecf137b-7768-4310-aba2-54e18c5aa666",
-                    "path": "<Keyboard>/escape",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "UnPause",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "7f1e754b-6460-4c38-a3e5-06d5966c19d8",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
@@ -250,12 +217,23 @@
                 },
                 {
                     "name": "",
-                    "id": "fc596f8c-fc56-4a90-abb6-1114e8006804",
+                    "id": "434b3078-47d5-477a-9e83-8c9350c5b9b8",
                     "path": "<Gamepad>/start",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "UnPause",
+                    "action": "TogglePause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4ecf137b-7768-4310-aba2-54e18c5aa666",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TogglePause",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -5,40 +5,32 @@ using UnityEngine;
 
 public class SwordPhysicsController : MonoBehaviour
 {
-	PlayerSwordController swordController;
+	[HideInInspector] public PlayerSwordController swordController;
+	[HideInInspector] public SwordCollisionController collisionController;
 	
-	[HideInInspector] public Rigidbody rb;
-
-	private bool colliding;
-	private Collision collision;
+	private Rigidbody rigidbody;
 	
-	private Vector3 lastVelocity;
-	private Vector3 lastAngularVelocity;
+	[HideInInspector] public Vector3 velocity;
+	[HideInInspector] public Vector3 lastVelocity;
+	[HideInInspector] public Vector3 activeVelocity;
 	
-	private Vector3 activeVelocity;
-	
-	private Vector3 lastPosition;
-	private Quaternion lastRotation;
-	
-    private void Awake()
+    public void Initialize(PlayerSwordController playerSwordController)
     {
-		swordController = GetComponent<PlayerSwordController>();
+		swordController = playerSwordController;
+		collisionController = playerSwordController.collisionController;
 		
-		rb = GetComponent<Rigidbody>();
+		rigidbody = PlayerSwordControllerInitialization.InitializeRigidbody(this);
     }
 	
-	private void FixedUpdate()
-	{
-		lastPosition = rb.position;
-		lastRotation = rb.rotation;
-		
-		if (rb.velocity.magnitude > 0.1f)
-			activeVelocity = rb.velocity;
+	public void RecordTransformData()
+	{		
+		if (velocity.magnitude > 0.1f)
+			activeVelocity = velocity;
 	}
 
 	public void FreezeRigidbodyUntilFixedUpdate()
 	{
-		rb.isKinematic = true;
+		rigidbody.isKinematic = true;
 		
 		StartCoroutine(UnfreezeRigidbody());
 	}
@@ -47,115 +39,66 @@ public class SwordPhysicsController : MonoBehaviour
 	{
 		yield return new WaitForFixedUpdate();
 		
-		rb.isKinematic = false;
+		rigidbody.isKinematic = false;
 	}
 
 	public void ZeroVelocity()
 	{		
-		rb.velocity *= 0f;
-		rb.angularVelocity *= 0f;
-	}
-	
-	public void ZeroStoredVelocity()
-	{
-		lastVelocity = rb.velocity;
-		lastAngularVelocity = rb.angularVelocity;
-	}
-
-	public void RevertVelocity()
-	{
-		rb.velocity = lastVelocity;
-		rb.angularVelocity = lastAngularVelocity;
-	}
-	
-	public void RevertRigidbody()
-	{
-		rb.MovePosition(lastPosition);
-		rb.MoveRotation(lastRotation);		
+		rigidbody.velocity *= 0f;
+		rigidbody.angularVelocity *= 0f;
 	}
 
 	public void MoveSword(PlayerController playerController, PlayerSwordController swordController)
 	{
-		Vector3 playerMovement = playerController.physicsController.rb.velocity;
 		Vector3 swordMovement = swordController.movement;
 		
-		/*
-		float t = 0.12f;
+		float distance = Vector3.Distance(velocity, swordMovement);
+		float distanceFactor = Mathf.Min(distance / 45f, 1.0f);
+		float min_t = 0.15f, max_t = 0.7f;
+		float t = Mathf.Lerp(min_t, max_t, 1.0f - distanceFactor);
 
-		if (rb.velocity.sqrMagnitude < swordMovement.sqrMagnitude)
-			t += 0.05f * (1.0f - Mathf.Clamp01(swordMovement.magnitude - rb.velocity.magnitude / 2f));
+		// if (rigidbody.velocity.sqrMagnitude < swordMovement.sqrMagnitude)
+			// t += 0.05f * (1.0f - Mathf.Clamp01(swordMovement.magnitude - velocity.magnitude / 2f));
 		
-		var newMovement = Vector3.Lerp(rb.velocity, swordMovement, t); */
-		var newMovement = new Vector3();
-		
-		newMovement += swordMovement;
-		newMovement += playerMovement * 1.45f;
-		
-		// if (!colliding) {
-			rb.velocity = newMovement;
+		velocity = Vector3.Lerp(velocity, swordMovement, t);
 
-			return;
-		// }
-		
-		/*
+		if (collisionController.Colliding() &&
+			collisionController.collision.transform != playerController.transform)
+			velocity = SwordPhysics.StickSwordMovementToCollision(
+				this, swordMovement, collisionController.collision);
 
-		ContactPoint contact = collision.contacts[0];
-		
-		movement += contact.normal * Mathf.Max(0f, Vector3.Dot(movement, -contact.normal));
+		lastVelocity = rigidbody.velocity;
 
-		Transform nextTransform = Rigidbodies.ApproximateNextTransform(rb);
-		
-		Vector3 baseOffset = ((nextTransform.forward - transform.forward) *
-		swordController.GetLength() * swordController.GetGrabPointRatio());
-		
-		Vector3 toHit = contact.point - rb.position;
-		Vector3 toHitBO = baseOffset.normalized * Vector3.Dot(toHit, baseOffset);
-		
-		if (baseOffset.magnitude > toHitBO.magnitude)
-			movement -= baseOffset.normalized * (baseOffset.magnitude - toHitBO.magnitude);
-		
-		Vector3 horizontal = Vector3.Cross(Vector3.up, contact.normal);
-		Vector3 vertical = Vector3.Cross(horizontal, contact.normal).normalized;
-		
-		movement -= vertical * Vector3.Dot(movement, vertical);
-		
-		rb.velocity = movement + clamping;
-		*/
+		rigidbody.velocity = Vector3.zero;
+
+		rigidbody.AddForce(velocity +
+			swordController.swordPlayerConstraint.positionOffset / Time.fixedDeltaTime,
+			ForceMode.VelocityChange);
 	}
 	
 	public void RotateSword(Quaternion rotateTo)
 	{
-		rb.MoveRotation(rotateTo);
+		Quaternion offset = rotateTo * Quaternion.Inverse(rigidbody.rotation);
+		
+		offset.ToAngleAxis(out float angle, out Vector3 axis);
+		axis.Normalize();
+		
+		if (angle > 180f)
+			angle = -(360f - angle);
+		
+		if (Mathf.Abs(angle) < 0.001f || axis.magnitude < 0.001f)
+			return;
+		
+		rigidbody.angularVelocity = Vector3.zero;
+		
+		rigidbody.AddTorque(axis * angle, ForceMode.VelocityChange);
 	}
-
-	public void Collide(Collision collision)
-	{
-		this.collision = collision;
-
-		colliding = true;
-	}
-
-	public void StopColliding()
-	{
-		colliding = false;
-	}
-
-	public Rigidbody GetRigidbody() { return rb; }
 	
-	public Vector3 GetNextPosition() { return rb.position + rb.velocity * Time.fixedDeltaTime; }
+	public Vector3 GetNextPosition() { return rigidbody.position + rigidbody.velocity * Time.fixedDeltaTime; }
 	public Vector3 GetNextPosition(Vector3 movement) {
-		return rb.position + (rb.velocity + movement) * Time.fixedDeltaTime;
+		return rigidbody.position + (rigidbody.velocity + movement) * Time.fixedDeltaTime;
 	}
 
-/*
-	public Vector3 GetNextUpdatePosition() { return transform.position + rb.velocity * Time.fixedDeltaTime; }
-	public Vector3 GetNextUpdatePosition(Vector3 movement) {
-		return transform.position + movement * Time.fixedDeltaTime;
-	}
-*/
-
-	public Vector3 GetLastVelocity() { return lastVelocity; }
-	public Vector3 GetLastAngularVelocity() { return lastAngularVelocity; }
-	
-	public Vector3 GetActiveVelocity() { return activeVelocity; }
+	public Vector3 RigidbodyPosition() { return rigidbody.position; }
+	public Quaternion RigidbodyRotation() { return rigidbody.rotation; }
 }

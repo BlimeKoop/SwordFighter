@@ -6,14 +6,16 @@ using UnityEngine.InputSystem;
 public class CameraInputController : MonoBehaviour
 {
 	CameraController cameraController;
-	
-	CameraInputActions cameraInputActions;
+	CameraInputActions inputActions;
 
     public void Initialize(CameraController cameraController)
     {
 		this.cameraController = cameraController;
 
-        cameraInputActions = new CameraInputActions();
+		if (!cameraController.playerController.avatar.IsOwner)
+			return;
+		
+        inputActions = new CameraInputActions();
 
 		MapInputCallbacks();
 		
@@ -22,18 +24,14 @@ public class CameraInputController : MonoBehaviour
 	
 	private void MapInputCallbacks()
 	{
-		cameraInputActions.CameraMap.ChangeDirection.performed += context => cameraController.ChangeDirection(cameraInputActions);
+		inputActions.CameraMap.ChangeDirection.performed += (
+			context => cameraController.ChangeDirection());
 	}
 	
 	private IEnumerator EnableInput(float delay)
 	{
 		yield return new WaitForSeconds(delay);
 		
-		cameraInputActions.Enable();
+		inputActions.Enable();
 	}
-
-    void Update()
-    {
-        
-    }
 }

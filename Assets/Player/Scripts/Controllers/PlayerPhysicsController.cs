@@ -2,18 +2,20 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Alteruna;
 
-public class PlayerPhysicsController : MonoBehaviour
+public class PlayerPhysicsController
 {
 	[HideInInspector] public PlayerController playerController;
 	[HideInInspector] public PlayerInputController inputController;
 	[HideInInspector] public PlayerAnimationController animationController;
+	[HideInInspector] public SwordCollisionController swordCollisionController;
 	
-	[HideInInspector] public Rigidbody rb;
+	[HideInInspector] public RigidbodySynchronizable rigidbodySync;
 	
 	private bool colliding;
 	private Collision collision;
-    
+
     public void Initialize(
 		PlayerController playerController, PlayerInputController inputController, PlayerAnimationController animationController)
     {
@@ -21,42 +23,47 @@ public class PlayerPhysicsController : MonoBehaviour
 		this.inputController = inputController;
 		this.animationController = animationController;
 		
-		rb = GetComponent<Rigidbody>() == null ? gameObject.AddComponent<Rigidbody>() : GetComponent<Rigidbody>();
+		swordCollisionController = playerController.swordController.collisionController;
 		
-        ConfigureRigidbody(rb);
-    }
-
-	private void ConfigureRigidbody(Rigidbody rb)
-	{
-		rb.isKinematic = true;
-		rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+		rigidbodySync = (
+			playerController.GetComponent<RigidbodySynchronizable>() == null ?
+			playerController.gameObject.AddComponent<RigidbodySynchronizable>() :
+			playerController.GetComponent<RigidbodySynchronizable>());
 		
-		rb.interpolation = RigidbodyInterpolation.Interpolate;
+		collision = new Collision();
 	}
 	
 	public void MoveRigidbody(Vector3 movement)
 	{
-		Vector3 interpolatedMovement = Vector3.Lerp(rb.velocity, movement, 0.1f);
+		Vector3 interpolatedMovement = Vector3.Lerp(rigidbodySync.velocity, movement, 0.1f);
 		
-		if (colliding)
-			interpolatedMovement += collision.contacts[0].normal * Mathf.Max(0f, Vector3.Dot(interpolatedMovement, -collision.contacts[0].normal));
-		
-		Vector3 newPosition = rb.position + Vector3.Scale(interpolatedMovement, new Vector3(1.0f, 0.0f, 1.0f)) * Time.fixedDeltaTime;
-		
-		rb.MovePosition(newPosition);	
+		if (playerController.groundHit.transform == null)
+			interpolatedMovement.y = Mathf.Max(Physics.gravity.y, rigidbodySync.velocity.y + Physics.gravity.y * Time.fixedDeltaTime);
+		else
+			interpolatedMovement = Vector3.Scale(interpolatedMovement, new Vector3(1.0f, 0.0f, 1.0f));
+
+		if (swordCollisionController.Colliding() &&
+			swordCollisionController.collision.transform != playerController.transform)
+		{
+			interpolatedMovement += (
+				swordCollisionController.collision.contacts[0].normal *
+				Mathf.Max(0f, Vector3.Dot(interpolatedMovement, -swordCollisionController.collision.contacts[0].normal)));
+		}
+
+		rigidbodySync.velocity = interpolatedMovement;
 	}
 	
 	public void RotateRigidbody()
 	{
-		Vector3 camForward = Camera.main.transform.forward;
+		Vector3 camForward = playerController.camera.transform.forward;
 		Vector3 camForwardFlat = Vector3.Scale(camForward, new Vector3(1f, 0f, 1f)).normalized;
 
 		Quaternion targetRotation = Quaternion.LookRotation(camForwardFlat);
 		targetRotation *= Quaternion.Euler(0f, 45f * inputController.GetMovementInput().x, 0f);
 		
-		Quaternion baseRotation = Quaternion.Lerp(rb.rotation, targetRotation, 0.13f);
+		Quaternion baseRotation = Quaternion.Lerp(rigidbodySync.rotation, targetRotation, 0.13f);
 		
-		Vector3 toIK = animationController.GetRightArmIKTarget().position - rb.position;
+		Vector3 toIK = animationController.swordArmIKTargetController.transform.position - rigidbodySync.position;
 		Vector3 toIKFlat = Vector3.Scale(toIK, new Vector3(1f, 0f, 1f)).normalized;
 		
 		Vector3 ikDirection = Vector3.Lerp(camForwardFlat, toIKFlat, 0.4f).normalized;
@@ -64,7 +71,8 @@ public class PlayerPhysicsController : MonoBehaviour
 		
 		Quaternion newRotation = Quaternion.Lerp(baseRotation, ikRotation, 0.2f);
 		
-		rb.MoveRotation(newRotation);
+		rigidbodySync.angularVelocity = Vector3.zero;
+		rigidbodySync.MoveRotation(newRotation);
 	}
 	
 	public void Collide(Collision collision)
@@ -78,6 +86,4 @@ public class PlayerPhysicsController : MonoBehaviour
 	{
 		colliding = false;
 	}
-	
-	public Rigidbody GetRigidbody() { return rb; }
 }

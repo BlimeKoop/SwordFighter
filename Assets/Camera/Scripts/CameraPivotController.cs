@@ -6,26 +6,41 @@ public class CameraPivotController : MonoBehaviour
 {
 	private Transform followTarget;
 	
-	private Vector3 targetDirection;
+	[Range(0,1)] public float followSpeed = 0.4f;
+	public float rotateSpeed = 0.5f;
 	
-	[Range(0,1)]
-	private float followSpeed = 0.4f;
+	public float DirectionChangeDelay = 0.05f;
+	public float AutoRotateDelay = 0.2f;
+	public float AutoRotateEaseDuration = 0.2f;
 	
-	[Range(0,1)]
-	private float _rotateSpeed = 0.4f;
-	private float rotateSpeedMax;
-	private float rotateSpeed;
+	public float DirectionCooldownMin = 0.1f;
+	public float DirectionCooldownMax = 0.1f;
+	
+	private float directionChangeCooldown;
+	private float directionChangeDuration;
+	private float directionChangeStep;
+
+	private float directionChangeCooldownTimer;
+	private float directionChangeTimer;
+	
+	private float autoRotateDegrees;
+	
+	private float autoRotateTimer;
+	
+	[HideInInspector]
+	public Vector3 targetDirection;
 	
 	private bool initialized;
-	private int rotateLRN1P1 = 1;
+	private bool rotate, rotating, autoRotate;
 	
     public void Initialize(GameObject _followTarget)
     {
         followTarget = _followTarget.transform;
-		targetDirection = followTarget.forward;
 		
 		transform.position = followTarget.position;
-		transform.forward = targetDirection;
+		transform.forward = followTarget.forward;
+		
+		targetDirection = transform.forward;
 		
 		initialized = true;
     }
@@ -35,32 +50,113 @@ public class CameraPivotController : MonoBehaviour
 		if (!initialized)
 			return;
 		
-		float forwardDifference = Vector3.Angle(transform.forward, targetDirection) / 180f;
-		float inverseExponent = 1.0f - Mathf.Pow(1.0f - forwardDifference, 2);
-		
-		rotateSpeed = rotateSpeedMax * inverseExponent;
-		
-        transform.position = Vector3.Lerp(transform.position, followTarget.position, followSpeed * 0.1f * Time.deltaTime * 80f);
+        transform.position = Vector3.Lerp(
+		transform.position, followTarget.position, followSpeed * 0.1f * Time.deltaTime * 80f);
 
-		transform.forward = Vector3.Lerp(
-			transform.forward, transform.right * rotateLRN1P1, rotateSpeed * 0.5f * Time.deltaTime * 80f);
-    }
+		HandleRotation();		
+		HandleAutoRotation();
 
-	public bool ForwardAligned()
-	{
-		return Vector3.Dot(transform.forward, targetDirection) > 0.97f;
+		directionChangeCooldownTimer += Time.deltaTime;
+		directionChangeTimer += Time.deltaTime;
+		autoRotateTimer += Time.deltaTime;
 	}
-
-	public void SetTargetDirection(Vector3 targetDirection)
+	
+	private void HandleRotation()
 	{
-		float rDot = Vector3.Dot(transform.right, targetDirection);
-		float fDot = Vector3.Dot(transform.forward, targetDirection);
+		if (rotate && directionChangeTimer > DirectionChangeDelay)
+		{
+			rotate = false;
+			rotating = true;
+			
+			directionChangeTimer = 0;
+		}
 		
-		if (fDot > -0.99f)
-			rotateLRN1P1 = rDot > 0 ? 1 : -1;
+		if (rotating)
+			Rotate();
+	}
+	
+	private void Rotate()
+	{
+		if (directionChangeTimer > directionChangeDuration)
+		{
+			rotating = false;
+			// transform.forward = targetDirection;
+			
+			return;
+		}
 		
-		rotateSpeedMax = _rotateSpeed * (0.8f + 0.2f * (1.0f - fDot));
+		float changeCompletionFactor = directionChangeTimer / directionChangeDuration;
+		float smoothingFactor = (1.0f - (Mathf.Abs(changeCompletionFactor - 0.3f) / 0.7f)) * 2;
 		
-		this.targetDirection = targetDirection;
+		transform.forward = Vector3.RotateTowards(
+			transform.forward,
+			targetDirection,
+			directionChangeStep * smoothingFactor * Time.deltaTime * Mathf.Deg2Rad,
+			1.0f);
+		
+		directionChangeCooldownTimer = 0;
+	}
+	
+	private void HandleAutoRotation()
+	{
+		if (autoRotateDegrees != 0)
+		{
+			if (!autoRotate)
+			{
+				autoRotateTimer = 0;
+				autoRotate = true;
+			}
+			
+			if (autoRotateTimer > AutoRotateDelay)
+			{
+				float multiplier = Mathf.Min((autoRotateTimer - AutoRotateDelay) / AutoRotateEaseDuration, 1.0f);
+				transform.Rotate(Vector3.up, autoRotateDegrees * multiplier * Time.deltaTime);
+			}
+			
+			autoRotateDegrees = 0;
+		}
+		else
+			autoRotate = false;
+	}
+	
+	public void ChangeDirection(Vector3 newDirection)
+	{
+		if (newDirection.magnitude == 0)
+			return;
+		
+		if (rotating)
+			return;
+		
+		newDirection.Normalize();
+		
+		float deg = Vector3.Angle(targetDirection, newDirection);
+		
+		if (deg < 160f)
+			directionChangeCooldown = DirectionCooldownMin;
+		
+		if (directionChangeCooldownTimer < directionChangeCooldown)
+			return;
+		
+		directionChangeDuration = Mathf.Lerp(0.5f * (1f - rotateSpeed), 1f - rotateSpeed, deg / 180f);
+		directionChangeStep = deg / directionChangeDuration;
+		
+		directionChangeCooldown = Mathf.Lerp(
+			DirectionCooldownMin, DirectionCooldownMax, deg / 180f);
+		
+		directionChangeTimer = 0;
+		targetDirection = newDirection;
+		
+		rotate = true;
+	}
+	
+	public void Rotate(float degrees)
+	{
+		if (rotating)
+			return;
+		
+		if (Mathf.Abs(degrees) < 0.01f)
+			degrees = 0f;
+		
+		autoRotateDegrees = degrees;
 	}
 }

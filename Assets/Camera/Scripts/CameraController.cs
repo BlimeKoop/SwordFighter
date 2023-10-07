@@ -7,36 +7,26 @@ public class CameraController : MonoBehaviour
 	CameraInputController cameraInputController;
 	
 	public GameObject target;
-	private Transform pivot;
+	public CameraPivotController pivot;
 	
-	private CameraPivotController cameraPivotController;
-	
-	private float directionChangeTimer;
-	
-	private bool followingPlayer;
-	private PlayerController playerController;
+	[HideInInspector] public PlayerController playerController;
 
-    void Start()
+    public void Initialize(PlayerController playerController)
     {
-		cameraPivotController = InitializeCameraPivotController();
+		this.playerController = playerController;
+		
+		pivot = InitializeCameraPivotController(pivot);
 		cameraInputController = InitializeCameraInputController();
 		cameraInputController.Initialize(this);
 		
 		transform.parent = pivot.transform;
-		
-		playerController = target.GetComponent<PlayerController>();
-		followingPlayer = playerController != null;
     }
 
-	private CameraPivotController InitializeCameraPivotController()
-	{
-		pivot = new GameObject($"{gameObject.name} Pivot").transform;
+	private CameraPivotController InitializeCameraPivotController(CameraPivotController controller)
+	{		
+		controller.Initialize(target);
 		
-		CameraPivotController cpcReturn = pivot.gameObject.AddComponent<CameraPivotController>();
-		
-		cpcReturn.Initialize(target);
-		
-		return cpcReturn;
+		return controller;
 	}
 
 	private CameraInputController InitializeCameraInputController()
@@ -49,17 +39,9 @@ public class CameraController : MonoBehaviour
 		return cicReturn;
 	}
 	
-	public void ChangeDirection(CameraInputActions cameraInputActions)
+	public void ChangeDirection()
 	{
-		if (!cameraPivotController.ForwardAligned())
-			return;
-		
-		if (!followingPlayer)
-			cameraPivotController.SetTargetDirection(NonPlayerAimDirection(cameraInputActions)); 
-		else
-			cameraPivotController.SetTargetDirection(
-			Vectors.FlattenVector(playerController.GetSwordObject().forward).normalized);
-			
+		pivot.ChangeDirection(playerController.movement);
 	}
 	
 	private Vector3 NonPlayerAimDirection(CameraInputActions cameraInputActions) {
@@ -75,5 +57,10 @@ public class CameraController : MonoBehaviour
 		Vector3 directionR = (rightFlat * inputX + forwardFlat * (1.0f - Mathf.Abs(inputX))).normalized;
 		
 		return directionR;
+	}
+
+	public void Rotate(float degrees)
+	{
+		pivot.Rotate(degrees);
 	}
 }

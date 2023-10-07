@@ -4,29 +4,56 @@ using UnityEngine;
 
 public class SwordPlayerConstraint : MonoBehaviour
 {
-	public Rigidbody playerRB;
+	private Rigidbody rigidbody;
 	
-	private Vector3 playerPositionStore;
-	private Vector3 playerPositionOffset;
-
-	private bool ready;
-
-	private void FixedUpdate()
+	public Rigidbody playerRB;
+	private Transform playerRBProxy;
+	
+	private Vector3 posStore, localPosStore;
+	// private Quaternion rotStore, localRotStore;
+	
+	[HideInInspector]
+	public Vector3 positionOffset;
+	
+	// [HideInInspector]
+	// public Quaternion rotationOffset;
+	
+	private void Start()
 	{
-		if (!ready)
-		{
-			playerPositionStore = playerRB.position;
-			
-			ready = true;
-			return;
-		}
+		rigidbody = GetComponent<Rigidbody>();
+		playerRBProxy = new GameObject(gameObject.name + "Player Rigidbody Proxy").transform;
 		
-		ComparePlayerTransformData();
-		RecordPlayerTransformData();
+		SyncronizeProxy();
+		RecordOffsets();
 	}
 	
-	public void RecordPlayerTransformData() { playerPositionStore = playerRB.position; }
-	public void ComparePlayerTransformData() {  playerPositionOffset = playerRB.position - playerPositionStore; }
+	public void SyncronizeProxy()
+	{
+		playerRBProxy.position = (
+			playerRB.position +
+			playerRB.velocity *
+			Time.fixedDeltaTime);
+		
+		playerRBProxy.rotation = playerRB.rotation;
+		
+		/* uncomfirmed if this works or not
+		playerRBProxy.rotation = (
+			playerRB.rotation *
+			Quaternion.Euler(playerRB.angularVelocity * Time.fixedDeltaTime));
+		*/
+			
+		playerRBProxy.localScale = playerRB.transform.lossyScale;
+	}
 	
-	public Vector3 GetPlayerPositionOffset() { return playerPositionOffset; }
+	public void RecordOffsets()
+	{
+		localPosStore = playerRBProxy.InverseTransformPoint(rigidbody.position);
+		posStore = rigidbody.position;
+	}
+	
+	public void CalculateOffsets()
+	{
+		SyncronizeProxy();
+		positionOffset = playerRBProxy.TransformPoint(localPosStore) - posStore;
+	}
 }
