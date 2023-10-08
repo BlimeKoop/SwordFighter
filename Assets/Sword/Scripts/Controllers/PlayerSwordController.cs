@@ -66,27 +66,25 @@ public class PlayerSwordController : MonoBehaviour
 		transform.position = animationController.rightHandBone.position;
 		transform.rotation = animationController.rightHandBone.rotation;
 		
+		rollController = transform.GetChild(0);
+		InitializeSwordModel();
+		
 		rotation = transform.rotation;
-		rollController = CreateRollController();
 		
 		collisionController = PlayerSwordControllerInitialization.InitializeCollisionController(this);
 		swordCutterBehaviour = PlayerSwordControllerInitialization.InitializeSwordCutterBehaviour(this);
 
-		swordPlayerConstraint = gameObject.AddComponent<SwordPlayerConstraint>();
-		swordPlayerConstraint.playerRB = playerController.GetComponent<Rigidbody>();
-
 		physicsController = PlayerSwordControllerInitialization.InitializePhysicsController(this);
 
-		animationController.InitializeSwordIKTargets(this);
-
-		InitializeSwordModel();
+		swordPlayerConstraint = gameObject.AddComponent<SwordPlayerConstraint>();
+		swordPlayerConstraint.Initialize(this);
 		
 		StartCoroutine(CheckInputChange());
 	}
 	
 	private void InitializeSwordModel()
 	{
-		Transform swordModel = playerController.GetSwordModel();
+		Transform swordModel = playerController.swordObject;
 
 		swordModel.GetComponentInChildren<Collider>().gameObject.layer = gameObject.layer;
 		
@@ -98,17 +96,6 @@ public class PlayerSwordController : MonoBehaviour
 			
 		swordModel.position += transform.forward * length * (0.5f - grabPointRatio);
 		swordModel.parent = rollController;
-	}
-
-	private Transform CreateRollController()
-	{
-		Transform pc = new GameObject(gameObject.name + "RollController").transform;
-		
-		pc.rotation = transform.rotation;
-		pc.position = transform.position;
-		pc.parent = transform;
-		
-		return pc;
 	}
 	
 	public void DoFixedUpdate()
@@ -217,10 +204,8 @@ public class PlayerSwordController : MonoBehaviour
 		if (obj.GetComponent<Fracture>() != null)
 			return false;
 		
-		if (physicsController.lastVelocity.magnitude < 8f)
-			return false;
-		
 		float thickness = 2.0f;
+		
 		Vector3 origin = col.contacts[0].point - col.contacts[0].normal * thickness;
 		Vector3 direction = col.contacts[0].normal;
 		

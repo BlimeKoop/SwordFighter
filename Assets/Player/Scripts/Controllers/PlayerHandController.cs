@@ -13,8 +13,7 @@ public class PlayerHandController : MonoBehaviour
     public void Initialize(PlayerController playerController)
     {
 		this.playerController = playerController;
-		
-		camera = Camera.main;
+		camera = playerController.camera.GetComponent<Camera>();
 		
 		armBone = transform.parent.parent;
 		midSectionBone = transform.parent.parent.parent.parent.parent.parent;

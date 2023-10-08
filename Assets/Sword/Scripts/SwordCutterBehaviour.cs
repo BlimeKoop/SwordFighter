@@ -15,7 +15,7 @@ namespace DynamicMeshCutter
 		
 			if (obj.GetComponent<Renderer>() == null)
 				return;
-			
+
 			MeshTarget meshTarget = InitializeMeshTarget(obj);
 
 			Vector3 cutPlane = Vector3.Cross(swordVelocity, swordObj.transform.forward).normalized;

@@ -9,7 +9,7 @@ public class PlayerAnimation : MonoBehaviour
 		Transform rightArmBone = animationController.rightArmBone;
 
 		Vector3 approximateArmPos = playerController.animationController.ApproximateArmPosition();
-		Vector3 armToSwordApprox = playerController.sword.position - approximateArmPos;
+		Vector3 armToSwordApprox = playerController.swordController.transform.position - approximateArmPos;
 
 		float armLength = animationController.GetArmLength();
 		float d = armToSwordApprox.magnitude;

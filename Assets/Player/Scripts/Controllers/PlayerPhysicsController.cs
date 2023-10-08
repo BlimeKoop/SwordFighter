@@ -29,6 +29,8 @@ public class PlayerPhysicsController
 			playerController.GetComponent<RigidbodySynchronizable>() == null ?
 			playerController.gameObject.AddComponent<RigidbodySynchronizable>() :
 			playerController.GetComponent<RigidbodySynchronizable>());
+
+		playerController.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 		
 		collision = new Collision();
 	}

@@ -6,7 +6,7 @@ public class PlayerSword
 {
 	public static float OrientToModelLength(PlayerSwordController playerSwordController)
 	{
-		Transform swordModel = playerSwordController.playerController.GetSwordModel();
+		Transform swordModel = playerSwordController.playerController.swordObject;
 		Bounds meshBounds = swordModel.GetComponentInChildren<MeshFilter>().mesh.bounds;
 		
 		float sizeX = meshBounds.size.x;
@@ -57,7 +57,7 @@ public class PlayerSword
 		
 		if (!playerController.stab)
 			movementR = ClampMovement(playerSwordController, movementR);
-		
+
 		return movementR;
 	}
 	

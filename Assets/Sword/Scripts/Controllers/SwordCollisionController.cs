@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class SwordCollisionController : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class SwordCollisionController : MonoBehaviour
 	[HideInInspector] public bool cutting, phasing;
 	[HideInInspector] public Collision collision;
 	
-	private void Start()
+	public void Initialize()
 	{
 		swordController = GetComponent<PlayerSwordController>();
 		physicsController = GetComponent<SwordPhysicsController>();
@@ -45,9 +46,10 @@ public class SwordCollisionController : MonoBehaviour
 			boxCol.bounds.center, boxColExtents, physicsController.RigidbodyRotation(), ~(1 << 6));
 	}
 
-	private void OnCollisionEnter(Collision col)
+	public void Collide(Collision col)
 	{
-		// Debug.Log("Sword hit " + col.gameObject.name);
+		if (!col.GetContact(0).thisCollider == boxCol)
+			return;
 		
 		if (swordController.TryShatter(col.gameObject))
 		{
@@ -59,17 +61,22 @@ public class SwordCollisionController : MonoBehaviour
 			boxCol.isTrigger = true;
 			cutting = true;
 			
+			col.gameObject.TryGetComponent<PlayerController>(out PlayerController playerController);
+			
+			if (playerController != null)
+			{
+				GameObject.Find("WinText").GetComponent<TextMeshProUGUI>().enabled = true;
+				playerController.Die();
+			}
+			
 			return;
 		}
-
-		if (col.contacts[0].otherCollider.bounds.size.magnitude < 2f)
-			return;
 		
 		// Debug.Log("Sword collision with " + col.gameObject.name);
 
 		// boxCol.isTrigger = true;
-		physicsController.FreezeRigidbodyUntilFixedUpdate();
-		physicsController.ZeroVelocity();
+		// physicsController.FreezeRigidbodyUntilFixedUpdate();
+		// physicsController.ZeroVelocity();
 		
 		collision = col;
 	}

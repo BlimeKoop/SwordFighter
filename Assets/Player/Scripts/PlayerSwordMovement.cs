@@ -14,7 +14,6 @@ public class PlayerSwordMovement
 		movementR *= Mathf.Max(0.0f, 1.0f - swordController.weight);
 		movementR *= playerController.swingSpeed;
 		movementR += DistanceMovement(playerController, swordController) * 0.5f;
-		movementR /= Time.fixedDeltaTime;
 
 		return movementR;
 	}
@@ -38,7 +37,6 @@ public class PlayerSwordMovement
 		movementR *= Mathf.Max(0.0f, 1.0f - swordController.weight);
 		movementR *= playerController.swingSpeed;
 		movementR += DistanceMovement(playerController, swordController) * 0.5f;
-		movementR /= Time.fixedDeltaTime;
 		
 		return movementR;
 	}
@@ -64,8 +62,8 @@ public class PlayerSwordMovement
 		
 		swordController.orbitDirectionsStore = orbitDirections;
 		
-		Debug.DrawRay(playerController.sword.position, orbitDirections[0], Color.blue);
-		Debug.DrawRay(playerController.sword.position, orbitDirections[1], Color.green);
+		Debug.DrawRay(playerController.swordController.transform.position, orbitDirections[0], Color.blue);
+		Debug.DrawRay(playerController.swordController.transform.position, orbitDirections[1], Color.green);
 		
 		Vector3 directionR = orbitDirections[0] * swingInputActive.x + orbitDirections[1] * swingInputActive.y;
 		
@@ -95,7 +93,7 @@ public class PlayerSwordMovement
 	public static Vector3[] ShoulderOrbitDirections(PlayerController playerController, PlayerSwordController swordController)
 	{
 		Vector3 armPos = playerController.animationController.rightArmBone.position;
-		Vector3 swordPos = swordController.GetComponent<Rigidbody>().position;
+		Vector3 swordPos = swordController.physicsController.RigidbodyPosition();
 		
 		return OrbitDirections(playerController, swordController, armPos, swordPos);
 	}
@@ -120,7 +118,7 @@ public class PlayerSwordMovement
 	
 	public static Vector3 DistanceMovement(PlayerController playerController, PlayerSwordController swordController)
 	{
-		Vector3 swordPos = swordController.GetComponent<Rigidbody>().position;
+		Vector3 swordPos = swordController.physicsController.RigidbodyPosition();
 		Vector3 movementR = new Vector3();
 
 		float targetDistance = playerController.GetHoldDistance();

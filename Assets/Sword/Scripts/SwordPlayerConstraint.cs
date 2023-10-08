@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class SwordPlayerConstraint : MonoBehaviour
 {
-	private Rigidbody rigidbody;
+	public PlayerController playerController;
+	public PlayerSwordController swordController;
 	
-	public Rigidbody playerRB;
 	private Transform playerRBProxy;
 	
 	private Vector3 posStore, localPosStore;
@@ -18,9 +18,11 @@ public class SwordPlayerConstraint : MonoBehaviour
 	// [HideInInspector]
 	// public Quaternion rotationOffset;
 	
-	private void Start()
+	public void Initialize(PlayerSwordController swordController)
 	{
-		rigidbody = GetComponent<Rigidbody>();
+		this.swordController = swordController;
+		playerController = swordController.playerController;
+		
 		playerRBProxy = new GameObject(gameObject.name + "Player Rigidbody Proxy").transform;
 		
 		SyncronizeProxy();
@@ -30,25 +32,25 @@ public class SwordPlayerConstraint : MonoBehaviour
 	public void SyncronizeProxy()
 	{
 		playerRBProxy.position = (
-			playerRB.position +
-			playerRB.velocity *
+			playerController.physicsController.rigidbodySync.position +
+			playerController.physicsController.rigidbodySync.velocity *
 			Time.fixedDeltaTime);
 		
-		playerRBProxy.rotation = playerRB.rotation;
+		playerRBProxy.rotation = playerController.physicsController.rigidbodySync.rotation;
 		
 		/* uncomfirmed if this works or not
 		playerRBProxy.rotation = (
-			playerRB.rotation *
+			playerController.physicsController.rigidbodySync.rotation *
 			Quaternion.Euler(playerRB.angularVelocity * Time.fixedDeltaTime));
 		*/
 			
-		playerRBProxy.localScale = playerRB.transform.lossyScale;
+		playerRBProxy.localScale = playerController.physicsController.rigidbodySync.transform.lossyScale;
 	}
 	
 	public void RecordOffsets()
 	{
-		localPosStore = playerRBProxy.InverseTransformPoint(rigidbody.position);
-		posStore = rigidbody.position;
+		localPosStore = playerRBProxy.InverseTransformPoint(swordController.physicsController.RigidbodyPosition());
+		posStore = swordController.physicsController.RigidbodyPosition();
 	}
 	
 	public void CalculateOffsets()

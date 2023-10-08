@@ -45,7 +45,7 @@ public class CameraPivotController : MonoBehaviour
 		initialized = true;
     }
 
-    private void LateUpdate()
+    public void DoLateUpdate()
     {
 		if (!initialized)
 			return;

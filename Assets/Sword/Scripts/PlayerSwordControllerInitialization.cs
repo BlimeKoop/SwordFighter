@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DynamicMeshCutter;
+using Alteruna;
 
 public class PlayerSwordControllerInitialization
 {
@@ -23,6 +24,18 @@ public class PlayerSwordControllerInitialization
 		return rigidbodyR;
 	}
 	
+	public static RigidbodySynchronizable InitializeRigidbodySynchronizable(SwordPhysicsController physicsController, Rigidbody rigidbody)
+	{
+		RigidbodySynchronizable rigidbodySyncR = (
+			physicsController.GetComponent<RigidbodySynchronizable>() == null ?
+			physicsController.gameObject.AddComponent<RigidbodySynchronizable>() :
+			physicsController.GetComponent<RigidbodySynchronizable>());
+		
+		rigidbodySyncR.Rigidbody = rigidbody;
+		
+		return rigidbodySyncR;
+	}
+	
 	public static SpringJoint InitializeSpringJoint(PlayerSwordController playerSwordController)
 	{
 		SpringJoint springJointR = (
@@ -41,6 +54,7 @@ public class PlayerSwordControllerInitialization
 			collisionControllerR = playerSwordController.gameObject.AddComponent<SwordCollisionController>();
 		
 		collisionControllerR.SetPlayerController(playerSwordController.playerController);
+		collisionControllerR.Initialize();
 		
 		return collisionControllerR;
 	}

@@ -7,7 +7,7 @@ public class CameraController : MonoBehaviour
 	CameraInputController cameraInputController;
 	
 	public GameObject target;
-	public CameraPivotController pivot;
+	public CameraPivotController pivotController;
 	
 	[HideInInspector] public PlayerController playerController;
 
@@ -15,11 +15,11 @@ public class CameraController : MonoBehaviour
     {
 		this.playerController = playerController;
 		
-		pivot = InitializeCameraPivotController(pivot);
+		pivotController = InitializeCameraPivotController(pivotController);
 		cameraInputController = InitializeCameraInputController();
 		cameraInputController.Initialize(this);
 		
-		transform.parent = pivot.transform;
+		transform.parent = pivotController.transform;
     }
 
 	private CameraPivotController InitializeCameraPivotController(CameraPivotController controller)
@@ -41,7 +41,7 @@ public class CameraController : MonoBehaviour
 	
 	public void ChangeDirection()
 	{
-		pivot.ChangeDirection(playerController.movement);
+		pivotController.ChangeDirection(playerController.movement);
 	}
 	
 	private Vector3 NonPlayerAimDirection(CameraInputActions cameraInputActions) {
@@ -61,6 +61,6 @@ public class CameraController : MonoBehaviour
 
 	public void Rotate(float degrees)
 	{
-		pivot.Rotate(degrees);
+		pivotController.Rotate(degrees);
 	}
 }

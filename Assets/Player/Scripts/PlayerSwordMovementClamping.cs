@@ -15,9 +15,9 @@ public class PlayerSwordMovementClamping
 		float maxLength = playerController.animationController.GetArmLength();
 		
 		if (fromArmNext.magnitude < minLength)
-			return movement + fromArmNext.normalized * (minLength - fromArmNext.magnitude) / Time.fixedDeltaTime;
+			return movement + fromArmNext.normalized * (minLength - fromArmNext.magnitude);
 		else if (fromArmNext.magnitude > maxLength)
-			return movement + fromArmNext.normalized * (maxLength - fromArmNext.magnitude) / Time.fixedDeltaTime;
+			return movement + fromArmNext.normalized * (maxLength - fromArmNext.magnitude);
 
 		return movement;
 	}
@@ -46,7 +46,7 @@ public class PlayerSwordMovementClamping
 			clampedPos = swordPos + clampedDir * fromArm.magnitude;
 		}
 		
-		return (clampedPos - swordPos) / Time.fixedDeltaTime;
+		return (clampedPos - swordPos);
 	}
 	
 	private static Vector3 HorizontalArmClamped(PlayerSwordController swordController,
@@ -96,7 +96,7 @@ public class PlayerSwordMovementClamping
 		if (dot < dotMin)
 		{
 			Vector3 clampedDir = (fromArmNextN + clampTowards * (dotMin - dot)).normalized;
-			Vector3 clamping = (clampedDir - fromArmNextN) * fromArmNext.magnitude / Time.fixedDeltaTime;
+			Vector3 clamping = (clampedDir - fromArmNextN) * fromArmNext.magnitude;
 			
 			return movement + clamping;
 		}
@@ -126,6 +126,6 @@ public class PlayerSwordMovementClamping
 			// Debug.DrawRay(rightShoulder.position, -rightShoulder.right, Color.red, 1f);
 		}
 
-		return (clampedPos - swordPos) / Time.fixedDeltaTime;
+		return (clampedPos - swordPos);
 	}
 }

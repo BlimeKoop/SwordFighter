@@ -24,8 +24,7 @@ public class PlayerController : MonoBehaviour
 	public Transform camera;
 	[HideInInspector] public CameraController cameraController;
 	
-	[SerializeField] private Transform _sword;
-	[HideInInspector] public Transform sword;
+	public Transform swordObject;
 	
 	public float moveSpeed = 8.0f;
 	public float swingSpeed = 9.0f;
@@ -43,20 +42,26 @@ public class PlayerController : MonoBehaviour
 	
 	private float StabHoldDuration = 0.5f;
 	[HideInInspector] public float stabHoldTimer;
+	
+	private bool dead;
 
     void Start()
     {
+		swordController = transform.GetComponentInChildren<PlayerSwordController>();
+		animationController = new PlayerAnimationController();
+		physicsController = new PlayerPhysicsController();
+		
+		animationController.Initialize(this);
+		
 		if (!avatar.IsOwner)
 		{
 			camera.gameObject.SetActive(false);
-			GetComponent<Animator>().enabled = false;
-			return;
+			// GetComponent<Animator>().enabled = false;
 		}
-		
-		Cursor.visible = false;
+
+		// Cursor.visible = false;
 		Cursor.lockState = CursorLockMode.Confined;
 
-		camera = Camera.main.transform;
 		cameraController = camera.GetComponent<CameraController>();
 		cameraController.Initialize(this);
 		
@@ -64,19 +69,10 @@ public class PlayerController : MonoBehaviour
 		
 		inputController = new PlayerInputController();
 		collisionController = new PlayerCollisionController();
-		animationController = new PlayerAnimationController();
 		
-		inputController.Initialize(this); StartCoroutine(EnableInput(0.2f));
-		animationController.Initialize(this);
-		
-		sword = new GameObject($"{gameObject.name} Sword").transform;
-		
-		swordController = sword.gameObject.AddComponent<PlayerSwordController>();
-		swordController.Initialize(this, inputController, animationController);
-		
-		physicsController = new PlayerPhysicsController();
 		physicsController.Initialize(this, inputController, animationController);
-		
+		inputController.Initialize(this); StartCoroutine(EnableInput(0.2f));
+		swordController.Initialize(this, inputController, animationController);
 	}
 	
 	private IEnumerator EnableInput(float delay)
@@ -88,7 +84,7 @@ public class PlayerController : MonoBehaviour
 	
 	void FixedUpdate()
 	{		
-		if (!avatar.IsOwner)
+		if (!avatar.IsOwner || dead)
 			return;
 		
 		physicsController.MoveRigidbody(movement);
@@ -99,21 +95,16 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+		if (dead)
+			return;
+		
+		animationController.DoUpdate();
+		
 		if (!avatar.IsOwner)
 			return;
 		
 		inputController.DoUpdate();
-		animationController.DoUpdate();
-		
 		movement = inputController.SwingDirection() * moveSpeed;
-		
-		animationController.SetAnimatorFloat(
-			"Speed",
-			physicsController.rigidbodySync.velocity.magnitude * 0.35f);
-			
-		animationController.SetAnimatorLayerWeight(
-			1,
-			physicsController.rigidbodySync.velocity.magnitude / moveSpeed);
 		
 		if (swordController.inputAngleChange > 90f)
 		{
@@ -141,9 +132,18 @@ public class PlayerController : MonoBehaviour
 
 		stabHoldTimer += Time.deltaTime;
     }
+
+	private void LateUpdate()
+	{
+		if(dead)
+			return;
+		
+		cameraController.pivotController.DoLateUpdate();
+	}
 	
 	private void OnCollisionEnter(Collision col)
 	{
+		swordController.collisionController.Collide(col);
 		physicsController.Collide(col);
 	}
 	
@@ -171,30 +171,33 @@ public class PlayerController : MonoBehaviour
 	public void Collide(Collision collision) { physicsController.Collide(collision); }
 	public void StopColliding() { physicsController.StopColliding(); }
 	
-	public Transform GetSwordModel() { return _sword.transform; }
+	public void Die()
+	{
+		dead = true;
+	}
 	
 	public Vector3 ToSword() {
-		return swordController.GetComponent<Rigidbody>().position - transform.position;
+		return swordController.physicsController.RigidbodyPosition() - transform.position;
 	}
 	
 	public Vector3 ArmToSword() {
-		return swordController.GetComponent<Rigidbody>().position - animationController.rightArmBone.position;
+		return swordController.physicsController.RigidbodyPosition() - animationController.rightArmBone.position;
 	}
 
 	public Vector3 ApproximateArmToSword() {
-		return swordController.GetComponent<Rigidbody>().position - animationController.ApproximateArmPosition();
+		return swordController.physicsController.RigidbodyPosition() - animationController.ApproximateArmPosition();
 	}
 	
 	public Vector3 ForeArmToSword() {
-		return swordController.GetComponent<Rigidbody>().position - animationController.rightForeArmBone.position;
+		return swordController.physicsController.RigidbodyPosition() - animationController.rightForeArmBone.position;
 	}
 	
 	public Vector3 ChestToSword() {
-		return swordController.GetComponent<Rigidbody>().position - animationController.chestBone.position;
+		return swordController.physicsController.RigidbodyPosition() - animationController.chestBone.position;
 	}
 
 	public Vector3 ApproximateChestToSword() {
-		return swordController.GetComponent<Rigidbody>().position - animationController.ApproximateChestPosition();
+		return swordController.physicsController.RigidbodyPosition() - animationController.ApproximateChestPosition();
 	}
 	
 	public bool SwordHeldVertically(float maxY) {

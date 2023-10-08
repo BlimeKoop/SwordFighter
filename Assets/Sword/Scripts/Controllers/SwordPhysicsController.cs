@@ -8,8 +8,6 @@ public class SwordPhysicsController : MonoBehaviour
 	[HideInInspector] public PlayerSwordController swordController;
 	[HideInInspector] public SwordCollisionController collisionController;
 	
-	private Rigidbody rigidbody;
-	
 	[HideInInspector] public Vector3 velocity;
 	[HideInInspector] public Vector3 lastVelocity;
 	[HideInInspector] public Vector3 activeVelocity;
@@ -18,8 +16,6 @@ public class SwordPhysicsController : MonoBehaviour
     {
 		swordController = playerSwordController;
 		collisionController = playerSwordController.collisionController;
-		
-		rigidbody = PlayerSwordControllerInitialization.InitializeRigidbody(this);
     }
 	
 	public void RecordTransformData()
@@ -28,6 +24,7 @@ public class SwordPhysicsController : MonoBehaviour
 			activeVelocity = velocity;
 	}
 
+	/*
 	public void FreezeRigidbodyUntilFixedUpdate()
 	{
 		rigidbody.isKinematic = true;
@@ -40,45 +37,46 @@ public class SwordPhysicsController : MonoBehaviour
 		yield return new WaitForFixedUpdate();
 		
 		rigidbody.isKinematic = false;
-	}
+	} */
 
 	public void ZeroVelocity()
 	{		
-		rigidbody.velocity *= 0f;
-		rigidbody.angularVelocity *= 0f;
+		velocity *= 0f;
 	}
 
 	public void MoveSword(PlayerController playerController, PlayerSwordController swordController)
 	{
 		Vector3 swordMovement = swordController.movement;
 		
-		float distance = Vector3.Distance(velocity, swordMovement);
-		float distanceFactor = Mathf.Min(distance / 45f, 1.0f);
-		float min_t = 0.15f, max_t = 0.7f;
-		float t = Mathf.Lerp(min_t, max_t, 1.0f - distanceFactor);
-
-		// if (rigidbody.velocity.sqrMagnitude < swordMovement.sqrMagnitude)
-			// t += 0.05f * (1.0f - Mathf.Clamp01(swordMovement.magnitude - velocity.magnitude / 2f));
-		
-		velocity = Vector3.Lerp(velocity, swordMovement, t);
-
+		velocity = InterpolateToMovement(swordMovement);
+/*
 		if (collisionController.Colliding() &&
 			collisionController.collision.transform != playerController.transform)
 			velocity = SwordPhysics.StickSwordMovementToCollision(
-				this, swordMovement, collisionController.collision);
+				this, swordMovement, collisionController.collision); */
 
-		lastVelocity = rigidbody.velocity;
+		lastVelocity = velocity;
 
-		rigidbody.velocity = Vector3.zero;
+		transform.Translate(velocity, Space.World);
+	}
+	
+	private Vector3 InterpolateToMovement(Vector3 movement)
+	{
+		float distance = Vector3.Distance(velocity, movement);
+		float distanceFactor = Mathf.Min(distance / 45f, 1.0f);
+		float min_t = 0.15f, max_t = 0.7f;
+		float t = 1; // Mathf.Lerp(min_t, max_t, 1.0f - distanceFactor);
 
-		rigidbody.AddForce(velocity +
-			swordController.swordPlayerConstraint.positionOffset / Time.fixedDeltaTime,
-			ForceMode.VelocityChange);
+		// if (rigidbodySync.velocity.sqrMagnitude < movement.sqrMagnitude)
+			// t += 0.05f * (1.0f - Mathf.Clamp01(movement.magnitude - velocity.magnitude / 2f));
+		
+		return Vector3.Lerp(velocity, movement, t);
 	}
 	
 	public void RotateSword(Quaternion rotateTo)
 	{
-		Quaternion offset = rotateTo * Quaternion.Inverse(rigidbody.rotation);
+		/*
+		Quaternion offset = rotateTo * Quaternion.Inverse(rigidbodySync.rotation);
 		
 		offset.ToAngleAxis(out float angle, out Vector3 axis);
 		axis.Normalize();
@@ -89,16 +87,19 @@ public class SwordPhysicsController : MonoBehaviour
 		if (Mathf.Abs(angle) < 0.001f || axis.magnitude < 0.001f)
 			return;
 		
-		rigidbody.angularVelocity = Vector3.zero;
+		rigidbodySync.angularVelocity = Vector3.zero;	
+		rigidbodySync.AddTorque(axis * angle, ForceMode.VelocityChange);
+		*/
 		
-		rigidbody.AddTorque(axis * angle, ForceMode.VelocityChange);
+		transform.rotation = rotateTo;
 	}
 	
-	public Vector3 GetNextPosition() { return rigidbody.position + rigidbody.velocity * Time.fixedDeltaTime; }
-	public Vector3 GetNextPosition(Vector3 movement) {
-		return rigidbody.position + (rigidbody.velocity + movement) * Time.fixedDeltaTime;
+	public Vector3 GetNextPosition() { return transform.position + velocity; } // { return rigidbodySync.position + rigidbodySync.velocity * Time.fixedDeltaTime; }
+	public Vector3 GetNextPosition(Vector3 movement) { return transform.position + InterpolateToMovement(movement); } /*
+		{
+		return rigidbodySync.position + (rigidbodySync.velocity + movement) * Time.fixedDeltaTime;
 	}
-
-	public Vector3 RigidbodyPosition() { return rigidbody.position; }
-	public Quaternion RigidbodyRotation() { return rigidbody.rotation; }
+*/
+	public Vector3 RigidbodyPosition() { return transform.position; } // rigidbodySync.position; }
+	public Quaternion RigidbodyRotation() { return transform.rotation; } // rigidbodySync.rotation; }
 }

@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Alteruna;
 
 public class PlayerAnimationController
 {
 	[HideInInspector] public PlayerController playerController;
 	
+	private RigidbodySynchronizable rigidbodySync;
+	
 	[HideInInspector] public Animator animator;
-	[HideInInspector] public Avatar animatorAvatar;
+	[HideInInspector] public UnityEngine.Avatar animatorAvatar;
 	
 	[HideInInspector] public Transform rightArmIKTarget;
 	[HideInInspector] public ArmIKTargetController swordArmIKTargetController;
@@ -36,11 +39,16 @@ public class PlayerAnimationController
 	{
 		swordArmIKTargetController.DoUpdate();
 		swordForeArmIKTargetController.DoUpdate();
+		
+		SetAnimatorFloat("Speed", rigidbodySync.velocity.magnitude * 0.35f);
+		SetAnimatorLayerWeight(1, rigidbodySync.velocity.magnitude / playerController.moveSpeed);
 	}
 	
     public void Initialize(PlayerController playerController)
     {	
 		this.playerController = playerController;
+		
+		rigidbodySync = playerController.GetComponent<RigidbodySynchronizable>();
 		
 		transform = playerController.transform;
 		animator = playerController.GetComponent<Animator>();
@@ -59,19 +67,19 @@ public class PlayerAnimationController
 		chestArmHandRatio = (chestArmDistance * 1.3f / Vector3.Distance(rightArmBone.position, rightHandBone.position));
 		verticalArmDistance = rightArmBone.position.y - transform.position.y;
 		horizontalArmDistance = Vector3.Dot(rightArmBone.position - transform.position, transform.right);
+		
+		InitializeSwordIKTargets();
 	}
 	
-	public void InitializeSwordIKTargets(PlayerSwordController swordController)
+	public void InitializeSwordIKTargets()
 	{
-		Transform sword = swordController.transform.GetChild(0);
-		
 		rightArmIKTarget = playerController.swordRig.Find("Right Arm IK Target");
 		swordArmIKTargetController = rightArmIKTarget.gameObject.AddComponent<ArmIKTargetController>();
 		swordArmIKTargetController.SetAnimationController(this);
 
 		rightForeArmIKTarget = playerController.swordRig.Find("Right ForeArm IK Target");
 		swordForeArmIKTargetController = rightForeArmIKTarget.gameObject.AddComponent<ForeArmIKTargetController>();
-		swordForeArmIKTargetController.SetSwordController(swordController);
+		swordForeArmIKTargetController.SetSwordController(playerController.swordController);
 	}
 	
 	public Vector3 SwordAimDirection()
