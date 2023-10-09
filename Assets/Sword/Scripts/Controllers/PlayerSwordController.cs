@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using DynamicMeshCutter;
 
-public class PlayerSwordController : MonoBehaviour
+public class PlayerSwordController
 {
 	[HideInInspector] public Material cutMaterial;
+	[HideInInspector] public Transform sword;
 	
 	[HideInInspector] public SwordPlayerConstraint swordPlayerConstraint;
 	[HideInInspector] public SwordPhysicsController physicsController;
@@ -16,6 +17,9 @@ public class PlayerSwordController : MonoBehaviour
 	[HideInInspector] public SwordCollisionController collisionController;
 	[HideInInspector] public SwordCutterBehaviour swordCutterBehaviour;
 	
+	// private SwordBaseController baseController;
+	// private SwordTipController tipController;
+	
 	[HideInInspector] public Transform rollController;
 	
 	[HideInInspector] public Quaternion stabRotation;
@@ -24,21 +28,19 @@ public class PlayerSwordController : MonoBehaviour
 	[HideInInspector] public float drag = 0.3f;
 
 	[HideInInspector] public float length;
-	private float grabPointRatio = 0.28f;
+	
+	[HideInInspector] public float grabPointRatio = 0.28f;
 	
 	[HideInInspector] public float armBendAmount = 0f;
-	
-	private float straightenTimer;
-	private float straightenDuration = 0.5f;
 	
 	[HideInInspector] public float inputAngleChange, inputSpeedChange;
 
 	[HideInInspector] public Vector3 movement;
 	
-	private float hitCooldownTimer;
-	private float HitCooldown = 0.012f;
-
-	private int layerStore;
+	private float hitCooldownTimer, straightenTimer;
+	private float HitCooldown = 0.012f, StraightenDuration = 0.5f;
+	
+	private Vector2 baseInput, tipInput;
 	
 	private ArmIKHelperController ikHelperController;
 	
@@ -60,41 +62,41 @@ public class PlayerSwordController : MonoBehaviour
 		this.playerController = playerController;
 		this.inputController = inputController;
 		this.animationController = animationController;
+
+		sword = playerController.sword;
+
+		rollController = new GameObject($"{playerController.gameObject.name} Sword Roll Controller").transform;
+		rollController.parent = sword;
 		
-		gameObject.layer = Collisions.swordLayer;
-		
-		transform.position = animationController.rightHandBone.position;
-		transform.rotation = animationController.rightHandBone.rotation;
-		
-		rollController = transform.GetChild(0);
 		InitializeSwordModel();
 		
-		rotation = transform.rotation;
+		// baseController = new SwordBaseController();
+		// tipController = new SwordTipController();
 		
-		collisionController = PlayerSwordControllerInitialization.InitializeCollisionController(this);
-		swordCutterBehaviour = PlayerSwordControllerInitialization.InitializeSwordCutterBehaviour(this);
+		rotation = sword.rotation;
+		
+		collisionController = PlayerSwordInitialization.CollisionController(this);
+		swordCutterBehaviour = PlayerSwordInitialization.SwordCutterBehaviour(this);
 
-		physicsController = PlayerSwordControllerInitialization.InitializePhysicsController(this);
+		physicsController = PlayerSwordInitialization.PhysicsController(this);
 
-		swordPlayerConstraint = gameObject.AddComponent<SwordPlayerConstraint>();
+		swordPlayerConstraint = sword.gameObject.AddComponent<SwordPlayerConstraint>();
 		swordPlayerConstraint.Initialize(this);
-		
-		StartCoroutine(CheckInputChange());
 	}
 	
 	private void InitializeSwordModel()
 	{
-		Transform swordModel = playerController.swordObject;
+		Transform swordModel = playerController.swordModel;
 
-		swordModel.GetComponentInChildren<Collider>().gameObject.layer = gameObject.layer;
+		swordModel.GetComponentInChildren<Collider>().gameObject.layer = Collisions.SwordLayer;
 		
 		length = PlayerSword.OrientToModelLength(this);
 
 		swordModel.position += (
-			transform.position -
+			sword.position -
 			swordModel.GetComponentInChildren<MeshRenderer>().bounds.center);
 			
-		swordModel.position += transform.forward * length * (0.5f - grabPointRatio);
+		swordModel.position += sword.forward * length * (0.5f - grabPointRatio);
 		swordModel.parent = rollController;
 	}
 	
@@ -110,19 +112,24 @@ public class PlayerSwordController : MonoBehaviour
 		swordPlayerConstraint.CalculateOffsets();
 		
 		physicsController.RecordTransformData();
-		physicsController.MoveSword(playerController, this);
+		
+		physicsController.CalculateBaseForce(baseInput);
+		physicsController.CalculateTipForce(tipInput);
+		
+		physicsController.ClampPosition(this);
+		physicsController.Move(playerController, this);
 		
 		swordPlayerConstraint.RecordOffsets();
 		
 		UpdateRotation();
-		physicsController.RotateSword(rotation);
+		physicsController.RotateSword(this);
 		
 		movement = Vector3.zero;
 	}
 	
 	public void UpdateRotation() {
 		if (playerController.alignStab || playerController.stab)
-			rotation = Quaternion.Lerp(transform.rotation, PlayerSword.CalculateRotation(this), 0.2f);
+			rotation = Quaternion.Lerp(sword.rotation, PlayerSword.CalculateRotation(this), 0.2f);
 		else
 			rotation = PlayerSword.CalculateRotation(this);
 	}
@@ -130,7 +137,7 @@ public class PlayerSwordController : MonoBehaviour
 	public void DoUpdate()
 	{
 		if (inputController.GetSwingInput().magnitude > 0.3f)
-			straightenTimer = straightenDuration;
+			straightenTimer = StraightenDuration;
 		
 		armBendAmount = ArmBendAmount();
 		HandleSwingLock();
@@ -160,15 +167,19 @@ public class PlayerSwordController : MonoBehaviour
 		if (swingLock)
 		{			
 			if (inputAngleChange > 60f ||
-				inputController.GetSwingInput().magnitude < SwingLockMinSpeed ||
-				!playerController.SwordHeldVertically(0f))
+			inputController.GetSwingInput().magnitude < SwingLockMinSpeed ||
+			!playerController.SwordHeldVertically(0f))
 			{
 				swingLock = false;
 				disableSwingLock = true;
 			}
 		}
-		else if (!disableSwingLock && inputController.swingInput.magnitude > SwingLockMinSpeed && playerController.SwordHeldVertically(ArmDirYSwingLockMin))
+		else if (!disableSwingLock &&
+			inputController.GetSwingInput().magnitude > SwingLockMinSpeed &&
+			playerController.SwordHeldVertically(ArmDirYSwingLockMin))
+		{
 			swingLock = true;
+		}
 		
 		if (disableSwingLock)
 			disableSwingLock = playerController.SwordHeldVertically(ArmDirYSwingLockMin);
@@ -204,19 +215,21 @@ public class PlayerSwordController : MonoBehaviour
 		if (obj.GetComponent<Fracture>() != null)
 			return false;
 		
-		float thickness = 2.0f;
+		float thickness = 0.9f;
 		
 		Vector3 origin = col.contacts[0].point - col.contacts[0].normal * thickness;
 		Vector3 direction = col.contacts[0].normal;
 		
-		if (!Physics.Raycast(origin, direction, thickness / 2, ~(1 << 6)))
+		Debug.DrawRay(origin, direction * thickness, Color.red, 10f);
+		
+		if (!Physics.SphereCast(origin, 0.01f, direction, out RaycastHit hit, thickness * 0.9f, ~(1 << 6)))
 			return false;
 		
 		if (Vector3.Scale(obj.GetComponentInChildren<Renderer>().bounds.size,
 			new Vector3(1f, 0f, 1f)).magnitude > 20f)
 			return false;
 		
-		swordCutterBehaviour.CutObject(obj, gameObject, physicsController.lastVelocity.normalized);
+		swordCutterBehaviour.CutObject(obj, sword.gameObject, sword.forward);
 		
 		hitCooldownTimer = HitCooldown;
 		
@@ -234,10 +247,10 @@ public class PlayerSwordController : MonoBehaviour
 		if (hitCooldownTimer > 0)
 			return false;
 
-		obj.GetComponent<Rigidbody>().AddForce(transform.forward * 2f, ForceMode.Impulse);
+		obj.GetComponent<Rigidbody>().AddForce(sword.forward * 2f, ForceMode.Impulse);
 
 		Fracture f = obj.GetComponent<Fracture>();
-		PlayerSwordControllerInitialization.InitializeFractureComponent(f, this);
+		PlayerSwordInitialization.FractureComponent(f, this);
 
 		f.CauseFracture();
 		
@@ -246,23 +259,33 @@ public class PlayerSwordController : MonoBehaviour
 		return true;
 	}
 	
-	private IEnumerator CheckInputChange()
+	public void CheckInputChange(Vector2 inputStore)
 	{
-		Vector2 inputStore = inputController.GetSwingInput();
-		
-		yield return new WaitForSeconds(0.07f);
-		
 		if (inputStore.magnitude > 0.2f && inputController.GetSwingInput().magnitude < 0.1f)
 			inputAngleChange = 0;
-		else
+		else if (inputStore.magnitude > 0.01f)
 			inputAngleChange = Vector2.Angle(inputStore, inputController.GetSwingInput());
 		
 		inputSpeedChange = Mathf.Abs(inputStore.magnitude - inputController.GetSwingInput().magnitude);
-		
-		StartCoroutine(CheckInputChange());
 	}
 	
-	public void RecordStabRotation() { stabRotation = transform.rotation; }
+	public Vector3 GetBasePosition() { return physicsController.rigidbodySync.position; }
+	public Vector3 GetTipPosition()
+	{
+		return (GetBasePosition() + sword.transform.forward * (length - length * grabPointRatio));
+	}
+	
+	public void SetBaseInput(Vector2 input)
+	{
+		baseInput = input;
+	}
+		
+	public void SetTipInput(Vector2 input)
+	{
+		tipInput = input;
+	}
+	
+	public void RecordStabRotation() { stabRotation = sword.rotation; }
 	public void BendSwordArm() { armBendAmount = 1.0f; }
 	public float GetGrabPointRatio() { return grabPointRatio; }
 	

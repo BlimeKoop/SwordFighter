@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ForeArmIKTargetController : MonoBehaviour
 {
-	public PlayerSwordController swordController;
+	public PlayerController playerController;
 	
 	public void DoUpdate()
 	{
@@ -13,9 +13,9 @@ public class ForeArmIKTargetController : MonoBehaviour
 	
 	public Vector3 CalculatePosition()
 	{
-		return swordController.transform.position;		
+		return playerController.sword.position;		
 	}
 
-	public void SetSwordController(PlayerSwordController swordController)
-	{ this.swordController = swordController; }
+	public void SetPlayerController(PlayerController playerController)
+	{ this.playerController = playerController; }
 }

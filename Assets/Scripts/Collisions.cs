@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class Collisions
 {
-	public static int swordLayer = 6, ignoreSwordLayer = 7, onlySwordLayer = 8; 
+	public static int SwordLayer = 6, IgnoreSwordLayer = 7, OnlySwordLayer = 8; 
 }

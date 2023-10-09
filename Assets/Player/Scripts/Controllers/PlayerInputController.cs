@@ -13,9 +13,10 @@ public class PlayerInputController
 	
 	[HideInInspector]
 	public Vector2 movementInput;
+
+	private Vector2 swingInput;
 	
-	[HideInInspector]
-	public Vector2 swingInput, swingInputActive;
+	[HideInInspector] public Vector2 storedSwingInput, swingInputActive;
 	
 	private float SwingInputMult = 0.1f;
 	
@@ -57,15 +58,22 @@ public class PlayerInputController
 	{
 		movementInput = playerInputActions.PlayerMap.Move.ReadValue<Vector2>();
 	}
-	
-	private void RecordSwingInput()
+
+	public void RecordSwingInput()
 	{
 		swingInput = playerInputActions.PlayerMap.Swing.ReadValue<Vector2>() * SwingInputMult;
-		
-		if (swingInput.magnitude > 0.0f)
-			swingInputActive = swingInput;
 	}
-	
+
+	public void StoreSwingInput()
+	{
+		storedSwingInput = swingInput;
+	}
+
+	public Vector2 GetSwingInput()
+	{
+		return swingInput;
+	}
+
 	private void TogglePause()
 	{
 		paused = !paused;
@@ -75,17 +83,9 @@ public class PlayerInputController
 	{
 		paused = false;
 	}
-
+	
     public void DoUpdate()
-    {		
-		if (paused)
-		{
-			movementInput = Vector2.zero;
-			swingInput = Vector2.zero;
-			
-			return;
-		}
-		
+    {
 		ZeroSwingInput();
     }
 	
@@ -105,7 +105,7 @@ public class PlayerInputController
 			swingInput = Vector2.zero;	
 	}
 	
-	public Vector3 SwingDirection() {
+	public Vector3 MoveDirection() {
 		Vector2 movementInput = GetMovementInput();
 		
 		Transform camera = playerController.camera;
@@ -116,6 +116,4 @@ public class PlayerInputController
 	}
 	
 	public Vector2 GetMovementInput() { return movementInput; }
-	public Vector2 GetSwingInput() { return swingInput; }
-	public Vector2 GetSwingInputActive() { return swingInputActive; }
 }

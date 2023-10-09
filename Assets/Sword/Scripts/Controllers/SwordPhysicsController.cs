@@ -2,20 +2,32 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Alteruna;
 
-public class SwordPhysicsController : MonoBehaviour
+public class SwordPhysicsController
 {
+	[HideInInspector] public PlayerController playerController;
 	[HideInInspector] public PlayerSwordController swordController;
 	[HideInInspector] public SwordCollisionController collisionController;
+	
+	public RigidbodySynchronizable rigidbodySync;
+	public Rigidbody rigidbody;
+	
+	[HideInInspector] public Vector3 baseForce;
+	[HideInInspector] public Vector3 tipForce;
 	
 	[HideInInspector] public Vector3 velocity;
 	[HideInInspector] public Vector3 lastVelocity;
 	[HideInInspector] public Vector3 activeVelocity;
 	
-    public void Initialize(PlayerSwordController playerSwordController)
+    public void Initialize(PlayerSwordController swordController)
     {
-		swordController = playerSwordController;
-		collisionController = playerSwordController.collisionController;
+		this.swordController = swordController;
+		collisionController = swordController.collisionController;
+		playerController = swordController.playerController;
+		
+		rigidbodySync = PlayerSwordInitialization.RigidbodySynchronizable(playerController);
+		rigidbody = PlayerSwordInitialization.Rigidbody(playerController);
     }
 	
 	public void RecordTransformData()
@@ -44,20 +56,33 @@ public class SwordPhysicsController : MonoBehaviour
 		velocity *= 0f;
 	}
 
-	public void MoveSword(PlayerController playerController, PlayerSwordController swordController)
+	public void Move(PlayerController playerController, PlayerSwordController swordController)
 	{
-		Vector3 swordMovement = swordController.movement;
+		Vector3 dir = swordController.GetTipPosition() - swordController.GetBasePosition();
+		Vector3 nextDir = (swordController.GetTipPosition() + tipForce * Time.fixedDeltaTime) - swordController.GetBasePosition();
+		Vector3 axis = Vector3.Cross(dir, nextDir).normalized;
 		
-		velocity = InterpolateToMovement(swordMovement);
-/*
-		if (collisionController.Colliding() &&
-			collisionController.collision.transform != playerController.transform)
-			velocity = SwordPhysics.StickSwordMovementToCollision(
-				this, swordMovement, collisionController.collision); */
-
-		lastVelocity = velocity;
-
-		transform.Translate(velocity, Space.World);
+		// Debug.Log(baseForce);
+		
+		// rigidbodySync.AddTorque(axis * tipForce.magnitude);
+		rigidbodySync.AddForce(baseForce);
+	}
+	
+	public void ClampPosition(PlayerSwordController swordController)
+	{
+		Vector3 fromTo = (
+			swordController.GetBasePosition() -
+			playerController.animationController.ApproximateArmPosition());
+		
+		if (fromTo.magnitude < playerController.animationController.GetArmLength())
+			return;
+		
+		rigidbodySync.MovePosition(
+			rigidbodySync.position -
+			fromTo.normalized *
+			(fromTo.magnitude - playerController.animationController.GetArmLength()));
+			
+		rigidbodySync.velocity -= fromTo.normalized * Vector3.Dot(rigidbodySync.velocity, fromTo.normalized);
 	}
 	
 	private Vector3 InterpolateToMovement(Vector3 movement)
@@ -73,33 +98,26 @@ public class SwordPhysicsController : MonoBehaviour
 		return Vector3.Lerp(velocity, movement, t);
 	}
 	
-	public void RotateSword(Quaternion rotateTo)
+	public void RotateSword(PlayerSwordController swordController)
 	{
-		/*
-		Quaternion offset = rotateTo * Quaternion.Inverse(rigidbodySync.rotation);
-		
-		offset.ToAngleAxis(out float angle, out Vector3 axis);
-		axis.Normalize();
-		
-		if (angle > 180f)
-			angle = -(360f - angle);
-		
-		if (Mathf.Abs(angle) < 0.001f || axis.magnitude < 0.001f)
-			return;
-		
-		rigidbodySync.angularVelocity = Vector3.zero;	
-		rigidbodySync.AddTorque(axis * angle, ForceMode.VelocityChange);
-		*/
-		
-		transform.rotation = rotateTo;
+		// rigidbodySync.MoveRotation(Quaternion.LookRotation(swordController.GetTipPosition() - swordController.GetBasePosition()));
 	}
 	
-	public Vector3 GetNextPosition() { return transform.position + velocity; } // { return rigidbodySync.position + rigidbodySync.velocity * Time.fixedDeltaTime; }
-	public Vector3 GetNextPosition(Vector3 movement) { return transform.position + InterpolateToMovement(movement); } /*
-		{
+	public void CalculateBaseForce(Vector2 input)
+	{
+		baseForce = PlayerSwordMovement.BaseMovement(playerController, input) / Time.fixedDeltaTime;
+	}
+		
+	public void CalculateTipForce(Vector2 input)
+	{
+		tipForce = PlayerSwordMovement.TipMovement(playerController, input) / Time.fixedDeltaTime;
+	}
+	
+	public Vector3 GetNextPosition() { return rigidbodySync.position + rigidbodySync.velocity * Time.fixedDeltaTime; }
+	public Vector3 GetNextPosition(Vector3 movement)
+	{
 		return rigidbodySync.position + (rigidbodySync.velocity + movement) * Time.fixedDeltaTime;
 	}
-*/
-	public Vector3 RigidbodyPosition() { return transform.position; } // rigidbodySync.position; }
-	public Quaternion RigidbodyRotation() { return transform.rotation; } // rigidbodySync.rotation; }
+	public Vector3 RigidbodyPosition() { return rigidbodySync.position; }
+	public Quaternion RigidbodyRotation() { return rigidbodySync.rotation; }
 }

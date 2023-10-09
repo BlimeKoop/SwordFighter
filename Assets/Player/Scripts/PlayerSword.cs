@@ -6,12 +6,14 @@ public class PlayerSword
 {
 	public static float OrientToModelLength(PlayerSwordController playerSwordController)
 	{
-		Transform swordModel = playerSwordController.playerController.swordObject;
-		Bounds meshBounds = swordModel.GetComponentInChildren<MeshFilter>().mesh.bounds;
+		Transform swordModel = playerSwordController.playerController.swordModel;
+		MeshFilter meshFilter = swordModel.GetComponentInChildren<MeshFilter>();
+		Bounds bounds = meshFilter.mesh.bounds;
+		Vector3 size = Vector3.Scale(bounds.size, meshFilter.transform.lossyScale);
 		
-		float sizeX = meshBounds.size.x;
-		float sizeY = meshBounds.size.y;
-		float sizeZ = meshBounds.size.z;
+		float sizeX = Mathf.Abs(size.x);
+		float sizeY = Mathf.Abs(size.y);
+		float sizeZ = Mathf.Abs(size.z);
 
 		float thickness = Mathf.Min(sizeX, Mathf.Min(sizeY, sizeZ));
 		float length = Mathf.Max(sizeX, Mathf.Max(sizeY, sizeZ));
@@ -29,7 +31,7 @@ public class PlayerSword
 		else if (thickness == sizeZ)
 			shortestDirection = 2;
 
-		swordModel.rotation = playerSwordController.transform.rotation;
+		swordModel.rotation = playerSwordController.playerController.sword.rotation;
 		
 		if (longestDirection == 0)
 			swordModel.rotation *= Quaternion.Euler(0f, -90f, 0f);
@@ -41,6 +43,8 @@ public class PlayerSword
 	
 	public static Vector3 CalculateMovement(PlayerSwordController playerSwordController)
 	{
+		return new Vector3();
+		/*
 		PlayerController playerController = playerSwordController.playerController;
 		PlayerInputController inputController = playerController.inputController;
 		
@@ -59,19 +63,7 @@ public class PlayerSword
 			movementR = ClampMovement(playerSwordController, movementR);
 
 		return movementR;
-	}
-	
-	public static Vector3 ClampMovement(PlayerSwordController playerSwordController, Vector3 _movement)
-	{
-		PlayerController playerController = playerSwordController.playerController;
-		
-		Vector3 movementR = _movement;
-		
-		movementR = PlayerSwordMovementClamping.ArmClampedMovement(playerController, playerSwordController, movementR);
-		// movementR = PlayerSwordMovementClamping.ForeArmClampedMovement(playerController, playerSwordController, movementR);
-		movementR = PlayerSwordMovementClamping.DistanceClampedMovement(playerController, playerSwordController, movementR);
-		
-		return movementR;
+		*/
 	}
 	
 	public static Quaternion CalculateRotation(PlayerSwordController playerSwordController)

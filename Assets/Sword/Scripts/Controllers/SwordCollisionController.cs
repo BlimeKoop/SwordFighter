@@ -15,12 +15,12 @@ public class SwordCollisionController : MonoBehaviour
 	[HideInInspector] public bool cutting, phasing;
 	[HideInInspector] public Collision collision;
 	
-	public void Initialize()
+	public void Initialize(PlayerSwordController swordController)
 	{
-		swordController = GetComponent<PlayerSwordController>();
-		physicsController = GetComponent<SwordPhysicsController>();
+		this.swordController = swordController;
+		physicsController = swordController.physicsController;
 		
-		GameObject meshObj = GetComponentInChildren<MeshFilter>().gameObject;
+		GameObject meshObj = playerController.swordModel.GetComponentInChildren<MeshFilter>().gameObject;
 		boxCol = meshObj.GetComponent<BoxCollider>();
 		
 		if (boxCol == null)
@@ -48,7 +48,7 @@ public class SwordCollisionController : MonoBehaviour
 
 	public void Collide(Collision col)
 	{
-		if (!col.GetContact(0).thisCollider == boxCol)
+		if (col.GetContact(0).thisCollider != boxCol)
 			return;
 		
 		if (swordController.TryShatter(col.gameObject))

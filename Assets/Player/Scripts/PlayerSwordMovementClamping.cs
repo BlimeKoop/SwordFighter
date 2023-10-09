@@ -4,6 +4,19 @@ using UnityEngine;
 
 public class PlayerSwordMovementClamping
 {
+	public static Vector3 ClampedMovement(PlayerSwordController playerSwordController, Vector3 _movement)
+	{
+		PlayerController playerController = playerSwordController.playerController;
+		
+		Vector3 movementR = _movement;
+		
+		movementR = PlayerSwordMovementClamping.ArmClampedMovement(playerController, playerSwordController, movementR);
+		// movementR = PlayerSwordMovementClamping.ForeArmClampedMovement(playerController, playerSwordController, movementR);
+		movementR = PlayerSwordMovementClamping.DistanceClampedMovement(playerController, playerSwordController, movementR);
+		
+		return movementR;
+	}
+	
 	public static Vector3 DistanceClampedMovement(PlayerController playerController, PlayerSwordController swordController,
 	Vector3 movement)
 	{
@@ -107,7 +120,7 @@ public class PlayerSwordMovementClamping
 	public static Vector3 ForeArmClamping(PlayerController playerController, PlayerSwordController swordController,
 	Vector3 clamping)
 	{	
-		Vector3 swordPos = swordController.GetComponent<Rigidbody>().position;
+		Vector3 swordPos = swordController.physicsController.RigidbodyPosition();
 		
 		Transform rightShoulder = playerController.animationController.rightShoulderBone;
 		Transform rightForeArm = playerController.animationController.rightForeArmBone;

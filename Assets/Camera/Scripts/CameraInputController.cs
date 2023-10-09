@@ -12,7 +12,7 @@ public class CameraInputController : MonoBehaviour
     {
 		this.cameraController = cameraController;
 
-		if (!cameraController.playerController.avatar.IsOwner)
+		if (cameraController.playerController.avatar.Owner != null && !cameraController.playerController.avatar.IsOwner)
 			return;
 		
         inputActions = new CameraInputActions();

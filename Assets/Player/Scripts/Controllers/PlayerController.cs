@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
 	
 	[HideInInspector] public PlayerInput input;
 	
+	public Spawner spawner;
+	
 	public Transform rig;
 	public Transform swordRig;
 	
@@ -24,7 +26,8 @@ public class PlayerController : MonoBehaviour
 	public Transform camera;
 	[HideInInspector] public CameraController cameraController;
 	
-	public Transform swordObject;
+	public Transform sword;
+	[HideInInspector] public Transform swordModel;
 	
 	public float moveSpeed = 8.0f;
 	public float swingSpeed = 9.0f;
@@ -40,51 +43,101 @@ public class PlayerController : MonoBehaviour
 	
 	public float SwordHoldDistance = 0.5f;
 	
-	private float StabHoldDuration = 0.5f;
+	private const float StabHoldDuration = 0.5f;
+	private const float InputAngleSwivelThreshold = 90f;
+	
 	[HideInInspector] public float stabHoldTimer;
 	
 	private bool dead;
 
     void Start()
-    {
-		swordController = transform.GetComponentInChildren<PlayerSwordController>();
-		animationController = new PlayerAnimationController();
-		physicsController = new PlayerPhysicsController();
+    {		
+		// Cursor.visible = false;
+		// Cursor.lockState = CursorLockMode.Locked;
 		
-		animationController.Initialize(this);
-		
-		if (!avatar.IsOwner)
+		if (avatar.Owner != null && !avatar.IsOwner)
 		{
 			camera.gameObject.SetActive(false);
 			// GetComponent<Animator>().enabled = false;
 		}
 
-		// Cursor.visible = false;
-		Cursor.lockState = CursorLockMode.Confined;
-
-		cameraController = camera.GetComponent<CameraController>();
-		cameraController.Initialize(this);
+		physicsController = new PlayerPhysicsController();
+		animationController = new PlayerAnimationController();
+		swordController = new PlayerSwordController();
 		
-		input = GetComponent<PlayerInput>();
+		animationController.Initialize(this);
 		
-		inputController = new PlayerInputController();
-		collisionController = new PlayerCollisionController();
+		swordModel = sword;
+		sword = new GameObject($"{gameObject.name} Sword").transform;
+		sword.position = animationController.rightHandBone.position;
+		sword.rotation = animationController.rightHandBone.rotation;
 		
-		physicsController.Initialize(this, inputController, animationController);
-		inputController.Initialize(this); StartCoroutine(EnableInput(0.2f));
-		swordController.Initialize(this, inputController, animationController);
+		if (avatar.IsOwner)
+		{
+			cameraController = camera.GetComponent<CameraController>();
+			cameraController.Initialize(this);
+			
+			input = GetComponent<PlayerInput>();
+			
+			inputController = new PlayerInputController();
+			collisionController = new PlayerCollisionController();
+			
+			swordController.Initialize(this, inputController, animationController);
+			physicsController.Initialize(this, inputController, animationController);
+			inputController.Initialize(this); StartCoroutine(StartInput(0.2f));
+		}
 	}
 	
-	private IEnumerator EnableInput(float delay)
+	private IEnumerator StartInput(float delay)
 	{
 		yield return new WaitForSeconds(delay);
 
 		inputController.EnableInput();
+		StartCoroutine(RecordSwingInput());
+		StartCoroutine(CheckInputChange());
+	}
+	
+	private IEnumerator RecordSwingInput()
+	{
+		// yield return new WaitWhile(() => inputController.GetSwingInput().sqrMagnitude == 0);
+		
+		inputController.StoreSwingInput();
+		
+		float seconds = 0.14f;
+		
+		while (seconds > 0f)
+		{
+			seconds -= Time.deltaTime;
+			
+			if (swordController.inputAngleChange > 50f)
+				seconds = 0;
+			
+			yield return null;
+		}
+		
+		// yield return new WaitWhile(() => inputController.GetSwingInput().sqrMagnitude == 0);
+		
+		swordController.SetTipInput(inputController.storedSwingInput);
+		swordController.SetBaseInput(inputController.GetSwingInput());
+		
+		StartCoroutine(RecordSwingInput());
+		
+	}
+	
+	private IEnumerator CheckInputChange()
+	{
+		Vector2 inputStore = inputController.GetSwingInput();
+		
+		yield return new WaitForSeconds(0.07f);
+		
+		swordController.CheckInputChange(inputStore);
+		
+		StartCoroutine(CheckInputChange());
 	}
 	
 	void FixedUpdate()
 	{		
-		if (!avatar.IsOwner || dead)
+		if (avatar.Owner != null && !avatar.IsOwner || dead)
 			return;
 		
 		physicsController.MoveRigidbody(movement);
@@ -100,13 +153,14 @@ public class PlayerController : MonoBehaviour
 		
 		animationController.DoUpdate();
 		
-		if (!avatar.IsOwner)
+		if (avatar.Owner != null && !avatar.IsOwner)
 			return;
 		
 		inputController.DoUpdate();
-		movement = inputController.SwingDirection() * moveSpeed;
 		
-		if (swordController.inputAngleChange > 90f)
+		movement = inputController.MoveDirection() * moveSpeed;
+		
+		if (swordController.inputAngleChange > InputAngleSwivelThreshold)
 		{
 			if (!block && !stab)
 			{
@@ -135,7 +189,7 @@ public class PlayerController : MonoBehaviour
 
 	private void LateUpdate()
 	{
-		if(dead)
+		if(dead || avatar.Owner != null && !avatar.IsOwner)
 			return;
 		
 		cameraController.pivotController.DoLateUpdate();
@@ -143,12 +197,18 @@ public class PlayerController : MonoBehaviour
 	
 	private void OnCollisionEnter(Collision col)
 	{
+		if(dead || avatar.Owner != null && !avatar.IsOwner)
+			return;
+		
 		swordController.collisionController.Collide(col);
 		physicsController.Collide(col);
 	}
 	
 	private void OnCollisionExit (Collision col)
 	{
+		if(dead || avatar.Owner != null && !avatar.IsOwner)
+			return;
+		
 		physicsController.StopColliding();
 	}
 	

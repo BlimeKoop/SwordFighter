@@ -37,11 +37,14 @@ public class PlayerAnimationController
 	
 	public void DoUpdate()
 	{
-		swordArmIKTargetController.DoUpdate();
-		swordForeArmIKTargetController.DoUpdate();
-		
 		SetAnimatorFloat("Speed", rigidbodySync.velocity.magnitude * 0.35f);
 		SetAnimatorLayerWeight(1, rigidbodySync.velocity.magnitude / playerController.moveSpeed);
+		
+		if (playerController.avatar.Owner != null && !playerController.avatar.IsOwner)
+			return;
+		
+		swordArmIKTargetController.DoUpdate();
+		swordForeArmIKTargetController.DoUpdate();
 	}
 	
     public void Initialize(PlayerController playerController)
@@ -79,7 +82,7 @@ public class PlayerAnimationController
 
 		rightForeArmIKTarget = playerController.swordRig.Find("Right ForeArm IK Target");
 		swordForeArmIKTargetController = rightForeArmIKTarget.gameObject.AddComponent<ForeArmIKTargetController>();
-		swordForeArmIKTargetController.SetSwordController(playerController.swordController);
+		swordForeArmIKTargetController.SetPlayerController(playerController);
 	}
 	
 	public Vector3 SwordAimDirection()

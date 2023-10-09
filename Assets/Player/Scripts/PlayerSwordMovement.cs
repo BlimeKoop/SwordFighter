@@ -4,22 +4,37 @@ using UnityEngine;
 
 public class PlayerSwordMovement
 {
-	public static Vector3 SwingMovement(PlayerController playerController, PlayerSwordController swordController, PlayerInputController inputController)
+	public static Vector3 TipMovement(PlayerController playerController, Vector2 input)
 	{
-		Vector3 direction = SwingDirection(playerController, swordController, inputController);
+		Vector3 direction = TipDirection(playerController, input);
 
-		float inputSpeed = Mathf.Min(inputController.GetSwingInput().magnitude, 150f);
+		float inputSpeed = Mathf.Min(input.magnitude, 150f);
 		
 		Vector3 movementR = direction * inputSpeed;
-		movementR *= Mathf.Max(0.0f, 1.0f - swordController.weight);
+		movementR *= Mathf.Max(0.0f, 1.0f - playerController.swordController.weight);
 		movementR *= playerController.swingSpeed;
-		movementR += DistanceMovement(playerController, swordController) * 0.5f;
+
+		return movementR;
+	}
+	
+	public static Vector3 BaseMovement(PlayerController playerController, Vector2 input)
+	{
+		Vector3 direction = BaseDirection(playerController, input);
+
+		float inputSpeed = Mathf.Min(input.magnitude, 150f);
+		
+		Vector3 movementR = direction * inputSpeed;
+		movementR *= Mathf.Max(0.0f, 1.0f - playerController.swordController.weight);
+		movementR *= playerController.swingSpeed;
+		// movementR = ClampMovement(playerController, movementR);
+		movementR += DistanceMovement(playerController, playerController.swordController);
 
 		return movementR;
 	}
 	
 	public static Vector3 BlockMovement(PlayerController playerController, PlayerSwordController swordController, PlayerInputController inputController)
 	{
+		/*
 		Vector2 swingInputActive = inputController.GetSwingInputActive();
 		
 		Vector3[] orbitDirections = ShoulderOrbitDirections(playerController, swordController);
@@ -39,39 +54,63 @@ public class PlayerSwordMovement
 		movementR += DistanceMovement(playerController, swordController) * 0.5f;
 		
 		return movementR;
+		*/
+		
+		return new Vector3();
 	}
 	
 	public static Vector3 AlignStabMovement(PlayerController playerController, PlayerSwordController swordController, PlayerInputController inputController)
 	{
-		return SwingMovement(playerController, swordController, inputController);
+		return new Vector3(); // SwingMovement(playerController, swordController, inputController);
 	}
 	
 	public static Vector3 StabMovement(PlayerController playerController, PlayerSwordController swordController, PlayerInputController inputController)
 	{
-		return SwingMovement(playerController, swordController, inputController);
+		return new Vector3(); // return SwingMovement(playerController, swordController, inputController);
 	}
 	
-	public static Vector3 SwingDirection(PlayerController playerController, PlayerSwordController swordController, PlayerInputController inputController)
+	public static Vector3 TipDirection(PlayerController playerController, Vector2 input)
 	{
+		PlayerSwordController swordController = playerController.swordController;
+		
+		/*
 		if (swordController.swingLock)
 			return swordController.physicsController.velocity.normalized;
+		*/
 		
-		Vector2 swingInputActive = inputController.GetSwingInputActive();
-				
-		Vector3[] orbitDirections = ShoulderOrbitDirections(playerController, swordController);
+		Vector3[] orbitDirections = OrbitDirections(swordController.GetBasePosition(), swordController.GetTipPosition());
 		
 		swordController.orbitDirectionsStore = orbitDirections;
 		
-		Debug.DrawRay(playerController.swordController.transform.position, orbitDirections[0], Color.blue);
-		Debug.DrawRay(playerController.swordController.transform.position, orbitDirections[1], Color.green);
+		// Debug.DrawRay(swordController.GetTipPosition(), orbitDirections[0], Color.red);
+		// Debug.DrawRay(swordController.GetTipPosition(), orbitDirections[1], Color.red);
 		
-		Vector3 directionR = orbitDirections[0] * swingInputActive.x + orbitDirections[1] * swingInputActive.y;
+		Vector3 directionR = (orbitDirections[0] * input.x + orbitDirections[1] * input.y).normalized;
+
+		return directionR;
+	}
+	
+	public static Vector3 BaseDirection(PlayerController playerController, Vector2 input)
+	{
+		PlayerSwordController swordController = playerController.swordController;
 		
-		directionR.Normalize();
+		/*
+		if (swordController.swingLock)
+			return swordController.physicsController.velocity.normalized;
+		*/
 		
-		float t = 1f - (playerController.GetArmBendAngle() / 90f);
+		Vector3[] orbitDirections = OrbitDirections(
+			swordController.playerController.animationController.ApproximateArmPosition(), swordController.GetBasePosition());
 		
-		// directionR = StraightenDirection(directionR, t, swingInputActive, playerController);
+		swordController.orbitDirectionsStore = orbitDirections;
+		
+		Debug.DrawRay(swordController.GetBasePosition(), orbitDirections[0], Color.red);
+		Debug.DrawRay(swordController.GetBasePosition(), orbitDirections[1], Color.red);
+		
+		Vector3 directionR = (orbitDirections[0] * input.x + orbitDirections[1] * input.y).normalized;
+		
+		// float t = 1f - (playerController.GetArmBendAngle() / 90f);
+		// directionR = StraightenDirection(directionR, t, input, playerController);
 
 		return directionR;
 	}
@@ -90,23 +129,7 @@ public class PlayerSwordMovement
 		return directionR;
 	}
 	
-	public static Vector3[] ShoulderOrbitDirections(PlayerController playerController, PlayerSwordController swordController)
-	{
-		Vector3 armPos = playerController.animationController.rightArmBone.position;
-		Vector3 swordPos = swordController.physicsController.RigidbodyPosition();
-		
-		return OrbitDirections(playerController, swordController, armPos, swordPos);
-	}
-	
-	public static Vector3[] ForeArmOrbitDirections(PlayerController playerController, PlayerSwordController swordController)
-	{
-		Vector3 foreArmPos = playerController.animationController.rightForeArmBone.position;
-		Vector3 swordPos = swordController.GetComponent<Rigidbody>().position;
-		
-		return OrbitDirections(playerController, swordController, foreArmPos, swordPos);
-	}
-	
-	private static Vector3[] OrbitDirections(PlayerController playerController, PlayerSwordController swordController, Vector3 fromPos, Vector3 toPos)
+	private static Vector3[] OrbitDirections(Vector3 fromPos, Vector3 toPos)
 	{
 		Vector3 fromToDir = (toPos - fromPos).normalized;
 		
@@ -116,9 +139,25 @@ public class PlayerSwordMovement
 		return new Vector3[2] { c0, c1 };
 	}
 	
+	/*
+	private static Vector3 ClampMovement(PlayerController playerController, Vector3 movement)
+	{
+		PlayerSwordController swordController = playerController.swordController;
+		
+		Vector3 fromTo = swordController.GetBasePosition() - playerController.animationController.ApproximateArmPosition();
+		Vector3 fromToNext = (
+			(swordController.GetBasePosition() + movement * Time.fixedDeltaTime) -
+			playerController.animationController.ApproximateArmPosition());
+			
+		fromToNext = fromToNext.normalized * fromTo.magnitude;
+		
+		return (fromToNext - fromTo).normalized * movement.magnitude;
+	}
+	*/
+	
 	public static Vector3 DistanceMovement(PlayerController playerController, PlayerSwordController swordController)
 	{
-		Vector3 swordPos = swordController.physicsController.RigidbodyPosition();
+		Vector3 swordPos = swordController.GetBasePosition();
 		Vector3 movementR = new Vector3();
 
 		float targetDistance = playerController.GetHoldDistance();
@@ -147,7 +186,7 @@ public class PlayerSwordMovement
 		}
 		else if (stab)
 		{
-			Vector3 forward = swordController.transform.forward;
+			Vector3 forward = playerController.sword.forward;
 			float forwardDistance = Vector3.Dot(fromArm, forward);
 			
 			if (forwardDistance < targetDistance)

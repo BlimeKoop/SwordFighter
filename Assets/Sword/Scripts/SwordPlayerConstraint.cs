@@ -25,8 +25,15 @@ public class SwordPlayerConstraint : MonoBehaviour
 		
 		playerRBProxy = new GameObject(gameObject.name + "Player Rigidbody Proxy").transform;
 		
-		SyncronizeProxy();
+		InitializeProxy();
 		RecordOffsets();
+	}
+	
+	private void InitializeProxy()
+	{
+		playerRBProxy.position = playerController.sword.position;
+		playerRBProxy.rotation = playerController.sword.rotation;			
+		playerRBProxy.localScale = playerController.sword.lossyScale;
 	}
 	
 	public void SyncronizeProxy()
