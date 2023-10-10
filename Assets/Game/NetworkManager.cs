@@ -13,17 +13,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	public List<Transform> spawnPoints;
 	
 	private UIController uiController;
-	
-	void Awake()
-	{
-		uiController = transform.Find("Canvas").GetComponent<UIController>();
-		
-		uiController.DisableStartButton();
-		uiController.DisableWinText();
-	}
-	
+
     void Start()
     {
+		uiController = GameObject.Find("UIController").GetComponent<UIController>();
+		
         Connect();
     }
 
@@ -55,7 +49,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		
 		uiController.DisableStartButton();
 		
-		int index = PhotonNetwork.CurrentRoom.PlayerCount % 2;
+		int index = (PhotonNetwork.CurrentRoom.PlayerCount - 1) % 2;
 		
 		PhotonNetwork.Instantiate(player.gameObject.name, spawnPoints[index].position, spawnPoints[index].rotation);
 	}

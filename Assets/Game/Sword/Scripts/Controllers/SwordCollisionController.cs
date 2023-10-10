@@ -41,11 +41,21 @@ public class SwordCollisionController : MonoBehaviour
 		Vector3 boxColExtents = Objects.BoxColliderExtents(gameObject);
 		
 		return Physics.CheckBox(
-			boxCol.bounds.center, boxColExtents, swordController.physicsController.RigidbodyRotation(), ~(1 << 6));
+			boxCol.bounds.center,
+			boxColExtents * 1.3f,
+			swordController.physicsController.RigidbodyRotation(),
+			~(1 << 6));
 	}
 
 	private void OnCollisionEnter(Collision col)
 	{
+		if (playerController == null)
+		{
+			this.enabled = false;
+			
+			return;
+		}
+		
 		if (col.gameObject == playerController.gameObject)
 			return;
 
@@ -54,19 +64,16 @@ public class SwordCollisionController : MonoBehaviour
 		
 		if (swordController.TryShatter(col.gameObject))
 			return;
-		
+
 		if (swordController.TryCut(col))
 		{
+			StopColliding();
+			
 			boxCol.isTrigger = true;
 			cutting = true;
 			
-			col.gameObject.TryGetComponent<PlayerController>(out PlayerController playerController);
-			
-			if (playerController != null)
-			{
-				GameObject.Find("Canvas").GetComponent<UIController>().EnableWinText();
-				playerController.Die();
-			}
+			if (col.gameObject.name.Contains("Player"))
+				GameObject.Find("UIController").GetComponent<UIController>().EnableWinText();
 			
 			return;
 		}

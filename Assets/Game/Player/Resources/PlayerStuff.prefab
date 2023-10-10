@@ -1988,6 +1988,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8996974025697836495}
   - component: {fileID: 8150641580948028562}
+  - component: {fileID: 4553732976616173808}
   m_Layer: 0
   m_Name: PlayerStuff
   m_TagString: Untagged
@@ -2041,6 +2042,30 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &4553732976616173808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5196349761577995141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74d075e443ddc624db302098f7826153, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GameobjectRoot: {fileID: 0}
+  OverrideFaceMaterial: {fileID: 0}
+  SeparateMeshes: 0
+  ApplyTranslation: 1
+  DefaultBehaviour: 0000000000000000
+  DynamicRagdoll: {fileID: 0}
+  Animator: {fileID: 0}
+  GroupBehaviours: []
+  CreateRigidbody: 0101
+  CreateMeshCollider: 0101
+  Physics: 0200000002000000
+  Inherit: 0000
 --- !u!1 &5363378446495323335
 GameObject:
   m_ObjectHideFlags: 0
@@ -2518,8 +2543,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8637983264382000030}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.20983161, y: 0.4039108, z: -0.09589889, w: -0.88522893}
+  m_LocalPosition: {x: 2.1689873, y: 4.1697817, z: -2.9773684}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2557,7 +2582,7 @@ MonoBehaviour:
   DestroyTargets: 1
   UseAsync: 1
   VertexCreationThreshold: 0
-  DefaultMaterial: {fileID: 0}
+  DefaultMaterial: {fileID: 2100000, guid: eb5748d5d094f884c9a12d3704a9d7d6, type: 2}
 --- !u!114 &10726676951400283
 MonoBehaviour:
   m_ObjectHideFlags: 0

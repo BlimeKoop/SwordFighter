@@ -19,17 +19,19 @@ public class PlayerSword
 		float length = Mathf.Max(sizeX, Mathf.Max(sizeY, sizeZ));
 
 		int longestDirection = 0;
-		int shortestDirection = 0;
+		// int shortestDirection = 0;
 		
 		if (length == sizeY)
 			longestDirection = 1;
 		else if (length == sizeZ)
 			longestDirection = 2;
 		
+		/*
 		if (thickness == sizeY)
 			shortestDirection = 1;
 		else if (thickness == sizeZ)
 			shortestDirection = 2;
+		*/
 
 		swordModel.rotation = playerSwordController.playerController.sword.rotation;
 		

@@ -72,7 +72,6 @@ public class PlayerSwordInitialization
 		if (swordCutterBehaviourR == null)
 			swordCutterBehaviourR = sword.gameObject.AddComponent<SwordCutterBehaviour>();
 		
-		swordCutterBehaviourR.DefaultMaterial = swordController.cutMaterial;
 		swordCutterBehaviourR.Separation = 0.1f;
 		
 		return swordCutterBehaviourR;

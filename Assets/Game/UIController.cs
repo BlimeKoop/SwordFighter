@@ -4,15 +4,22 @@ using UnityEngine;
 
 public class UIController : MonoBehaviour
 {
+	public Transform canvas;
+	
 	private GameObject startButton;
 	private GameObject winText;
+	private GameObject loseText;
 	
 	private void Awake()
 	{
-		startButton = transform.Find("Button").gameObject;
-		winText = transform.Find("Win Text").gameObject;
+		canvas.gameObject.SetActive(true);
+		
+		startButton = canvas.Find("Button").gameObject;
+		winText = canvas.Find("Win Text").gameObject;
+		loseText = canvas.Find("Lose Text").gameObject;
 		
 		DisableWinText();
+		DisableLoseText();
 		DisableStartButton();
 	}
 	
@@ -34,5 +41,15 @@ public class UIController : MonoBehaviour
 	public void DisableWinText()
 	{
 		winText.SetActive(false);
+	}
+	
+	public void EnableLoseText()
+	{
+		loseText.SetActive(true);
+	}
+	
+	public void DisableLoseText()
+	{
+		loseText.SetActive(false);
 	}
 }

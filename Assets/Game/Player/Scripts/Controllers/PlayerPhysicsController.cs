@@ -49,7 +49,9 @@ public class PlayerPhysicsController
 		{
 			interpolatedMovement += (
 				swordCollisionController.collision.contacts[0].normal *
-				Mathf.Max(0f, Vector3.Dot(interpolatedMovement, -swordCollisionController.collision.contacts[0].normal)));
+				Mathf.Max(
+					0f,
+					Vector3.Dot(interpolatedMovement, -swordCollisionController.collision.contacts[0].normal)));
 		}
 
 		rigidbody.velocity = interpolatedMovement;

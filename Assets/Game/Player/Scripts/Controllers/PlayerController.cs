@@ -186,6 +186,9 @@ public class PlayerController : MonoBehaviour
 		if(dead || !photonView.IsMine || !initialized)
 			return;
 		
+		if (col.transform == sword)
+			return;
+		
 		physicsController.Collide(col);
 	}
 	
@@ -216,8 +219,11 @@ public class PlayerController : MonoBehaviour
 	public void Collide(Collision collision) { physicsController.Collide(collision); }
 	public void StopColliding() { physicsController.StopColliding(); }
 	
-	public void Die()
+	public void Die(Collision col)
 	{
+		swordController.physicsController.rigidbody.useGravity = true;
+		physicsController.rigidbody.useGravity = true;
+		
 		dead = true;
 	}
 	

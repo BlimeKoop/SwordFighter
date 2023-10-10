@@ -190,6 +190,7 @@ namespace DynamicMeshCutter
                     column = new Vector4(0, 0, 0, 1f);
                 worldToLocalMatrixNormal.SetColumn(i, column);
             }
+			
             worldToLocalMatrixNormal = worldToLocalMatrixNormal.inverse.transpose;
             Vector3 localN = worldToLocalMatrixNormal * worldN;
             localN.Normalize();

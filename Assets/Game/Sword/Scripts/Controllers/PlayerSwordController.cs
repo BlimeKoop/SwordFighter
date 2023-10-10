@@ -5,7 +5,6 @@ using DynamicMeshCutter;
 
 public class PlayerSwordController
 {
-	[HideInInspector] public Material cutMaterial;
 	[HideInInspector] public Transform sword;
 	
 	[HideInInspector] public SwordPlayerConstraint swordPlayerConstraint;
@@ -202,6 +201,26 @@ public class PlayerSwordController
 		if (obj.GetComponent<Fracture>() != null)
 			return false;
 		
+		if (!obj.name.Contains("Player") && col.relativeVelocity.magnitude < 9f ||
+			col.relativeVelocity.magnitude < 2f)
+			return false;
+		
+		if (!BackOfObjectFound(col))
+			return false;
+		
+		if (Vector3.Scale(obj.GetComponentInChildren<Renderer>().bounds.size,
+			new Vector3(1f, 0f, 1f)).magnitude > 20f)
+			return false;
+		
+		swordCutterBehaviour.CutObject(obj, this, col);
+		
+		hitCooldownTimer = HitCooldown;
+		
+		return true;
+	}
+	
+	private bool BackOfObjectFound(Collision col)
+	{
 		float thickness = 0.9f;
 		
 		Vector3 origin = col.contacts[0].point - col.contacts[0].normal * thickness;
@@ -215,15 +234,6 @@ public class PlayerSwordController
 		}
 		
 		Debug.DrawRay(origin - direction * radius, direction * (thickness * 0.9f - radius), Color.green, 3f);
-		
-		if (Vector3.Scale(obj.GetComponentInChildren<Renderer>().bounds.size,
-			new Vector3(1f, 0f, 1f)).magnitude > 20f)
-			return false;
-		
-		swordCutterBehaviour.CutObject(obj, sword.gameObject, sword.forward);
-		
-		hitCooldownTimer = HitCooldown;
-		
 		return true;
 	}
 	
@@ -258,6 +268,11 @@ public class PlayerSwordController
 			inputAngleChange = Vector2.Angle(inputStore, inputController.GetSwingInput());
 		
 		inputSpeedChange = Mathf.Abs(inputStore.magnitude - inputController.GetSwingInput().magnitude);
+	}
+	
+	public void Disable()
+	{
+		
 	}
 	
 	public Vector3 GetBasePosition() { return physicsController.rigidbody.position; }
