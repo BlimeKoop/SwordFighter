@@ -17,28 +17,23 @@ public class PlayerSwordController
 	[HideInInspector] public SwordCollisionController collisionController;
 	[HideInInspector] public SwordCutterBehaviour swordCutterBehaviour;
 	
-	// private SwordBaseController baseController;
-	// private SwordTipController tipController;
-	
 	[HideInInspector] public Transform rollController;
 	
 	[HideInInspector] public Quaternion stabRotation;
 	
 	[HideInInspector] public float weight = 0.8f;
 	[HideInInspector] public float drag = 0.3f;
-
 	[HideInInspector] public float length;
-	
-	[HideInInspector] public float grabPointRatio = 0.28f;
-	
+	[HideInInspector] public float grabPointRatio = 0.15f;
 	[HideInInspector] public float armBendAmount = 0f;
 	
 	[HideInInspector] public float inputAngleChange, inputSpeedChange;
 
 	[HideInInspector] public Vector3 movement;
+	private Quaternion rotation;
 	
 	private float hitCooldownTimer, straightenTimer;
-	private float HitCooldown = 0.012f, StraightenDuration = 0.5f;
+	private float HitCooldown = 0.06f, StraightenDuration = 0.5f;
 	
 	private Vector2 baseInput, tipInput;
 	
@@ -54,8 +49,6 @@ public class PlayerSwordController
 	[HideInInspector]
 	public Vector3[] orbitDirectionsStore;
 	
-	private Quaternion rotation;
-	
 	public void Initialize(
 	PlayerController playerController, PlayerInputController inputController, PlayerAnimationController animationController)
 	{	
@@ -65,19 +58,14 @@ public class PlayerSwordController
 
 		sword = playerController.sword;
 
-		rollController = new GameObject($"{playerController.gameObject.name} Sword Roll Controller").transform;
-		rollController.parent = sword;
+		rollController = sword.GetChild(0);
 		
 		InitializeSwordModel();
-		
-		// baseController = new SwordBaseController();
-		// tipController = new SwordTipController();
 		
 		rotation = sword.rotation;
 		
 		collisionController = PlayerSwordInitialization.CollisionController(this);
 		swordCutterBehaviour = PlayerSwordInitialization.SwordCutterBehaviour(this);
-
 		physicsController = PlayerSwordInitialization.PhysicsController(this);
 
 		swordPlayerConstraint = sword.gameObject.AddComponent<SwordPlayerConstraint>();
@@ -111,18 +99,17 @@ public class PlayerSwordController
 		swordPlayerConstraint.SyncronizeProxy();
 		swordPlayerConstraint.CalculateOffsets();
 		
-		physicsController.RecordTransformData();
-		
 		physicsController.CalculateBaseForce(baseInput);
 		physicsController.CalculateTipForce(tipInput);
 		
 		physicsController.ClampPosition(this);
+		physicsController.DampOutwardVelocity(this);
 		physicsController.Move(playerController, this);
 		
 		swordPlayerConstraint.RecordOffsets();
 		
 		UpdateRotation();
-		physicsController.RotateSword(this);
+		physicsController.RotateSword(rotation);
 		
 		movement = Vector3.zero;
 	}
@@ -187,7 +174,7 @@ public class PlayerSwordController
 	
 	private Quaternion RollControllerRotation()
 	{
-		Vector3 rbVelocity = physicsController.velocity;
+		Vector3 rbVelocity = physicsController.rigidbody.velocity;
 		
 		if (rbVelocity.magnitude < 0.05f)
 			return rollController.rotation;
@@ -219,11 +206,15 @@ public class PlayerSwordController
 		
 		Vector3 origin = col.contacts[0].point - col.contacts[0].normal * thickness;
 		Vector3 direction = col.contacts[0].normal;
+		float radius = 0.01f;
 		
-		Debug.DrawRay(origin, direction * thickness, Color.red, 10f);
-		
-		if (!Physics.SphereCast(origin, 0.01f, direction, out RaycastHit hit, thickness * 0.9f, ~(1 << 6)))
+		if (!Physics.SphereCast(origin, radius, direction, out RaycastHit hit, thickness * 0.9f, ~(1 << 6)))
+		{
+			Debug.DrawRay(origin - direction * radius, direction * (thickness * 0.9f - radius), Color.red, 3f);
 			return false;
+		}
+		
+		Debug.DrawRay(origin - direction * radius, direction * (thickness * 0.9f - radius), Color.green, 3f);
 		
 		if (Vector3.Scale(obj.GetComponentInChildren<Renderer>().bounds.size,
 			new Vector3(1f, 0f, 1f)).magnitude > 20f)

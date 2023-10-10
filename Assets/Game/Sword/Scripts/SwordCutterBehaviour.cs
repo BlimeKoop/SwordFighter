@@ -20,6 +20,8 @@ namespace DynamicMeshCutter
 
 			Vector3 cutPlane = Vector3.Cross(swordVelocity, swordObj.transform.forward).normalized;
 			
+			Debug.Log($"Cutting {obj}");	
+			
 			Cut(meshTarget, swordObj.transform.position, cutPlane, null, OnCreated);
 		}
 

@@ -27,7 +27,7 @@ public class PlayerSwordMovement
 		movementR *= Mathf.Max(0.0f, 1.0f - playerController.swordController.weight);
 		movementR *= playerController.swingSpeed;
 		// movementR = ClampMovement(playerController, movementR);
-		movementR += DistanceMovement(playerController, playerController.swordController);
+		movementR += DistanceMovement(playerController, playerController.swordController) * 0.8f;
 
 		return movementR;
 	}
@@ -139,25 +139,19 @@ public class PlayerSwordMovement
 		return new Vector3[2] { c0, c1 };
 	}
 	
-	/*
 	private static Vector3 ClampMovement(PlayerController playerController, Vector3 movement)
 	{
-		PlayerSwordController swordController = playerController.swordController;
-		
-		Vector3 fromTo = swordController.GetBasePosition() - playerController.animationController.ApproximateArmPosition();
-		Vector3 fromToNext = (
-			(swordController.GetBasePosition() + movement * Time.fixedDeltaTime) -
-			playerController.animationController.ApproximateArmPosition());
+		Vector3 nextPos = playerController.swordController.physicsController.GetNextPosition(movement);
+		Vector3 fromTo = nextPos - playerController.animationController.ApproximateArmPosition();
 			
-		fromToNext = fromToNext.normalized * fromTo.magnitude;
+		if (fromTo.magnitude < playerController.animationController.GetArmLength())
+			return movement;
 		
-		return (fromToNext - fromTo).normalized * movement.magnitude;
+		return movement - fromTo.normalized * Vector3.Dot(movement, fromTo.normalized); 
 	}
-	*/
 	
 	public static Vector3 DistanceMovement(PlayerController playerController, PlayerSwordController swordController)
 	{
-		Vector3 swordPos = swordController.GetBasePosition();
 		Vector3 movementR = new Vector3();
 
 		float targetDistance = playerController.GetHoldDistance();

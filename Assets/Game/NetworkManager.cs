@@ -12,12 +12,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	
 	public List<Transform> spawnPoints;
 	
-	private GameObject canvas;
+	private UIController uiController;
 	
 	void Awake()
 	{
-		canvas = transform.GetChild(0).gameObject;
-		canvas.SetActive(false);
+		uiController = transform.Find("Canvas").GetComponent<UIController>();
+		
+		uiController.DisableStartButton();
+		uiController.DisableWinText();
 	}
 	
     void Start()
@@ -32,7 +34,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	
 	public override void OnConnectedToMaster()
 	{
-		canvas.SetActive(true);
+		uiController.EnableStartButton();
 	}
 
 	public void Play()
@@ -51,7 +53,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 	{
 		Debug.Log("Joined a room");
 		
-		canvas.SetActive(false);
+		uiController.DisableStartButton();
 		
 		int index = PhotonNetwork.CurrentRoom.PlayerCount % 2;
 		

@@ -6,7 +6,6 @@ using TMPro;
 public class SwordCollisionController : MonoBehaviour
 {
 	private PlayerSwordController swordController;
-	private SwordPhysicsController physicsController;
 
 	private PlayerController playerController;
 	
@@ -18,7 +17,6 @@ public class SwordCollisionController : MonoBehaviour
 	public void Initialize(PlayerSwordController swordController)
 	{
 		this.swordController = swordController;
-		physicsController = swordController.physicsController;
 		
 		GameObject meshObj = playerController.swordModel.GetComponentInChildren<MeshFilter>().gameObject;
 		boxCol = meshObj.GetComponent<BoxCollider>();
@@ -43,18 +41,19 @@ public class SwordCollisionController : MonoBehaviour
 		Vector3 boxColExtents = Objects.BoxColliderExtents(gameObject);
 		
 		return Physics.CheckBox(
-			boxCol.bounds.center, boxColExtents, physicsController.RigidbodyRotation(), ~(1 << 6));
+			boxCol.bounds.center, boxColExtents, swordController.physicsController.RigidbodyRotation(), ~(1 << 6));
 	}
 
-	public void Collide(Collision col)
+	private void OnCollisionEnter(Collision col)
 	{
+		if (col.gameObject == playerController.gameObject)
+			return;
+
 		if (col.GetContact(0).thisCollider != boxCol)
 			return;
 		
 		if (swordController.TryShatter(col.gameObject))
-		{
 			return;
-		}
 		
 		if (swordController.TryCut(col))
 		{
@@ -65,7 +64,7 @@ public class SwordCollisionController : MonoBehaviour
 			
 			if (playerController != null)
 			{
-				GameObject.Find("WinText").GetComponent<TextMeshProUGUI>().enabled = true;
+				GameObject.Find("Canvas").GetComponent<UIController>().EnableWinText();
 				playerController.Die();
 			}
 			
@@ -76,7 +75,7 @@ public class SwordCollisionController : MonoBehaviour
 
 		// boxCol.isTrigger = true;
 		// physicsController.FreezeRigidbodyUntilFixedUpdate();
-		// physicsController.ZeroVelocity();
+		swordController.physicsController.Zero();
 		
 		collision = col;
 	}

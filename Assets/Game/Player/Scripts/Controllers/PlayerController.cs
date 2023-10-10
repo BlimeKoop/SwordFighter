@@ -50,8 +50,8 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {		
-		// Cursor.visible = false;
-		// Cursor.lockState = CursorLockMode.Locked;
+		Cursor.visible = false;
+		Cursor.lockState = CursorLockMode.Locked;
 		
 		if (!photonView.IsMine)
 		{
@@ -91,35 +91,23 @@ public class PlayerController : MonoBehaviour
 		yield return new WaitForSeconds(delay);
 
 		inputController.EnableInput();
-		StartCoroutine(RecordSwingInput());
+		StartCoroutine(GetSwingInput());
 		StartCoroutine(CheckInputChange());
 	}
 	
-	private IEnumerator RecordSwingInput()
+	private IEnumerator GetSwingInput()
 	{
-		// yield return new WaitWhile(() => inputController.GetSwingInput().sqrMagnitude == 0);
-		
-		inputController.StoreSwingInput();
-		
-		float seconds = 0.14f;
-		
-		while (seconds > 0f)
-		{
-			seconds -= Time.deltaTime;
-			
-			if (swordController.inputAngleChange > 50f)
-				seconds = 0;
-			
+		if (inputController.GetSwingInput().sqrMagnitude == 0)
+			yield return new WaitUntil(() => inputController.GetSwingInput().sqrMagnitude > 0);
+		else
 			yield return null;
-		}
 		
-		// yield return new WaitWhile(() => inputController.GetSwingInput().sqrMagnitude == 0);
+		Vector3 swingInput = inputController.GetSwingInput();
 		
-		swordController.SetTipInput(inputController.storedSwingInput);
-		swordController.SetBaseInput(inputController.GetSwingInput());
-		
-		StartCoroutine(RecordSwingInput());
-		
+		swordController.SetTipInput(swingInput);
+		swordController.SetBaseInput(swingInput);
+
+		StartCoroutine(GetSwingInput());
 	}
 	
 	private IEnumerator CheckInputChange()
@@ -198,7 +186,6 @@ public class PlayerController : MonoBehaviour
 		if(dead || !photonView.IsMine || !initialized)
 			return;
 		
-		swordController.collisionController.Collide(col);
 		physicsController.Collide(col);
 	}
 	

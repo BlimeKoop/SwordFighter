@@ -32,7 +32,7 @@ public class PlayerSwordInitialization
 		rigidbodyR.maxAngularVelocity = 20f;
 		rigidbodyR.mass = 0.05f;
 		rigidbodyR.drag = 15.0f;
-		rigidbodyR.angularDrag = 15.0f;
+		rigidbodyR.angularDrag = 35.0f;
 		
 		rigidbodyR.interpolation = RigidbodyInterpolation.Interpolate;
 		
@@ -86,8 +86,7 @@ public class PlayerSwordInitialization
 		fo.useAxis = true;
 		
 		fo.origin = swordController.playerController.sword.position;
-		fo.axis = Vector3.Cross(
-		swordController.physicsController.velocity, swordController.playerController.sword.forward).normalized;
+		fo.axis = swordController.playerController.sword.right;
 		
 		fo.asynchronous = true;
 	}

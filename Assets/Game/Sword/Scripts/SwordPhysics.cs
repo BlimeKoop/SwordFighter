@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class SwordPhysics : MonoBehaviour
 {
-	public static Vector3 StickSwordMovementToCollision(SwordPhysicsController swordPhysicsController, Vector3 movement, Collision collision)
+	public static Vector3 StickSwordMovementToCollision(SwordPhysicsController swordPhysicsController, Vector3 movement)
 	{
-		ContactPoint contact = collision.contacts[0];
+		ContactPoint contact = swordPhysicsController.collisionController.collision.contacts[0];
 		
 		Vector3 movementR = movement + contact.normal * Mathf.Max(0f, Vector3.Dot(movement, -contact.normal));
 		
