@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 using DynamicMeshCutter;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlayerSwordController
 {
+	private PhotonView PhotonView;
 	[HideInInspector] public Transform sword;
 	
 	[HideInInspector] public SwordPlayerConstraint swordPlayerConstraint;
@@ -50,18 +53,16 @@ public class PlayerSwordController
 	
 	public void Initialize(
 	PlayerController playerController, PlayerInputController inputController, PlayerAnimationController animationController)
-	{	
+	{
 		this.playerController = playerController;
 		this.inputController = inputController;
 		this.animationController = animationController;
 
 		sword = playerController.sword;
-
+		rotation = sword.rotation;
 		rollController = sword.GetChild(0);
 		
-		InitializeSwordModel();
-		
-		rotation = sword.rotation;
+		PhotonView = sword.GetComponent<PhotonView>();
 		
 		collisionController = PlayerSwordInitialization.CollisionController(this);
 		swordCutterBehaviour = PlayerSwordInitialization.SwordCutterBehaviour(this);
@@ -69,26 +70,9 @@ public class PlayerSwordController
 
 		swordPlayerConstraint = sword.gameObject.AddComponent<SwordPlayerConstraint>();
 		swordPlayerConstraint.Initialize(this);
-	}
-	
-	private void InitializeSwordModel()
-	{
-		Transform swordModel = playerController.swordModel;
-
-		swordModel.GetComponentInChildren<Collider>().gameObject.layer = Collisions.SwordLayer;
-		
-		length = PlayerSword.OrientToModelLength(this);
-
-		swordModel.position += (
-			sword.position -
-			swordModel.GetComponentInChildren<MeshRenderer>().bounds.center);
-			
-		swordModel.position += sword.forward * length * (0.5f - grabPointRatio);
-		swordModel.parent = rollController;
-	}
-	
-	public void DoFixedUpdate()
-	{
+    }
+    public void DoFixedUpdate()
+    {
 		if (!playerController.block &&
 			!playerController.alignStab &&
 			!playerController.stab &&
@@ -201,20 +185,25 @@ public class PlayerSwordController
 		if (obj.GetComponent<Fracture>() != null)
 			return false;
 		
-		if (!obj.name.Contains("Player") && col.relativeVelocity.magnitude < 9f ||
+		if (!obj.name.Contains("Player") && col.relativeVelocity.magnitude < 10f ||
 			col.relativeVelocity.magnitude < 2f)
 			return false;
 		
-		if (!BackOfObjectFound(col))
-			return false;
+		/*if (!obj.name.Contains("Player") && !BackOfObjectFound(col))
+			return false; */
 		
 		if (Vector3.Scale(obj.GetComponentInChildren<Renderer>().bounds.size,
 			new Vector3(1f, 0f, 1f)).magnitude > 20f)
 			return false;
-		
-		swordCutterBehaviour.CutObject(obj, this, col);
-		
-		hitCooldownTimer = HitCooldown;
+
+        if (obj.GetComponent<Renderer>() == null)
+            obj = obj.GetComponentInChildren<Renderer>().gameObject;
+
+        Network.InstantiateCutParents(obj);
+
+        PhotonView.RPC("CutObject", RpcTarget.All, obj.name, col.relativeVelocity, col.GetContact(0).point);
+
+        hitCooldownTimer = HitCooldown;
 		
 		return true;
 	}

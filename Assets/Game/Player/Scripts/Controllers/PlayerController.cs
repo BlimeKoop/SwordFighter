@@ -50,27 +50,25 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {		
-		Cursor.visible = false;
-		Cursor.lockState = CursorLockMode.Locked;
+		// Cursor.visible = false;
+		// Cursor.lockState = CursorLockMode.Locked;
+
+		animationController = new PlayerAnimationController();
+		animationController.Initialize(this);
+
+		swordController = new PlayerSwordController();
+		InitializeSword();
 		
 		if (!photonView.IsMine)
 		{
 			camera.gameObject.SetActive(false);
 			// GetComponent<Animator>().enabled = false;
+			
+			return;
 		}
-
+		
 		physicsController = new PlayerPhysicsController();
-		animationController = new PlayerAnimationController();
-		swordController = new PlayerSwordController();
-		
-		animationController.Initialize(this);
-		
-		swordModel = sword;
-		sword = transform.parent.Find("Player Sword");
-		
-		sword.position = animationController.rightHandBone.position;
-		sword.rotation = animationController.rightHandBone.rotation;
-	
+
 		cameraController = camera.GetComponent<CameraController>();
 		cameraController.Initialize(this);
 		
@@ -82,8 +80,27 @@ public class PlayerController : MonoBehaviour
 		swordController.Initialize(this, inputController, animationController);
 		physicsController.Initialize(this, inputController, animationController);
 		inputController.Initialize(this); StartCoroutine(StartInput(0.2f));
-		
+
 		initialized = true;
+	}
+	
+	private void InitializeSword()
+	{
+		swordModel = sword;
+		swordModel.GetComponentInChildren<Collider>().gameObject.layer = Collisions.SwordLayer;
+		
+		sword = transform.parent.Find("Player Sword");
+		sword.position = animationController.rightHandBone.position;
+		sword.rotation = Quaternion.LookRotation(animationController.rightHandBone.up, -animationController.rightHandBone.forward);
+		
+		swordController.length = PlayerSword.OrientModelToLength(sword, swordModel);
+
+		swordModel.position += (
+			sword.position -
+			swordModel.GetComponentInChildren<MeshRenderer>().bounds.center);
+			
+		swordModel.position += sword.forward * swordController.length * (0.5f - swordController.grabPointRatio);
+		swordModel.parent = sword.GetChild(0);
 	}
 	
 	private IEnumerator StartInput(float delay)
@@ -134,14 +151,10 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-		if (dead)
+		if (!photonView.IsMine || dead)
 			return;
 		
 		animationController.DoUpdate();
-		
-		if (!photonView.IsMine)
-			return;
-		
 		inputController.DoUpdate();
 		
 		movement = inputController.MoveDirection() * moveSpeed;
@@ -199,8 +212,8 @@ public class PlayerController : MonoBehaviour
 		
 		physicsController.StopColliding();
 	}
-	
-	public void Block() { block = true; }
+
+    public void Block() { block = true; }
 	public void StopBlock() { block = false; }
 	
 	public void StartStab() { alignStab = true; }
@@ -218,16 +231,13 @@ public class PlayerController : MonoBehaviour
 	
 	public void Collide(Collision collision) { physicsController.Collide(collision); }
 	public void StopColliding() { physicsController.StopColliding(); }
-	
-	public void Die(Collision col)
+
+    public void Die()
 	{
-		swordController.physicsController.rigidbody.useGravity = true;
-		physicsController.rigidbody.useGravity = true;
-		
 		dead = true;
 	}
-	
-	public Vector3 ToSword() {
+
+    public Vector3 ToSword() {
 		return swordController.physicsController.RigidbodyPosition() - transform.position;
 	}
 	

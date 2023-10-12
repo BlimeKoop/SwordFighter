@@ -51,10 +51,10 @@ public class PlayerAnimationController
     {	
 		this.playerController = playerController;
 		
-		rigidbody = playerController.GetComponent<Rigidbody>();
+		rigidbody = playerController.GetComponentInChildren<Rigidbody>();
 		
 		transform = playerController.transform;
-		animator = playerController.GetComponent<Animator>();
+		animator = playerController.GetComponentInChildren<Animator>();
 
 		hipBone = playerController.rig;
 		chestBone = hipBone.GetChild(2).GetChild(0).GetChild(0);

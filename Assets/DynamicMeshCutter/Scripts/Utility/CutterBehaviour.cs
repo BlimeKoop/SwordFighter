@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 namespace DynamicMeshCutter
 {
@@ -233,11 +234,14 @@ namespace DynamicMeshCutter
             {
                 if (info.MeshTarget)
                 {
-                    info.MeshTarget.transform.position = new Vector3(0, -10000, 0);
                     if (info.MeshTarget.GameobjectRoot != null)
-                        Destroy(info.MeshTarget.GameobjectRoot, 0);
+                    {
+                        DestroyObject(info.MeshTarget.GameobjectRoot);
+                    }
                     else
-                        Destroy(info.MeshTarget.gameObject, 0);
+                    {
+                        DestroyObject(info.MeshTarget.gameObject);
+                    }
                 }
             }
 			
@@ -256,6 +260,18 @@ namespace DynamicMeshCutter
             }
 
             info.OnCreatedCallback?.Invoke(info, creationInfo);
+        }
+
+        private void DestroyObject(GameObject obj)
+        {
+            Rigidbody objectRB = obj.GetComponentInParent<Rigidbody>();
+
+            if (objectRB != null && objectRB.gameObject != obj)
+                obj = objectRB.gameObject;
+
+            obj.transform.position = new Vector3(0, -10000, 0);
+
+            Destroy(obj, 0);
         }
 
         private void OnCut(bool success, Info info)

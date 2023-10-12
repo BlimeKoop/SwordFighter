@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class PlayerSword
 {
-	public static float OrientToModelLength(PlayerSwordController playerSwordController)
+	public static float OrientModelToLength(Transform sword, Transform swordModel)
 	{
-		Transform swordModel = playerSwordController.playerController.swordModel;
 		MeshFilter meshFilter = swordModel.GetComponentInChildren<MeshFilter>();
 		Bounds bounds = meshFilter.mesh.bounds;
 		Vector3 size = Vector3.Scale(bounds.size, meshFilter.transform.lossyScale);
@@ -32,8 +31,8 @@ public class PlayerSword
 		else if (thickness == sizeZ)
 			shortestDirection = 2;
 		*/
-
-		swordModel.rotation = playerSwordController.playerController.sword.rotation;
+		
+		swordModel.rotation = sword.rotation;
 		
 		if (longestDirection == 0)
 			swordModel.rotation *= Quaternion.Euler(0f, -90f, 0f);

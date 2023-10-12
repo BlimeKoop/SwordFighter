@@ -1,31 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 namespace DynamicMeshCutter
 {
 	public class SwordCutterBehaviour : CutterBehaviour
 	{
-		public void CutObject(GameObject obj, PlayerSwordController swordController, Collision col)
+		private PhotonView photonView;
+
+        private void Start()
+        {
+            photonView = GetComponent<PhotonView>();
+        }
+
+        [PunRPC]
+		public void CutObject(string objectName, Vector3 relativeVlocity, Vector3 point)
 		{
-			// Debug.Log("In Cut(), obj = " + obj);			
-			
-			Transform rollController = swordController.rollController;
-		
-			if (obj.GetComponent<Renderer>() == null && obj.transform.childCount > 0)
-				CutObject(obj.transform.GetChild(0).gameObject, swordController, col);
-		
-			if (obj.GetComponent<Renderer>() == null)
-				return;
+			GameObject obj = GameObject.Find(objectName);
+            // Debug.Log("In Cut(), obj = " + obj);
 
 			MeshTarget meshTarget = InitializeMeshTarget(obj);
 
-			Vector3 cross = Vectors.SafeCross(Vector3.up, col.relativeVelocity);
-			Vector3 cutPlane = Vector3.Cross(col.relativeVelocity, cross).normalized;
+			Vector3 cross = Vectors.SafeCross(Vector3.up, relativeVlocity);
+			Vector3 cutPlane = Vector3.Cross(relativeVlocity, cross).normalized;
 			
 			// Debug.Log($"Cutting {obj}");	
 			
-			Cut(meshTarget, col.GetContact(0).point, cutPlane, null, OnCreated);
+			Cut(meshTarget, point, cutPlane, null, OnCreated);
 		}
 
 		private MeshTarget InitializeMeshTarget(GameObject obj)
@@ -36,15 +38,16 @@ namespace DynamicMeshCutter
 				meshTargetR.OverrideFaceMaterial = DefaultMaterial;
 			
 			meshTargetR.GameobjectRoot = obj;
-			meshTargetR.SeparateMeshes = false;
+			meshTargetR.SeparateMeshes = false; // true;
 			
 			return meshTargetR;
 		}
 		
         private void OnCreated(Info info, MeshCreationData cData)
         {
-            MeshCreation.TranslateCreatedObjects(info, cData.CreatedObjects, cData.CreatedTargets, Separation);
-			MeshCreation.CenterPivots(cData.CreatedObjects);
+			MeshCreation.MakeNamesUnique(cData.CreatedObjects, photonView);
+            // MeshCreation.TranslateCreatedObjects(info, cData.CreatedObjects, cData.CreatedTargets, Separation);
+            // MeshCreation.CenterPivots(cData.CreatedObjects);
         }
 	}
 }

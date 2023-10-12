@@ -33,6 +33,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 	public void Play()
 	{
+		if (!PhotonNetwork.IsConnected)
+		{
+			Connect();
+
+            return;
+		}
+
 		PhotonNetwork.JoinRandomRoom();
 	}
 	
@@ -42,15 +49,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 		
 		PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = 4 });
 	}
-	
+
 	public override void OnJoinedRoom()
 	{
 		Debug.Log("Joined a room");
-		
+
 		uiController.DisableStartButton();
-		
+
 		int index = (PhotonNetwork.CurrentRoom.PlayerCount - 1) % 2;
-		
-		PhotonNetwork.Instantiate(player.gameObject.name, spawnPoints[index].position, spawnPoints[index].rotation);
+
+        PhotonNetwork.Instantiate(player.gameObject.name, spawnPoints[index].position, spawnPoints[index].rotation);
 	}
 }

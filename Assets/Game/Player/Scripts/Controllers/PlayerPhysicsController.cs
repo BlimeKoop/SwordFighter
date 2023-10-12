@@ -26,11 +26,11 @@ public class PlayerPhysicsController
 		swordCollisionController = playerController.swordController.collisionController;
 		
 		rigidbody = (
-			playerController.GetComponent<Rigidbody>() == null ?
-			playerController.gameObject.AddComponent<Rigidbody>() :
-			playerController.GetComponent<Rigidbody>());
+			playerController.GetComponentInChildren<Rigidbody>() == null ?
+			playerController.transform.GetChild(0).gameObject.AddComponent<Rigidbody>() :
+			playerController.GetComponentInChildren<Rigidbody>());
 
-		playerController.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+		rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 		
 		collision = new Collision();
 	}

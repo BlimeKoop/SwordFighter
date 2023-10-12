@@ -18,10 +18,7 @@ public class Vectors : MonoBehaviour
 	{
 		if (Vector3.Dot(a.normalized, b.normalized) < 1.0f)
 			return Vector3.Cross(a, b);
-		
-		if (fallBack.sqrMagnitude == 0f)
-			return Vector3.up;
-		
+
 		return fallBack;
 	}
 }

@@ -63,4 +63,10 @@ public class CameraController : MonoBehaviour
 	{
 		pivotController.Rotate(degrees);
 	}
+
+    public void Disable()
+    {
+		pivotController.enabled = false;
+		this.enabled = false;
+    }
 }

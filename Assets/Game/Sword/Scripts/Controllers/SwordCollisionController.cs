@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 using TMPro;
 
 public class SwordCollisionController : MonoBehaviour
@@ -39,10 +40,13 @@ public class SwordCollisionController : MonoBehaviour
 	private bool StillColliding()
 	{
 		Vector3 boxColExtents = Objects.BoxColliderExtents(gameObject);
+
+		boxColExtents.x *= 1.5f;
+		boxColExtents.z *= 1.5f;
 		
 		return Physics.CheckBox(
 			boxCol.bounds.center,
-			boxColExtents * 1.3f,
+			boxColExtents,
 			swordController.physicsController.RigidbodyRotation(),
 			~(1 << 6));
 	}
@@ -100,7 +104,7 @@ public class SwordCollisionController : MonoBehaviour
 	}
 	
 	public BoxCollider GetCollider() { return boxCol; }
-	public bool Colliding() { return collision != null && collision.contacts.Length > 0; }
+	public bool Colliding() { return collision != null && collision.collider != null && collision.contacts.Length > 0; }
 	
 	public void SetPlayerController(PlayerController playerController) { this.playerController = playerController; }
 }
