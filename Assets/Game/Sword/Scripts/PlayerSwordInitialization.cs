@@ -26,13 +26,12 @@ public class PlayerSwordInitialization
 		if (rigidbodyR == null)
 			rigidbodyR = sword.gameObject.AddComponent<Rigidbody>();
 		
-		rigidbodyR.useGravity = false;
 		rigidbodyR.collisionDetectionMode = CollisionDetectionMode.Continuous;
 		rigidbodyR.centerOfMass = Vector3.zero;
-		rigidbodyR.maxAngularVelocity = 20f;
-		rigidbodyR.mass = 0.05f;
-		rigidbodyR.drag = 15.0f;
-		rigidbodyR.angularDrag = 35.0f;
+		rigidbodyR.maxAngularVelocity = 50f;
+		rigidbodyR.mass = 0.2f;
+		rigidbodyR.drag = 0f;
+		rigidbodyR.angularDrag = 0.05f;
 		
 		rigidbodyR.interpolation = RigidbodyInterpolation.Interpolate;
 		

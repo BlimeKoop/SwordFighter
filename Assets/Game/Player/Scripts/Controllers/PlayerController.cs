@@ -20,24 +20,26 @@ public class PlayerController : MonoBehaviour
 	
 	public Transform rig;
 	public Transform swordRig;
+	public Transform model;
 	
 	public Transform camera;
 	[HideInInspector] public CameraController cameraController;
-	
-	public Transform sword;
+
+    public Transform _sword;
+	[HideInInspector] public Transform sword;
 	[HideInInspector] public Transform swordModel;
 	
 	public float moveSpeed = 8.0f;
-	public float swingSpeed = 9.0f;
+	public float _swingSpeed = 8.0f; [HideInInspector] public float swingSpeed { get { return _swingSpeed * 140f; } }
 
 	public float groundDetectionRadius = 0.6f;
 	public float groundStepUpDistance = 0.4f;
 
 	public RaycastHit groundHit;
 
-	[HideInInspector] public Vector3 movement; 
+	[HideInInspector] public Vector3 movement;
 	
-	[HideInInspector] public bool block, alignStab, stab, holdStab;
+	[HideInInspector] public bool block, alignStab, stab, holdStab, paused, dead;
 	
 	public float SwordHoldDistance = 0.5f;
 	
@@ -45,11 +47,11 @@ public class PlayerController : MonoBehaviour
 	private const float InputAngleSwivelThreshold = 90f;
 	
 	[HideInInspector] public float stabHoldTimer;
-	
-	private bool initialized, dead;
+
+	private bool initialized;
 
     void Start()
-    {		
+    {
 		// Cursor.visible = false;
 		// Cursor.lockState = CursorLockMode.Locked;
 
@@ -57,6 +59,7 @@ public class PlayerController : MonoBehaviour
 		animationController.Initialize(this);
 
 		swordController = new PlayerSwordController();
+		
 		InitializeSword();
 		
 		if (!photonView.IsMine)
@@ -75,23 +78,25 @@ public class PlayerController : MonoBehaviour
 		input = GetComponent<PlayerInput>();
 		
 		inputController = new PlayerInputController();
-		collisionController = new PlayerCollisionController();
+		collisionController = gameObject.AddComponent<PlayerCollisionController>();
 		
 		swordController.Initialize(this, inputController, animationController);
-		physicsController.Initialize(this, inputController, animationController);
+		physicsController.Initialize(this);
 		inputController.Initialize(this); StartCoroutine(StartInput(0.2f));
+		collisionController.Initialize(this);
 
 		initialized = true;
 	}
 	
 	private void InitializeSword()
 	{
-		swordModel = sword;
+		swordModel = _sword;
 		swordModel.GetComponentInChildren<Collider>().gameObject.layer = Collisions.SwordLayer;
 		
 		sword = transform.parent.Find("Player Sword");
-		sword.position = animationController.rightHandBone.position;
-		sword.rotation = Quaternion.LookRotation(animationController.rightHandBone.up, -animationController.rightHandBone.forward);
+		sword.position = animationController.bones["rh"].position;
+		sword.rotation = Quaternion.LookRotation(
+			animationController.bones["rh"].up, -animationController.bones["rh"].right);
 		
 		swordController.length = PlayerSword.OrientModelToLength(sword, swordModel);
 
@@ -108,28 +113,28 @@ public class PlayerController : MonoBehaviour
 		yield return new WaitForSeconds(delay);
 
 		inputController.EnableInput();
-		StartCoroutine(GetSwingInput());
+		StartCoroutine(SwingInput());
 		StartCoroutine(CheckInputChange());
 	}
 	
-	private IEnumerator GetSwingInput()
+	private IEnumerator SwingInput()
 	{
-		if (inputController.GetSwingInput().sqrMagnitude == 0)
-			yield return new WaitUntil(() => inputController.GetSwingInput().sqrMagnitude > 0);
+		if (inputController.SwingInput().sqrMagnitude == 0)
+			yield return new WaitUntil(() => inputController.SwingInput().sqrMagnitude > 0);
 		else
 			yield return null;
 		
-		Vector3 swingInput = inputController.GetSwingInput();
+		Vector3 swingInput = inputController.SwingInput();
 		
 		swordController.SetTipInput(swingInput);
 		swordController.SetBaseInput(swingInput);
 
-		StartCoroutine(GetSwingInput());
+		StartCoroutine(SwingInput());
 	}
 	
 	private IEnumerator CheckInputChange()
 	{
-		Vector2 inputStore = inputController.GetSwingInput();
+		Vector2 inputStore = inputController.SwingInput();
 		
 		yield return new WaitForSeconds(0.07f);
 		
@@ -140,22 +145,29 @@ public class PlayerController : MonoBehaviour
 	
 	void FixedUpdate()
 	{		
-		if (!photonView.IsMine || dead)
+		if (!photonView.IsMine || dead || paused)
 			return;
 		
 		physicsController.MoveRigidbody(movement);
-		physicsController.RotateRigidbody();
+		physicsController.Rotate();
 	
 		swordController.DoFixedUpdate();
 	}
 
     void Update()
     {
-		if (!photonView.IsMine || dead)
+		if (!photonView.IsMine)
+			return;
+		
+		if (transform.position.y < RoomManager.deathPlaneHeight)
+			inputController.Restart();
+		
+		if (dead || paused)
 			return;
 		
 		animationController.DoUpdate();
 		inputController.DoUpdate();
+		collisionController.DoUpdate();
 		
 		movement = inputController.MoveDirection() * moveSpeed;
 		
@@ -163,12 +175,11 @@ public class PlayerController : MonoBehaviour
 		{
 			if (!block && !stab)
 			{
-				// Debug.Log(swordController.GetInputAngleChange());
-				animationController.swordArmIKTargetController.Lock();
+				animationController.swordArmIKTargetController.Slow();
 			}
 		}
 		
-		if (stab && ArmToSword().magnitude >= animationController.GetArmLength())
+		if (stab && ArmToSword().magnitude >= animationController.ArmLength())
 			HoldStab();
 		
 		if (holdStab && stabHoldTimer > StabHoldDuration)
@@ -180,44 +191,33 @@ public class PlayerController : MonoBehaviour
 		deg *= 1 + (Mathf.Abs(Vector3.Dot(movement, camera.forward)) * 0.6f);
 		
 		cameraController.Rotate(deg);
-		
-		groundHit = PlayerDetection.GroundHit(this);
+		RotateModel();
 
 		stabHoldTimer += Time.deltaTime;
     }
+	
+	public void RotateModel()
+	{
+		model.localRotation = Quaternion.Lerp(
+			model.localRotation,
+			Quaternion.Euler(0f, 45f * inputController.MovementInput().x, 0f),
+			0.14f);
+	}
 
 	private void LateUpdate()
 	{
-		if(dead || !photonView.IsMine)
+		if(dead || !photonView.IsMine || paused)
 			return;
 		
 		cameraController.pivotController.DoLateUpdate();
-	}
-	
-	private void OnCollisionEnter(Collision col)
-	{
-		if(dead || !photonView.IsMine || !initialized)
-			return;
-		
-		if (col.transform == sword)
-			return;
-		
-		physicsController.Collide(col);
-	}
-	
-	private void OnCollisionExit (Collision col)
-	{
-		if(dead || !photonView.IsMine)
-			return;
-		
-		physicsController.StopColliding();
 	}
 
     public void Block() { block = true; }
 	public void StopBlock() { block = false; }
 	
 	public void StartStab() { alignStab = true; }
-	public void Stab() { alignStab = false; stab = true; }
+	public void CancelStab() { alignStab = false; }
+	public void Stab() { if (!alignStab) return; alignStab = false; stab = true; }
 	
 	public void HoldStab()
 	{
@@ -228,55 +228,64 @@ public class PlayerController : MonoBehaviour
 	}
 	
 	public void StopStab() { holdStab = false; }
+
+	public void TogglePause()
+	{
+		paused = !paused;
+	}
 	
-	public void Collide(Collision collision) { physicsController.Collide(collision); }
-	public void StopColliding() { physicsController.StopColliding(); }
+	public void UnPause()
+	{
+		paused = false;
+	}
 
     public void Die()
 	{
+		sword.GetComponent<Rigidbody>().useGravity = true;
+		
 		dead = true;
 	}
 
     public Vector3 ToSword() {
-		return swordController.physicsController.RigidbodyPosition() - transform.position;
+		return swordController.physicsController.Position() - transform.position;
 	}
 	
 	public Vector3 ArmToSword() {
-		return swordController.physicsController.RigidbodyPosition() - animationController.rightArmBone.position;
+		return swordController.physicsController.Position() - animationController.bones["ra"].position;
 	}
 
 	public Vector3 ApproximateArmToSword() {
-		return swordController.physicsController.RigidbodyPosition() - animationController.ApproximateArmPosition();
+		return swordController.physicsController.Position() - animationController.ApproximateArmPosition();
 	}
 	
 	public Vector3 ForeArmToSword() {
-		return swordController.physicsController.RigidbodyPosition() - animationController.rightForeArmBone.position;
+		return swordController.physicsController.Position() - animationController.bones["rfa"].position;
 	}
 	
 	public Vector3 ChestToSword() {
-		return swordController.physicsController.RigidbodyPosition() - animationController.chestBone.position;
+		return swordController.physicsController.Position() - animationController.bones["c"].position;
 	}
 
 	public Vector3 ApproximateChestToSword() {
-		return swordController.physicsController.RigidbodyPosition() - animationController.ApproximateChestPosition();
+		return swordController.physicsController.Position() - animationController.ApproximateChestPosition();
 	}
 	
 	public bool SwordHeldVertically(float maxY) {
 		return ArmToSword().normalized.y > maxY;
 	}
 	
-	public float GetHoldDistance()
+	public float HoldDistance()
 	{
-		return animationController.GetArmLength() * (0.3f + (1f - swordController.armBendAmount) * 0.8f);
+		return animationController.ArmLength() * (0.3f + (1f - swordController.armBendAmount) * 0.8f);
 	}
 	
-	public float GetArmBendAngle() { return animationController.GetArmBendAngle(); }
+	public float ArmBendAngle() { return animationController.ArmBendAngle(); }
 	public float GetStabHoldDuration() { return StabHoldDuration; }
 	
 	public bool SwordFront() {
-		return MathFunctions.FloatN1P1(Vector3.Dot(ArmToSword().normalized, camera.forward)) > 0;
+		return Math.FloatN1P1(Vector3.Dot(ArmToSword().normalized, camera.forward)) > 0;
 	}
 	public bool SwordRight() {
-		return MathFunctions.FloatN1P1(Vector3.Dot(ArmToSword().normalized, camera.right)) > 0;
+		return Math.FloatN1P1(Vector3.Dot(ArmToSword().normalized, camera.right)) > 0;
 	}
 }

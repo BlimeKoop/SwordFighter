@@ -7,21 +7,21 @@ using Photon.Pun;
 public class PlayerPhysicsController
 {
 	[HideInInspector] public PlayerController playerController;
-	[HideInInspector] public PlayerInputController inputController;
-	[HideInInspector] public PlayerAnimationController animationController;
-	[HideInInspector] public SwordCollisionController swordCollisionController;
+	private PlayerAnimationController animationController;
+	private PlayerInputController inputController;
+	private PlayerCollisionController collisionController;
+	
+	private SwordCollisionController swordCollisionController;
 	
 	[HideInInspector] public Rigidbody rigidbody;
-	
-	private bool colliding;
-	private Collision collision;
 
     public void Initialize(
-		PlayerController playerController, PlayerInputController inputController, PlayerAnimationController animationController)
+		PlayerController playerController)
     {
 		this.playerController = playerController;
-		this.inputController = inputController;
-		this.animationController = animationController;
+		this.animationController = playerController.animationController;
+		this.inputController = playerController.inputController;
+		this.collisionController = playerController.collisionController;
 		
 		swordCollisionController = playerController.swordController.collisionController;
 		
@@ -30,41 +30,53 @@ public class PlayerPhysicsController
 			playerController.transform.GetChild(0).gameObject.AddComponent<Rigidbody>() :
 			playerController.GetComponentInChildren<Rigidbody>());
 
-		rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-		
-		collision = new Collision();
+		rigidbody.isKinematic = true;
 	}
 	
 	public void MoveRigidbody(Vector3 movement)
 	{
 		Vector3 interpolatedMovement = Vector3.Lerp(rigidbody.velocity, movement, 0.1f);
 		
-		if (playerController.groundHit.transform == null)
+		if (!collisionController.onGround)
 			interpolatedMovement.y = Mathf.Max(Physics.gravity.y, rigidbody.velocity.y + Physics.gravity.y * Time.fixedDeltaTime);
 		else
-			interpolatedMovement = Vector3.Scale(interpolatedMovement, new Vector3(1.0f, 0.0f, 1.0f));
-
-		if (swordCollisionController.Colliding() &&
-			swordCollisionController.collision.transform != playerController.transform)
 		{
-			interpolatedMovement += (
-				swordCollisionController.collision.contacts[0].normal *
-				Mathf.Max(
-					0f,
-					Vector3.Dot(interpolatedMovement, -swordCollisionController.collision.contacts[0].normal)));
+			interpolatedMovement.y = Mathf.Clamp(collisionController.VerticalGroundOffset(), 0f, 0.2f) / Time.fixedDeltaTime;
 		}
+		
+		if (swordCollisionController.colliding)
+			interpolatedMovement = MoveAndSlide(interpolatedMovement, swordCollisionController.collision.point, swordCollisionController.collision.normal);
+		if (collisionController.onWall)
+			interpolatedMovement = MoveAndSlide(interpolatedMovement, collisionController.collisions["t"].GetContact(0).point, Collisions.InterpolatedNormal(collisionController.collisions["t"], 3));
 
-		rigidbody.velocity = interpolatedMovement;
+		rigidbody.MovePosition(rigidbody.position + interpolatedMovement * Time.fixedDeltaTime);
 	}
 	
-	public void RotateRigidbody()
+	private Vector3 MoveAndSlide(Vector3 movement, Vector3 collisionPoint, Vector3 collisionNormal, float friction = 0.0f)
+	{
+		Vector3 cross = Vectors.SafeCross(Vector3.up, collisionNormal).normalized;
+		Vector3 movementR = movement + collisionNormal * Mathf.Max(0f, Vector3.Dot(movement, -collisionNormal));
+		
+		// Debug.DrawRay(collisionPoint, collisionNormal * 2f, Color.yellow);
+		
+		friction = Mathf.Clamp01(friction);
+		
+		if (friction == 0.0f)
+			return movementR;
+		
+		float lr = Math.FloatN1P1(Vector3.Dot(movementR, cross));
+		
+		// movementR += cross * (movementR.magnitude - movement.magnitude) * lr * (1.0f - friction);
+		
+		return movementR;
+	}
+	
+	public void Rotate()
 	{
 		Vector3 camForward = playerController.camera.transform.forward;
 		Vector3 camForwardFlat = Vector3.Scale(camForward, new Vector3(1f, 0f, 1f)).normalized;
 
 		Quaternion targetRotation = Quaternion.LookRotation(camForwardFlat);
-		targetRotation *= Quaternion.Euler(0f, 45f * inputController.GetMovementInput().x, 0f);
-		
 		Quaternion baseRotation = Quaternion.Lerp(rigidbody.rotation, targetRotation, 0.13f);
 		
 		Vector3 toIK = animationController.swordArmIKTargetController.transform.position - rigidbody.position;
@@ -75,19 +87,6 @@ public class PlayerPhysicsController
 		
 		Quaternion newRotation = Quaternion.Lerp(baseRotation, ikRotation, 0.2f);
 		
-		rigidbody.angularVelocity = Vector3.zero;
 		rigidbody.MoveRotation(newRotation);
-	}
-	
-	public void Collide(Collision collision)
-	{
-		this.collision = collision;
-		
-		colliding = true;
-	}
-	
-	public void StopColliding()
-	{
-		colliding = false;
 	}
 }

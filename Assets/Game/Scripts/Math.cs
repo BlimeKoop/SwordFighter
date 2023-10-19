@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MathFunctions
+public class Math
 {
 	public static int FloatN1P1(float f)
 	{

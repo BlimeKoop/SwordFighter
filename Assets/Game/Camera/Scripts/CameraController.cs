@@ -42,6 +42,7 @@ public class CameraController : MonoBehaviour
 	public void ChangeDirection()
 	{
 		pivotController.ChangeDirection(playerController.movement);
+		playerController.CancelStab();
 	}
 	
 	private Vector3 NonPlayerAimDirection(CameraInputActions cameraInputActions) {

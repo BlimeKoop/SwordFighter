@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3596739131502784657}
   - component: {fileID: 4391209762027733466}
   - component: {fileID: 2857787287369815715}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player Sword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,7 +53,7 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  Synchronization: 3
+  Synchronization: 2
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
@@ -74,7 +74,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cutting: 0
-  phasing: 0
 --- !u!114 &5252494176989183669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -106,6 +105,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerController: {fileID: 0}
   positionOffset: {x: 0.0000009536743, y: -0.0000150203705, z: 0}
+  rotationOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!54 &4391209762027733466
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -114,13 +114,13 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5056553883052315732}
   serializedVersion: 2
-  m_Mass: 0.05
-  m_Drag: 15
-  m_AngularDrag: 15
+  m_Mass: 0.1
+  m_Drag: 0
+  m_AngularDrag: 0.05
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 0
+  m_Constraints: 64
   m_CollisionDetection: 1
 --- !u!114 &2857787287369815715
 MonoBehaviour:
@@ -147,7 +147,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 452585383321214507}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player Sword Roll Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -11,9 +11,18 @@ public class SwordCollisionController : MonoBehaviour
 	private PlayerController playerController;
 	
 	private BoxCollider boxCol;
+	private Renderer rend;
 	
-	[HideInInspector] public bool cutting, phasing;
-	[HideInInspector] public Collision collision;
+	[HideInInspector] public bool cutting;
+	[HideInInspector] public bool colliding
+	{
+		get { return collision != null; }
+		set {}
+	}
+	
+	private int layerStore;
+	
+	[HideInInspector] public SwordCollision collision;
 	
 	public void Initialize(PlayerSwordController swordController)
 	{
@@ -26,33 +35,19 @@ public class SwordCollisionController : MonoBehaviour
 			boxCol = meshObj.AddComponent<BoxCollider>();
 
 		boxCol.isTrigger = false;
-	}
-	
-	private void Update()
-	{
-		if (collision != null && !StillColliding())
-			StopColliding();
+		boxCol.gameObject.layer = Collisions.SwordLayer;
 		
-		if (cutting && !StillColliding())
-			StopCutting();
-	}
-	
-	private bool StillColliding()
-	{
-		Vector3 boxColExtents = Objects.BoxColliderExtents(gameObject);
-
-		boxColExtents.x *= 1.5f;
-		boxColExtents.z *= 1.5f;
-		
-		return Physics.CheckBox(
-			boxCol.bounds.center,
-			boxColExtents,
-			swordController.physicsController.RigidbodyRotation(),
-			~(1 << 6));
+		rend = playerController.swordModel.GetComponent<Renderer>();
 	}
 
 	private void OnCollisionEnter(Collision col)
 	{
+		if (cutting)
+			return;
+		
+		if (colliding)
+			return;
+		
 		if (playerController == null)
 		{
 			this.enabled = false;
@@ -60,51 +55,111 @@ public class SwordCollisionController : MonoBehaviour
 			return;
 		}
 		
-		if (col.gameObject == playerController.gameObject)
+		if (col.collider.GetComponentInParent<PlayerController>() == playerController)
 			return;
 
-		if (col.GetContact(0).thisCollider != boxCol)
-			return;
-		
 		if (swordController.TryShatter(col.gameObject))
 			return;
 
 		if (swordController.TryCut(col))
 		{
-			StopColliding();
-			
-			boxCol.isTrigger = true;
 			cutting = true;
+			boxCol.gameObject.layer = Collisions.PhaseLayer;
+			
+			// swordController.physicsController.RevertVelocity();
 			
 			if (col.gameObject.name.Contains("Player"))
-				GameObject.Find("UIController").GetComponent<UIController>().EnableWinText();
+				GameObject.Find("UI Controller").GetComponent<UIController>().EnableWinText();
+			
+			StartCoroutine(StopCutting(swordController.physicsController.velocity.magnitude * Time.fixedDeltaTime));
 			
 			return;
 		}
-		
-		// Debug.Log("Sword collision with " + col.gameObject.name);
 
-		// boxCol.isTrigger = true;
-		// physicsController.FreezeRigidbodyUntilFixedUpdate();
-		swordController.physicsController.Zero();
+		if (!colliding)
+		{
+			colliding = true;
+			
+			// Debug.Log($"Colliding with {col.gameObject}");
+					
+			collision = SwordCollisions.SwordCollision(swordController, col);
+			
+			layerStore = col.collider.gameObject.layer;
+			col.collider.gameObject.layer = Collisions.IgnoreSelfLayer;
+			
+			boxCol.gameObject.layer = Collisions.IgnoreSelfLayer;
+			
+			StartCoroutine(CheckStillColliding(0.05f));
+		}
+	}
+	
+	private IEnumerator StopCutting(float delay)
+	{
+		yield return new WaitForFixedUpdate();
+		yield return new WaitForFixedUpdate();
 		
-		collision = col;
+		yield return new WaitForSeconds(delay);
+		
+		cutting = false;
+		boxCol.gameObject.layer = Collisions.SwordLayer;
+	}
+
+	private IEnumerator CheckStillColliding(float delay)
+	{
+		yield return new WaitForSeconds(delay);
+		
+		if (StillColliding())
+		{
+			StartCoroutine(CheckStillColliding(delay));
+			yield break;
+		}
+		
+		StopPhasing();
+		StopColliding();
 	}
 	
 	private void StopColliding()
 	{
-		boxCol.isTrigger = false;
 		collision = null;
 	}
 	
-	private void StopCutting()
+	private void StopPhasing()
 	{
-		boxCol.isTrigger = false;
-		cutting = false;
+		collision.collider.gameObject.layer = layerStore;
+		boxCol.gameObject.layer = Collisions.SwordLayer;
 	}
 	
-	public BoxCollider GetCollider() { return boxCol; }
-	public bool Colliding() { return collision != null && collision.collider != null && collision.contacts.Length > 0; }
+	private bool StillColliding()
+	{
+		Collider[] overlapBox = Physics.OverlapBox(
+			ColliderCheckOrigin(),
+			ColliderCheckExtents(),
+			swordController.rollController.rotation,
+			(1 << Collisions.IgnoreSelfLayer));
+		
+		if (overlapBox.Length > 1)
+			return true;
+		
+		return false;
+	}
+	
+	private Vector3 ColliderCheckOrigin()
+	{
+		return (
+			boxCol.transform.TransformPoint(boxCol.center) +
+			transform.forward *
+			swordController.length *
+			swordController.grabPointRatio);
+	}
+	
+	private Vector3 ColliderCheckExtents()
+	{
+		return Vector3.Scale(
+			Objects.BoxColliderExtents(boxCol, swordController.rollController),
+			new Vector3(2.0f, 1.4f, 1.0f - swordController.grabPointRatio));
+	}
+	
+	public BoxCollider Collider() { return boxCol; }
 	
 	public void SetPlayerController(PlayerController playerController) { this.playerController = playerController; }
 }

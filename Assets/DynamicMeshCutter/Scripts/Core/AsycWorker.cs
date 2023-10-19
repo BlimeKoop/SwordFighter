@@ -93,6 +93,7 @@ namespace DynamicMeshCutter
             {
                 VirtualMesh[] cutMeshes = _meshCut.Cut(ref info);
                 info.CreatedMeshes = cutMeshes;
+				
                 if (cutMeshes == null)
                 {
                     if (OnCut != null)

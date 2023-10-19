@@ -31,7 +31,8 @@ public class CameraPivotController : MonoBehaviour
 	public Vector3 targetDirection;
 	
 	private bool initialized;
-	private bool rotate, rotating, autoRotate;
+	private bool rotate, autoRotate;
+	[HideInInspector] public bool rotating;
 	
     public void Initialize(GameObject _followTarget)
     {

@@ -2,6 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public class SwordCollision
+{
+	public Collider collider;
+	public GameObject gameObject;
+	
+	public Vector3 point;
+	public Vector3 normal;
+	public Vector3 relativeVelocity;
+	
+	public SwordCollision(
+	Collider collider = null, Vector3 point = new Vector3(), Vector3 normal = new Vector3(), Vector3 relativeVelocity = new Vector3())
+	{
+		this.collider = collider;
+		gameObject = collider.gameObject;
+		
+		this.point = point;
+		this.normal = normal;
+		this.relativeVelocity = relativeVelocity;
+	}
+}
+
 public class PlayerSword
 {
 	public static float OrientModelToLength(Transform sword, Transform swordModel)
@@ -18,19 +39,11 @@ public class PlayerSword
 		float length = Mathf.Max(sizeX, Mathf.Max(sizeY, sizeZ));
 
 		int longestDirection = 0;
-		// int shortestDirection = 0;
 		
 		if (length == sizeY)
 			longestDirection = 1;
 		else if (length == sizeZ)
 			longestDirection = 2;
-		
-		/*
-		if (thickness == sizeY)
-			shortestDirection = 1;
-		else if (thickness == sizeZ)
-			shortestDirection = 2;
-		*/
 		
 		swordModel.rotation = sword.rotation;
 		
@@ -42,44 +55,36 @@ public class PlayerSword
 		return length;
 	}
 	
-	public static Vector3 CalculateMovement(PlayerSwordController playerSwordController)
+	public static Vector3 CalculateMovement(PlayerSwordController playerSwordController, Vector2 input)
 	{
-		return new Vector3();
-		/*
 		PlayerController playerController = playerSwordController.playerController;
 		PlayerInputController inputController = playerController.inputController;
 		
 		Vector3 movementR = new Vector3();
 		
 		if (playerController.block)
-			movementR = PlayerSwordMovement.BlockMovement(playerController, playerSwordController, inputController);
+			movementR = PlayerSwordMovement.BlockMovement(playerController, playerSwordController, input);
 		else if (playerController.alignStab)
-			movementR = PlayerSwordMovement.AlignStabMovement(playerController, playerSwordController, inputController);
+			movementR = PlayerSwordMovement.SwingMovement(playerController, input);
 		else if (playerController.stab || playerController.holdStab)
-			movementR = PlayerSwordMovement.StabMovement(playerController, playerSwordController, inputController);
+			movementR = PlayerSwordMovement.SwingMovement(playerController, input);
 		else
-			movementR = PlayerSwordMovement.SwingMovement(playerController, playerSwordController, inputController);
-		
-		if (!playerController.stab)
-			movementR = ClampMovement(playerSwordController, movementR);
+			movementR = PlayerSwordMovement.SwingMovement(playerController, input);
 
 		return movementR;
-		*/
 	}
 	
 	public static Quaternion CalculateRotation(PlayerSwordController playerSwordController)
 	{
 		PlayerController playerController = playerSwordController.playerController;
 		
-		Quaternion rotationR = Quaternion.identity;
-		
 		if (playerController.stab)
-			return playerSwordController.physicsController.RigidbodyRotation();
+			return playerSwordController.physicsController.Rotation();
 		
 		if (playerController.alignStab)
 		{
 			Vector3 lookDir = Vector3.Lerp(
-			Vectors.FlattenVector(playerController.animationController.chestBone.forward).normalized,
+			Vectors.FlattenVector(playerController.animationController.bones["c"].forward).normalized,
 			playerController.ApproximateArmToSword().normalized,
 			0.5f);
 
@@ -89,12 +94,16 @@ public class PlayerSword
 		Transform camera = playerController.camera;
 		
 		Vector3 forward = playerController.animationController.SwordAimDirection();
+		
+		if (playerController.block)
+			forward = -Vector3.Cross(Vector3.up, playerController.animationController.ApproximateChestToSword()).normalized;
+		
 		Vector3 up = (
 			forward.y < 1f ?
 			Vector3.up :
 			Vectors.FlattenVector(-camera.forward).normalized);
 
-		rotationR = Quaternion.LookRotation(forward, up);
+		Quaternion rotationR = Quaternion.LookRotation(forward, up);
 		
 		if (playerController.block)
 			return rotationR;

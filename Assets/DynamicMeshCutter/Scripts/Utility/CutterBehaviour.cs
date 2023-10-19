@@ -12,15 +12,22 @@ namespace DynamicMeshCutter
         //basic info
         public MeshTarget MeshTarget;
         public VirtualPlane Plane;
+        public PhotonView photonView;
+        public bool isSpawner;
 
         ////advanced info
         public Mesh TargetOriginalMesh;
         public VirtualMesh TargetVirtualMesh;
         public Matrix4x4[] Bindposes;
-        public Info(MeshTarget target, VirtualPlane plane, OnCut onCut, OnCreated onCreated, object boxed)
+
+
+        public Info(MeshTarget target, VirtualPlane plane, OnCut onCut, OnCreated onCreated, object boxed,
+		PhotonView photonView = null, bool isSpawner = true)
         {
             this.MeshTarget = target;
             this.Plane = plane;
+            this.isSpawner = isSpawner;
+            this.photonView = photonView;
             OnCutCallback = onCut;
             OnCreatedCallback = onCreated;
             BoxedUserData = boxed;
@@ -163,7 +170,8 @@ namespace DynamicMeshCutter
             }
         }
 
-        public void Cut(MeshTarget target, Vector3 worldPosition, Vector3 worldNormal, OnCut onCut = null, OnCreated onCreated = null, object boxedUserData = null)
+        public void Cut(MeshTarget target, Vector3 worldPosition, Vector3 worldNormal, OnCut onCut = null,
+            OnCreated onCreated = null, object boxedUserData = null, PhotonView photonView = null)
         {
             if (!target.isActiveAndEnabled)
                 return;
@@ -197,7 +205,7 @@ namespace DynamicMeshCutter
             localN.Normalize();
 
             VirtualPlane plane = new VirtualPlane(localP, localN, worldPosition, worldNormal);
-            Info info = new Info(target, plane, onCut, onCreated, boxedUserData);
+            Info info = new Info(target, plane, onCut, onCreated, boxedUserData, photonView);
 
             if (!UseAsync)
             {
@@ -229,21 +237,17 @@ namespace DynamicMeshCutter
         protected virtual void CreateGameObjects(Info info)
         {
             MeshCreationData creationInfo = MeshCreation.CreateObjects(info, DefaultMaterial, VertexCreationThreshold);
-
-            if (DestroyTargets)
-            {
-                if (info.MeshTarget)
-                {
-                    if (info.MeshTarget.GameobjectRoot != null)
-                    {
-                        DestroyObject(info.MeshTarget.GameobjectRoot);
-                    }
-                    else
-                    {
-                        DestroyObject(info.MeshTarget.gameObject);
-                    }
-                }
-            }
+			
+			if (DestroyTargets && info.MeshTarget)
+			{
+				GameObject destroy = (
+					info.MeshTarget.GameobjectRoot != null ? info.MeshTarget.GameobjectRoot : info.MeshTarget.gameObject);
+				
+				if (info.photonView == null)
+					Destroy(destroy);
+				else if (info.photonView.AmOwner)
+					RoomManager.photonView.RPC("DestroyObject", RpcTarget.AllBuffered, destroy.name);
+			}
 			
 			if (creationInfo == null)
 			{
@@ -260,18 +264,6 @@ namespace DynamicMeshCutter
             }
 
             info.OnCreatedCallback?.Invoke(info, creationInfo);
-        }
-
-        private void DestroyObject(GameObject obj)
-        {
-            Rigidbody objectRB = obj.GetComponentInParent<Rigidbody>();
-
-            if (objectRB != null && objectRB.gameObject != obj)
-                obj = objectRB.gameObject;
-
-            obj.transform.position = new Vector3(0, -10000, 0);
-
-            Destroy(obj, 0);
         }
 
         private void OnCut(bool success, Info info)

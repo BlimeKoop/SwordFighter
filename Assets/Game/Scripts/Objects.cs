@@ -4,29 +4,60 @@ using UnityEngine;
 
 public class Objects
 {
+	Transform proxy = new GameObject("Objects Proxy").transform;
+	
 	/// <summary>
 	/// Returns the box collider's extents along object's axises, in world scale.
 	/// </summary>
 
-    public static Vector3 BoxColliderExtents(GameObject obj)
+    public static Vector3 BoxColliderExtents(BoxCollider col, Transform axisReference)
 	{
-		BoxCollider col = obj.GetComponentInChildren<BoxCollider>();
-		
 		if (col == null)
 			return Vector3.zero;
 		
-		Transform objT = obj.transform;
-		Transform colT = col.transform;
+		Vector3 center = col.transform.TransformPoint(col.center);
+		Vector3 toMax = col.transform.TransformPoint(col.center + col.size / 2) - center;
+
+		return new Vector3(
+			Mathf.Abs(Vector3.Dot(axisReference.right, toMax)),
+			Mathf.Abs(Vector3.Dot(axisReference.up, toMax)),
+			Mathf.Abs(Vector3.Dot(axisReference.forward, toMax)));
+	}
+	
+	/// <summary>
+	/// Returns the renderer's extents along object's axises, in world scale.
+	/// </summary>
+
+    public static Vector3 RendererExtents(Renderer rend, Transform axisReference)
+	{
+		if (rend == null)
+			return Vector3.zero;
 		
-		Vector3 boxSize = col.size;
-		Vector3 max = colT.TransformPoint(boxSize / 2);
-		Vector3 toMax = max - colT.position;
+		Vector3 toMax = rend.transform.TransformPoint(rend.localBounds.extents) - rend.bounds.center;
 
-		Vector3 extentsR = new Vector3();
-		extentsR.x = Mathf.Abs(Vector3.Dot(objT.right, toMax));
-		extentsR.y = Mathf.Abs(Vector3.Dot(objT.up, toMax));
-		extentsR.z = Mathf.Abs(Vector3.Dot(objT.forward, toMax));
-
-		return extentsR;
+		return new Vector3(
+			Mathf.Abs(Vector3.Dot(axisReference.right, toMax)),
+			Mathf.Abs(Vector3.Dot(axisReference.up, toMax)),
+			Mathf.Abs(Vector3.Dot(axisReference.forward, toMax)));
+	}
+	
+	public static T GetComponentInHeirarchy<T>(GameObject obj)
+	{
+		var found = obj.GetComponentInChildren<T>();
+		
+		if (obj != null)
+			return found;
+		
+		return obj.GetComponentInParent<T>();
+	}
+	
+	public static T GetComponentInHeirarchy<T>(Component component)
+	{
+		var found = component.GetComponentInChildren<T>();
+		
+		if (found != null)
+			return found;
+		
+		return component.GetComponentInParent<T>();
 	}
 }

@@ -8,7 +8,7 @@ public class PlayerSwordMovement
 	{
 		Vector3 direction = TipDirection(playerController, input);
 
-		float inputSpeed = Mathf.Min(input.magnitude, 150f);
+		float inputSpeed = Mathf.Min(input.magnitude, 0.2f);
 		
 		Vector3 movementR = direction * inputSpeed;
 		movementR *= Mathf.Max(0.0f, 1.0f - playerController.swordController.weight);
@@ -17,56 +17,49 @@ public class PlayerSwordMovement
 		return movementR;
 	}
 	
-	public static Vector3 BaseMovement(PlayerController playerController, Vector2 input)
-	{
-		Vector3 direction = BaseDirection(playerController, input);
+	public static Vector3 SwingMovement(PlayerController playerController, Vector2 input)
+	{		
+		Vector3[] orbitDirections = OrbitDirections(
+			playerController.animationController.ApproximateArmPosition(), playerController.swordController.HoldPosition());
+		
+		Debug.DrawRay(playerController.swordController.HoldPosition(), orbitDirections[0], Color.grey);
+		Debug.DrawRay(playerController.swordController.HoldPosition(), orbitDirections[1], Color.grey);
+		
+		Vector3 direction = (orbitDirections[0] * input.x + orbitDirections[1] * input.y).normalized;
+		
+		// float t = 1f - (playerController.ArmBendAngle() / 90f);
+		// direction = StraightenDirection(direction, 0.5f, input, playerController);
 
-		float inputSpeed = Mathf.Min(input.magnitude, 150f);
+		float inputSpeed = Mathf.Min(input.magnitude, 0.3f) * Time.fixedDeltaTime;
 		
 		Vector3 movementR = direction * inputSpeed;
 		movementR *= Mathf.Max(0.0f, 1.0f - playerController.swordController.weight);
 		movementR *= playerController.swingSpeed;
-		// movementR = ClampMovement(playerController, movementR);
-		movementR += DistanceMovement(playerController, playerController.swordController) * 0.8f;
 
 		return movementR;
 	}
 	
-	public static Vector3 BlockMovement(PlayerController playerController, PlayerSwordController swordController, PlayerInputController inputController)
+	public static Vector3 BlockMovement(PlayerController playerController, PlayerSwordController swordController, Vector2 input)
 	{
-		/*
-		Vector2 swingInputActive = inputController.GetSwingInputActive();
-		
-		Vector3[] orbitDirections = ShoulderOrbitDirections(playerController, swordController);
-
 		Transform camera = playerController.camera;
 		
+		Vector3[] orbitDirections = OrbitDirections(playerController.animationController.ApproximateChestPosition(), swordController.HoldPosition());
+
+		Debug.DrawRay(swordController.HoldPosition(), orbitDirections[0] * 3f, Color.white);
+		Debug.DrawRay(swordController.HoldPosition(), camera.up * 3f, Color.white);
+
 		Vector3 horizontal = Vector3.Lerp(orbitDirections[0], Vectors.FlattenVector(camera.right), 0.4f);
-		Vector3 vertical = Vector3.Lerp(orbitDirections[1], camera.up, 0.4f);
+		Vector3 vertical = camera.up;
 		
-		Vector3 direction = (horizontal * swingInputActive.x + vertical * swingInputActive.y).normalized;
+		Vector3 direction = (horizontal * input.x + vertical * input.y).normalized;
 		
-		float inputSpeed = Mathf.Min(inputController.GetSwingInput().magnitude, 150f);
+		float inputSpeed = Mathf.Min(input.magnitude, 150f);
 		
 		Vector3 movementR = direction * inputSpeed;
 		movementR *= Mathf.Max(0.0f, 1.0f - swordController.weight);
 		movementR *= playerController.swingSpeed;
-		movementR += DistanceMovement(playerController, swordController) * 0.5f;
 		
 		return movementR;
-		*/
-		
-		return new Vector3();
-	}
-	
-	public static Vector3 AlignStabMovement(PlayerController playerController, PlayerSwordController swordController, PlayerInputController inputController)
-	{
-		return new Vector3(); // SwingMovement(playerController, swordController, inputController);
-	}
-	
-	public static Vector3 StabMovement(PlayerController playerController, PlayerSwordController swordController, PlayerInputController inputController)
-	{
-		return new Vector3(); // return SwingMovement(playerController, swordController, inputController);
 	}
 	
 	public static Vector3 TipDirection(PlayerController playerController, Vector2 input)
@@ -78,39 +71,14 @@ public class PlayerSwordMovement
 			return swordController.physicsController.velocity.normalized;
 		*/
 		
-		Vector3[] orbitDirections = OrbitDirections(swordController.GetBasePosition(), swordController.GetTipPosition());
+		Vector3[] orbitDirections = OrbitDirections(swordController.HoldPosition(), swordController.TipPosition());
 		
 		swordController.orbitDirectionsStore = orbitDirections;
 		
-		// Debug.DrawRay(swordController.GetTipPosition(), orbitDirections[0], Color.red);
-		// Debug.DrawRay(swordController.GetTipPosition(), orbitDirections[1], Color.red);
+		// Debug.DrawRay(swordController.TipPosition(), orbitDirections[0], Color.grey);
+		// Debug.DrawRay(swordController.TipPosition(), orbitDirections[1], Color.grey);
 		
 		Vector3 directionR = (orbitDirections[0] * input.x + orbitDirections[1] * input.y).normalized;
-
-		return directionR;
-	}
-	
-	public static Vector3 BaseDirection(PlayerController playerController, Vector2 input)
-	{
-		PlayerSwordController swordController = playerController.swordController;
-		
-		/*
-		if (swordController.swingLock)
-			return swordController.physicsController.velocity.normalized;
-		*/
-		
-		Vector3[] orbitDirections = OrbitDirections(
-			swordController.playerController.animationController.ApproximateArmPosition(), swordController.GetBasePosition());
-		
-		swordController.orbitDirectionsStore = orbitDirections;
-		
-		Debug.DrawRay(swordController.GetBasePosition(), orbitDirections[0], Color.red);
-		Debug.DrawRay(swordController.GetBasePosition(), orbitDirections[1], Color.red);
-		
-		Vector3 directionR = (orbitDirections[0] * input.x + orbitDirections[1] * input.y).normalized;
-		
-		// float t = 1f - (playerController.GetArmBendAngle() / 90f);
-		// directionR = StraightenDirection(directionR, t, input, playerController);
 
 		return directionR;
 	}
@@ -139,44 +107,24 @@ public class PlayerSwordMovement
 		return new Vector3[2] { c0, c1 };
 	}
 	
-	private static Vector3 ClampMovement(PlayerController playerController, Vector3 movement)
-	{
-		Vector3 nextPos = playerController.swordController.physicsController.GetNextPosition(movement);
-		Vector3 fromTo = nextPos - playerController.animationController.ApproximateArmPosition();
-			
-		if (fromTo.magnitude < playerController.animationController.GetArmLength())
-			return movement;
-		
-		return movement - fromTo.normalized * Vector3.Dot(movement, fromTo.normalized); 
-	}
-	
 	public static Vector3 DistanceMovement(PlayerController playerController, PlayerSwordController swordController)
 	{
 		Vector3 movementR = new Vector3();
 
-		float targetDistance = playerController.GetHoldDistance();
-		
-		Vector3 fromArm = playerController.ApproximateArmToSword();
+		float targetDistance = playerController.HoldDistance();
 		
 		bool block = playerController.block;
 		bool alignStab = playerController.alignStab;
 		bool stab = playerController.stab;
 		
-		if (block)
+		Vector3 fromArm = playerController.ApproximateArmToSword();
+		
+		if (block || alignStab)
 		{
-			Vector3 chestToSwordApprox = playerController.ApproximateChestToSword().normalized;
-			float distance = Vector3.Dot(fromArm, chestToSwordApprox);
+			Vector3 chestToSwordApprox = playerController.ApproximateChestToSword();
 			
-			if (!Mathf.Approximately(distance, targetDistance))
-				movementR -= chestToSwordApprox * (distance - targetDistance);
-		}
-		else if (alignStab)
-		{
-			Vector3 chestToSwordApprox = playerController.ApproximateChestToSword().normalized;
-			float distance = Vector3.Dot(fromArm, chestToSwordApprox);
-			
-			if (!Mathf.Approximately(distance, targetDistance))
-				movementR -= chestToSwordApprox * (distance - targetDistance);
+			if (!Mathf.Approximately(chestToSwordApprox.magnitude, targetDistance))
+				movementR += chestToSwordApprox.normalized * (targetDistance - chestToSwordApprox.magnitude);
 		}
 		else if (stab)
 		{
@@ -191,6 +139,6 @@ public class PlayerSwordMovement
 			movementR += fromArm.normalized * (targetDistance - fromArm.magnitude);
 		}
 		
-		return movementR;
+		return movementR / Time.fixedDeltaTime;
 	}
 }

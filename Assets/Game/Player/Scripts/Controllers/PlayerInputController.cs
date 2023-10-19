@@ -20,13 +20,11 @@ public class PlayerInputController
 	
 	private float SwingInputMult = 0.1f;
 	
-	private float swingZeroDelay = 0.15f;
+	private float swingZeroDelay = 0.07f;
 	private float swingZeroTimer;
 	
 	private int consecutiveSwingZeroCount = 6;
 	private int consecutiveSwingZeroCounter;
-	
-	private bool paused;
 	
 	[HideInInspector]
 	public bool sharpAngleChange;
@@ -43,12 +41,20 @@ public class PlayerInputController
 		playerMap.Swing.performed += context => RecordSwingInput();
 		playerMap.Block.performed += context => playerController.Block();
 		playerMap.Block.canceled += context => playerController.StopBlock();
-		playerMap.TogglePause.performed += context => TogglePause();
-		playerMap.UnPause.performed += context => UnPause();
+		playerMap.TogglePause.performed += context => playerController.TogglePause();
+		playerMap.UnPause.performed += context => playerController.UnPause();
 		playerMap.Stab.performed += context => playerController.StartStab();
 		playerMap.Stab.canceled += context => playerController.Stab();
+		playerMap.Restart.performed += context => Restart();
     }
 	
+	public void Restart()
+	{
+        playerInputActions.Disable();
+
+        GameObject.Find("Network Manager").GetComponent<NetworkManager>().LoadLevel(0);
+	}
+
 	public void EnableInput()
 	{
 		playerInputActions.Enable();
@@ -69,21 +75,11 @@ public class PlayerInputController
 		storedSwingInput = swingInput;
 	}
 
-	public Vector2 GetSwingInput()
+	public Vector2 SwingInput()
 	{
 		return swingInput;
 	}
 
-	private void TogglePause()
-	{
-		paused = !paused;
-	}
-	
-	private void UnPause()
-	{
-		paused = false;
-	}
-	
     public void DoUpdate()
     {
 		ZeroSwingInput();
@@ -106,14 +102,16 @@ public class PlayerInputController
 	}
 	
 	public Vector3 MoveDirection() {
-		Vector2 movementInput = GetMovementInput();
+		bool onGround = playerController.collisionController.onGround;
+		RaycastHit groundHit = playerController.collisionController.groundHit;
 		
 		Transform camera = playerController.camera;
+		Vector2 movementInput = MovementInput();
 
 		return (
-		Vectors.FlattenVector(camera.right) * movementInput.x +
-		Vectors.FlattenVector(camera.forward) * movementInput.y);
+		Vectors.FlattenVector(camera.right/*, onGround ? groundHit.normal : Vector3.up*/) * movementInput.x +
+		Vectors.FlattenVector(camera.forward/*, onGround ? groundHit.normal : Vector3.up*/) * movementInput.y);
 	}
 	
-	public Vector2 GetMovementInput() { return movementInput; }
+	public Vector2 MovementInput() { return movementInput; }
 }

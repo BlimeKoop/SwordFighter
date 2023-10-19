@@ -12,17 +12,12 @@ public class PlayerAnimationController
 	[HideInInspector] public Animator animator;
 	[HideInInspector] public UnityEngine.Avatar animatorAvatar;
 	
-	[HideInInspector] public Transform rightArmIKTarget;
+	[HideInInspector] public Transform RightArmIKTarget;
 	[HideInInspector] public ArmIKTargetController swordArmIKTargetController;
-	[HideInInspector] public Transform rightForeArmIKTarget;
+	[HideInInspector] public Transform RightForeArmIKTarget;
 	[HideInInspector] public ForeArmIKTargetController swordForeArmIKTargetController;
 	
-	[HideInInspector] public Transform hipBone;
-	[HideInInspector] public Transform chestBone;
-	[HideInInspector] public Transform rightShoulderBone;
-	[HideInInspector] public Transform rightArmBone;
-	[HideInInspector] public Transform rightForeArmBone;
-	[HideInInspector] public Transform rightHandBone;
+	public Dictionary<string, Transform> bones = new Dictionary<string, Transform>();
 	
 	private Transform transform;
 
@@ -55,41 +50,44 @@ public class PlayerAnimationController
 		
 		transform = playerController.transform;
 		animator = playerController.GetComponentInChildren<Animator>();
-
-		hipBone = playerController.rig;
-		chestBone = hipBone.GetChild(2).GetChild(0).GetChild(0);
-		rightShoulderBone = chestBone.GetChild(2);
-		rightArmBone = rightShoulderBone.GetChild(0);
-		rightForeArmBone = rightArmBone.GetChild(0);
-		rightHandBone = rightForeArmBone.GetChild(0);
 		
-		humerusLength = Vector3.Distance(rightArmBone.position, rightForeArmBone.position);
-		foreArmLength = Vector3.Distance(rightForeArmBone.position, rightHandBone.position);
+		bones["r"] = playerController.rig;
+		bones["s"] = bones["r"].GetChild(2);
+		bones["c"] = bones["s"].GetChild(0).GetChild(0);
+		bones["rs"] = bones["c"].GetChild(2);
+		bones["ra"] = bones["rs"].GetChild(0);
+		bones["rfa"] = bones["ra"].GetChild(0);
+		bones["rh"] = bones["rfa"].GetChild(0);
+		bones["lf"] = bones["r"].GetChild(0).GetChild(0).GetChild(0);
+		bones["rf"] = bones["r"].GetChild(1).GetChild(0).GetChild(0);
 		
-		chestArmDistance = Vector3.Distance(chestBone.position, rightArmBone.position);
-		chestArmHandRatio = (chestArmDistance * 1.3f / Vector3.Distance(rightArmBone.position, rightHandBone.position));
-		verticalArmDistance = rightArmBone.position.y - transform.position.y;
-		horizontalArmDistance = Vector3.Dot(rightArmBone.position - transform.position, transform.right);
+		humerusLength = Vector3.Distance(bones["ra"].position, bones["rfa"].position);
+		foreArmLength = Vector3.Distance(bones["rfa"].position, bones["rh"].position);
+		
+		chestArmDistance = Vector3.Distance(bones["c"].position, bones["ra"].position);
+		chestArmHandRatio = (chestArmDistance * 1.3f / Vector3.Distance(bones["ra"].position, bones["rh"].position));
+		verticalArmDistance = bones["ra"].position.y - transform.position.y;
+		horizontalArmDistance = Vector3.Dot(bones["ra"].position - transform.position, transform.right);
 		
 		InitializeSwordIKTargets();
 	}
 	
 	public void InitializeSwordIKTargets()
 	{
-		rightArmIKTarget = playerController.swordRig.Find("Right Arm IK Target");
-		swordArmIKTargetController = rightArmIKTarget.gameObject.AddComponent<ArmIKTargetController>();
+		RightArmIKTarget = playerController.swordRig.Find("Right Arm IK Target");
+		swordArmIKTargetController = RightArmIKTarget.gameObject.AddComponent<ArmIKTargetController>();
 		swordArmIKTargetController.SetAnimationController(this);
 
-		rightForeArmIKTarget = playerController.swordRig.Find("Right ForeArm IK Target");
-		swordForeArmIKTargetController = rightForeArmIKTarget.gameObject.AddComponent<ForeArmIKTargetController>();
+		RightForeArmIKTarget = playerController.swordRig.Find("Right ForeArm IK Target");
+		swordForeArmIKTargetController = RightForeArmIKTarget.gameObject.AddComponent<ForeArmIKTargetController>();
 		swordForeArmIKTargetController.SetPlayerController(playerController);
 	}
 	
 	public Vector3 SwordAimDirection()
 	{
 		return (
-			playerController.swordController.physicsController.RigidbodyPosition() -
-			PlayerAnimation.ArmIKTargetPosition(this, playerController)).normalized;
+			playerController.swordController.physicsController.Position() -
+			RightArmIKTarget.position);
 	}
 	
 	public Vector3 ApproximateChestPosition() {
@@ -105,11 +103,16 @@ public class PlayerAnimationController
 		return ApproximateChestPosition() + Vectors.FlattenVector(playerController.camera.right) * chestArmDistance;
 	}
 	
+	public Vector3 ApproximateChestToSword() {
+		return playerController.swordController.physicsController.Position() - ApproximateChestPosition();
+	}
+	
 	public Vector3 ArmRestPosition() {
 		return ApproximateChestPosition() + playerController.camera.right * horizontalArmDistance;
 	}
-	public float GetArmLength() { return humerusLength + foreArmLength; }
-	public float GetArmBendAngle() { return Vector3.Angle(rightArmBone.up, rightForeArmBone.up); }
+	
+	public float ArmLength() { return humerusLength + foreArmLength; }
+	public float ArmBendAngle() { return Vector3.Angle(bones["ra"].up, bones["rfa"].up); }
 
 	public void SetAnimatorFloat(string name, float setTo) { animator.SetFloat(name, setTo); }
 	public void SetAnimatorLayerWeight(int index, float setTo) { animator.SetLayerWeight(index, setTo); }

@@ -68,7 +68,7 @@
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\AppSettingsExtensions.cs" />
     <Compile Include="Assets\DynamicMeshCutter\Scripts\Core\MeshCreation.cs" />
     <Compile Include="Assets\Game\Scripts\Vectors.cs" />
-    <Compile Include="Assets\Game\UIController.cs" />
+    <Compile Include="Assets\Game\Scripts\UIController.cs" />
     <Compile Include="Assets\DynamicMeshCutter\Scripts\Ragdoll\DynamicRagdoll.cs" />
     <Compile Include="Assets\Game\Sword\Scripts\SwordPlayerConstraint.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\ChannelSelector.cs" />
@@ -102,7 +102,7 @@
     <Compile Include="Assets\Game\Player\Scripts\Animation\PlayerAnimation.cs" />
     <Compile Include="Assets\Game\Player\Scripts\Controllers\PlayerInputController.cs" />
     <Compile Include="Assets\Game\Player\Scripts\Controllers\PlayerHandController.cs" />
-    <Compile Include="Assets\Game\NetworkManager.cs" />
+    <Compile Include="Assets\Game\Scripts\NetworkManager.cs" />
     <Compile Include="Assets\Game\Player\Scripts\PlayerSwordMovementClamping.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\NamePickGui.cs" />
     <Compile Include="Assets\Game\Scripts\Monobehaviours\DestroyAtEndOfFrame.cs" />
@@ -110,14 +110,17 @@
     <Compile Include="Assets\Game\Camera\Scripts\CameraController.cs" />
     <Compile Include="Assets\Game\Player\Scripts\Controllers\PlayerController.cs" />
     <Compile Include="Assets\DynamicMeshCutter\Scripts\Core\MeshCutting.cs" />
+    <Compile Include="Assets\Game\Scripts\blel.cs" />
     <Compile Include="Assets\Game\Scripts\MathFunctions.cs" />
-    <Compile Include="Assets\Game\Scripts\Network.cs" />
+    <Compile Include="Assets\Game\Scripts\Monobehaviours\PhotonViewChildDestroyer.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\IgnoreUiRaycastWhenInactive.cs" />
     <Compile Include="Assets\DynamicMeshCutter\Scripts\Core\MeshSeperation.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\FriendItem.cs" />
     <Compile Include="Assets\Game\Sword\Scripts\Controllers\PlayerSwordController.cs" />
+    <Compile Include="Assets\Game\Scripts\RoomManager.cs" />
     <Compile Include="Assets\Photon\PhotonChat\Demos\DemoChat\ChatGui.cs" />
     <Compile Include="Assets\Game\Player\Scripts\PlayerInput.cs" />
+    <Compile Include="Assets\Game\Scripts\Monobehaviours\PhotonViewSuffix.cs" />
     <Compile Include="Assets\Game\Player\Input\PlayerInputActions.cs" />
     <Compile Include="Assets\Game\Camera\Scripts\CameraInputController.cs" />
     <Compile Include="Assets\Game\Camera\Input\CameraInputActions.cs" />

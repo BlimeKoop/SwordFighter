@@ -29,7 +29,7 @@ MonoBehaviour:
     EnableLobbyStatistics: 0
     NetworkLogging: 1
   DevRegion: au
-  PunLogging: 2
+  PunLogging: 0
   EnableSupportLogger: 0
   RunInBackground: 1
   StartInOfflineMode: 0
@@ -41,6 +41,12 @@ MonoBehaviour:
   - RespawnSpaceship
   - CutObject
   - AddNameSuffix
+  - Destroy
+  - RestartGame
+  - LoadLevel
+  - DecreasePlayerCount
+  - IncreasePlayerCount
+  - DestroyObject
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
