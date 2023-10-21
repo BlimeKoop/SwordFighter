@@ -1267,6 +1267,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -8882217861488562090, guid: ef6c62e1cf7276d40a3d9a6dc392473a, type: 3}
+      propertyPath: m_TagString
+      value: CantCut
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ef6c62e1cf7276d40a3d9a6dc392473a, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -1315,6 +1319,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: af293333c4637834195b1226d9b96632, type: 2}
+    - target: {fileID: -8051138763696188950, guid: ef6c62e1cf7276d40a3d9a6dc392473a, type: 3}
+      propertyPath: m_TagString
+      value: CantCut
+      objectReference: {fileID: 0}
     - target: {fileID: -8008576793977705584, guid: ef6c62e1cf7276d40a3d9a6dc392473a, type: 3}
       propertyPath: m_RootOrder
       value: 8
@@ -1351,6 +1359,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: af293333c4637834195b1226d9b96632, type: 2}
+    - target: {fileID: -4970215127308240358, guid: ef6c62e1cf7276d40a3d9a6dc392473a, type: 3}
+      propertyPath: m_TagString
+      value: CantCut
+      objectReference: {fileID: 0}
     - target: {fileID: -4956140323671892117, guid: ef6c62e1cf7276d40a3d9a6dc392473a, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -1378,6 +1390,10 @@ PrefabInstance:
     - target: {fileID: -2668124421253627669, guid: ef6c62e1cf7276d40a3d9a6dc392473a, type: 3}
       propertyPath: m_RootOrder
       value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: -2365642950474440402, guid: ef6c62e1cf7276d40a3d9a6dc392473a, type: 3}
+      propertyPath: m_TagString
+      value: CantCut
       objectReference: {fileID: 0}
     - target: {fileID: -2271502847731017999, guid: ef6c62e1cf7276d40a3d9a6dc392473a, type: 3}
       propertyPath: m_RootOrder
@@ -1415,6 +1431,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: f38c157e2654edb41bbba53fc61fe249, type: 2}
+    - target: {fileID: -289248037658307433, guid: ef6c62e1cf7276d40a3d9a6dc392473a, type: 3}
+      propertyPath: m_TagString
+      value: CantCut
+      objectReference: {fileID: 0}
     - target: {fileID: -254017558905678340, guid: ef6c62e1cf7276d40a3d9a6dc392473a, type: 3}
       propertyPath: m_RootOrder
       value: 14
@@ -1459,6 +1479,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: stage
       objectReference: {fileID: 0}
+    - target: {fileID: 933415294046487485, guid: ef6c62e1cf7276d40a3d9a6dc392473a, type: 3}
+      propertyPath: m_TagString
+      value: CantCut
+      objectReference: {fileID: 0}
     - target: {fileID: 1167402640413267749, guid: ef6c62e1cf7276d40a3d9a6dc392473a, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -1482,6 +1506,10 @@ PrefabInstance:
     - target: {fileID: 3134067013045186976, guid: ef6c62e1cf7276d40a3d9a6dc392473a, type: 3}
       propertyPath: m_RootOrder
       value: 27
+      objectReference: {fileID: 0}
+    - target: {fileID: 3692254488790982148, guid: ef6c62e1cf7276d40a3d9a6dc392473a, type: 3}
+      propertyPath: m_TagString
+      value: CantCut
       objectReference: {fileID: 0}
     - target: {fileID: 4333774765638586378, guid: ef6c62e1cf7276d40a3d9a6dc392473a, type: 3}
       propertyPath: m_RootOrder
@@ -1535,10 +1563,18 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: af293333c4637834195b1226d9b96632, type: 2}
+    - target: {fileID: 6623308148668728745, guid: ef6c62e1cf7276d40a3d9a6dc392473a, type: 3}
+      propertyPath: m_TagString
+      value: CantCut
+      objectReference: {fileID: 0}
     - target: {fileID: 6710987637713900302, guid: ef6c62e1cf7276d40a3d9a6dc392473a, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: f38c157e2654edb41bbba53fc61fe249, type: 2}
+    - target: {fileID: 6788449558042940226, guid: ef6c62e1cf7276d40a3d9a6dc392473a, type: 3}
+      propertyPath: m_TagString
+      value: CantCut
+      objectReference: {fileID: 0}
     - target: {fileID: 7536692167395269426, guid: ef6c62e1cf7276d40a3d9a6dc392473a, type: 3}
       propertyPath: m_RootOrder
       value: 1

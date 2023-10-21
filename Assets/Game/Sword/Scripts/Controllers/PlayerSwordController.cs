@@ -116,7 +116,7 @@ public class PlayerSwordController
 			return 0.7f;
 		
 		if (playerController.alignStab)
-			return 0.6f;
+			return 0.4f;
 		
 		if (playerController.stab || playerController.holdStab)
 			return 0f;
@@ -181,21 +181,27 @@ public class PlayerSwordController
 	
 	public bool TryCut(Collision col)
 	{
+		GameObject colObj = col.gameObject;
+		
+		if (colObj.tag == "CantCut")
+		{
+			Debug.Log($"{colObj.name} tagged as CantCut");
+			return false;
+		}
+			
 		if (hitCooldownTimer > 0)
 			return false;
 		
-		if (col.gameObject.layer == Collisions.SwordLayer)
+		if (colObj.layer == Collisions.SwordLayer)
+			return false;
+
+		if (colObj.GetComponentInParent<PlayerController>() == playerController)
 			return false;
 		
 		Vector3 relativeVelocity = (
 			col.rigidbody != null ?
 			col.rigidbody.velocity - physicsController.positionDeltaTracker.positionDelta / Time.fixedDeltaTime :
 			physicsController.positionDeltaTracker.positionDelta / Time.fixedDeltaTime);
-		
-		GameObject colObj = col.gameObject;
-		
-		if (colObj.GetComponentInParent<PlayerController>() == playerController)
-			return false;
 		
 		if (colObj.name.Contains("Player"))
 		{
@@ -207,8 +213,9 @@ public class PlayerSwordController
 			if (relativeVelocity.magnitude < 3f)
 				return false;
 			
-			if (!BackOfObjectFound(col.GetContact(0).point, col.GetContact(0).normal))
-				return false;
+			// This is scuffed
+			// if (!BackOfObjectFound(col.GetContact(0).point, col.GetContact(0).normal))
+				// return false;
 			
 			if (Vector3.Scale(colObj.GetComponentInChildren<Renderer>().bounds.size,
 			new Vector3(1f, 0f, 1f)).magnitude > 20f)

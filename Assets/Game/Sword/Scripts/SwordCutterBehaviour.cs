@@ -13,16 +13,16 @@ namespace DynamicMeshCutter
 	{
 		private PhotonView photonView;
 		
-		bool initialized, cutting;
+		bool initialized, syncingCuts, cutCompleted;
 		
-		private List<IEnumerator> runningIEnumerators = new List<IEnumerator>();
+		private List<IEnumerator> currentCuts = new List<IEnumerator>();
 		
 		private void Start()
 		{
 			photonView = GetComponent<PhotonView>();
 		}
 
-		public void CutObject(string objectName, string[] rigidbodyNames, Vector3 cutAxis, Vector3 point)
+		public void CutObject(string objectName, string[] rigidbodyNames, Vector3 localAxis, Vector3 localPoint)
 		{
 			if (!initialized)
 				Start();
@@ -30,24 +30,38 @@ namespace DynamicMeshCutter
 			Debug.Log("Going to cut " + objectName);
 			
 			IEnumeratorBox box = new IEnumeratorBox();
+			box.numerator = CutObjectWhenReady(objectName, rigidbodyNames, localAxis, localPoint, box);
 			
-			IEnumerator cutObjectWhenReady = CutObjectWhenReady(objectName, rigidbodyNames, cutAxis, point, box);
+			currentCuts.Add(box.numerator);
 			
-			box.numerator = cutObjectWhenReady;
-			StartCoroutine(cutObjectWhenReady);
+			if (!syncingCuts)
+				StartCoroutine(SyncCuts(objectName, rigidbodyNames, localAxis, localPoint));
+		}
+		
+		private IEnumerator SyncCuts(string objectName, string[] rigidbodyNames,
+		Vector3 localAxis, Vector3 localPoint)
+		{
+			syncingCuts = true;
+			
+			while (currentCuts.Count > 0)
+			{
+				cutCompleted = false;
+				
+				StartCoroutine(currentCuts[0]);
+				
+				yield return new WaitUntil(() => cutCompleted);
+			}
+			
+			syncingCuts = false;
 		}
 
 		private IEnumerator CutObjectWhenReady(string objectName, string[] rigidbodyNames,
-		Vector3 cutAxis, Vector3 point, IEnumeratorBox box)
+		Vector3 localAxis, Vector3 localPoint, IEnumeratorBox box)
 		{
-			runningIEnumerators.Add(box.numerator);
-			
-			// This client may still be cutting something so wait if that's the case
-			yield return new WaitWhile(() => cutting);
-			
-			cutting = true;
-			
 			GameObject obj = GameObject.Find(objectName);
+			
+			Debug.Log(rigidbodyNames[0]);
+			Debug.Log(rigidbodyNames[1]);
 			
 			// Wait until these have spawned in on this client
 			yield return new WaitUntil(() => GameObject.Find(rigidbodyNames[0]) != null);
@@ -65,10 +79,13 @@ namespace DynamicMeshCutter
 
 			Debug.Log("Cutting " + obj.name);
 
-            Cut(meshTarget, point, cutAxis.normalized, rigidbodyNames,
-			null, OnCreated, null, meshTarget.GetComponentInParent<PhotonView>());
-			
-			runningIEnumerators.Remove(box.numerator);
+            Cut(
+				meshTarget,
+				obj.transform.TransformPoint(localPoint),
+				obj.transform.TransformDirection(localAxis).normalized,
+				rigidbodyNames,
+				OnCut, OnCreated, null,
+				meshTarget.GetComponentInParent<PhotonView>());
         }
 
 		private MeshTarget InitializeMeshTarget(GameObject obj)
@@ -91,15 +108,17 @@ namespace DynamicMeshCutter
 			return meshTargetR;
 		}
 		
+		private void OnCut(bool success, Info info)
+		{
+			cutCompleted = true;
+			currentCuts.RemoveAt(0);
+		}
+		
         private void OnCreated(Info info, MeshCreationData cData)
         {
             EnableRigidbodies(cData);
             MeshCreation.TranslateCreatedObjects(info, cData.CreatedObjects, cData.CreatedTargets, Separation);
             MeshCreation.CenterPivots(cData.CreatedObjects);
-			
-			cutting = false;
-			
-			Debug.Log("cutting set to" + cutting);
         }
 
         private void EnableRigidbodies(MeshCreationData cData)
@@ -112,7 +131,7 @@ namespace DynamicMeshCutter
 		
 		public void StopCoroutines()
 		{
-			foreach(var IEn in runningIEnumerators)
+			foreach(var IEn in currentCuts)
 				StopCoroutine(IEn);
 		}
 	}

@@ -25,7 +25,7 @@ public class SwordPhysicsController
 	[HideInInspector] public Vector3 distanceClampingForce;
 	[HideInInspector] public Vector3 playerForce;
 	
-	[HideInInspector] public float damping = 0.45f;
+	[HideInInspector] public float linearDamping = 1.0f, angularDamping = 0.45f;
 	[HideInInspector] public float drag = 0.7f;
 	[HideInInspector] public float angularDrag = 0.75f;
 	
@@ -72,7 +72,7 @@ public class SwordPhysicsController
 		{
 			rigidbody.velocity -=
 			f.normalized *
-			Mathf.Clamp(Vector3.Dot(rigidbody.velocity, f.normalized), 0.0f, f.magnitude) * damping;
+			Mathf.Clamp(Vector3.Dot(rigidbody.velocity, f.normalized), 0.0f, f.magnitude) * linearDamping;
 		}
 
 		if (playerForce.sqrMagnitude > 0)
@@ -90,7 +90,7 @@ public class SwordPhysicsController
 	{
 		baseForce = PlayerSwordMovement.SwingMovement(playerController, input) / Time.fixedDeltaTime;
 		
-		distanceForce = PlayerSwordMovement.DistanceMovement(playerController, swordController) * 0.5f;
+		distanceForce = PlayerSwordMovement.DistanceMovement(playerController, swordController);
 		swingClampingForce = PlayerSwordMovementClamping.HorizontalArmClampForce(swordController, playerController);
 		distanceClampingForce = PlayerSwordMovementClamping.DistanceClampForce(swordController, playerController);
 		playerForce = swordController.swordPlayerConstraint.positionOffset / Time.fixedDeltaTime;
@@ -102,7 +102,8 @@ public class SwordPhysicsController
 	{
 		if (!collisionController.colliding)
 		{
-			rigidbody.AddForce(baseForce + distanceForce);
+			rigidbody.AddForce(baseForce);
+			rigidbody.AddForce(distanceForce * 0.3f, ForceMode.VelocityChange);
 			rigidbody.AddForce(playerForce, ForceMode.VelocityChange);
 		}
 		else
@@ -121,14 +122,10 @@ public class SwordPhysicsController
 		if (collisionController.colliding)
 			return;
 		
-		Quaternion fromTo = rotateTo * Quaternion.Inverse(rigidbody.rotation);
-		fromTo.ToAngleAxis(out float angle, out Vector3 axis);
+		Vector3 torque = Quaternions.FromToAngleAxis(rigidbody.rotation, rotateTo);
 		
-		if (angle > 180f)
-			angle = -(360f - angle);
-		
-		if (Mathf.Abs(angle) > 0.01f)
-			rigidbody.AddTorque(axis.normalized * angle * (1.0f + damping) * (1.0f + rigidbody.mass * 15f));
+		if (Mathf.Abs(torque.magnitude) > 0.01f)
+			rigidbody.AddTorque(torque * (1.0f + angularDamping) * (1.0f + rigidbody.mass * 15f));
 
 		/*
 		Vector3 dir = swordController.TipPosition() - swordController.BasePosition();

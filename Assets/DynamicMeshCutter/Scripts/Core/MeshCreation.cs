@@ -167,11 +167,7 @@ namespace DynamicMeshCutter
 		Mesh mesh, VirtualMesh vMesh, Material[] materials, int bt, int index, bool forcePhysics = false)
         {
 			CreateChild(ref child, target, mesh, materials);
-			
-			string name = info.rigidbodyNames[index];
-
-			Debug.Log(name);
-			parent = GameObject.Find(name).transform;
+			parent = GameObject.Find(info.rigidbodyNames[index]).transform;
 
             child.transform.SetParent(parent, true);
             //child.transform.localScale = target.transform.localScale; //test this

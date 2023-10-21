@@ -70,14 +70,14 @@ public class RoomManager : MonoBehaviourPunCallbacks
 			RpcTarget.AllBufferedViaServer,
 			obj.name,
 			new string[] { rigidbodies[0].name, rigidbodies[1].name },
-			cutAxis,
-			point);
+			obj.transform.InverseTransformDirection(cutAxis),
+			obj.transform.InverseTransformPoint(point));
 	}
 	
 	[PunRPC]
-	private void CutObject(string objectName, string[] rigidbodyNames, Vector3 cutAxis, Vector3 point)
+	private void CutObject(string objectName, string[] rigidbodyNames, Vector3 localAxis, Vector3 localPoint)
 	{
-		cutterBehaviour.CutObject(objectName, rigidbodyNames, cutAxis, point);
+		cutterBehaviour.CutObject(objectName, rigidbodyNames, localAxis, localPoint);
 	}
 	
 	private static GameObject[] SpawnCutRigidbodies(GameObject obj)

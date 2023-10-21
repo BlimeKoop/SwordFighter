@@ -18,7 +18,7 @@ public class SwordCollisionController : MonoBehaviour
 	[HideInInspector] public bool cutting;
 	[HideInInspector] public bool colliding
 	{
-		get { return collision != null; }
+		get { return collision != null && collision.normal.y < 0.9f; }
 		set {}
 	}
 	

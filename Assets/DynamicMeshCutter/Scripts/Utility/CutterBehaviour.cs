@@ -181,9 +181,6 @@ namespace DynamicMeshCutter
 			
 			Transform parent = target.transform.parent;
 
-			if (parent != null && !parent.gameObject.name.Contains("/2)"))
-				target.GameobjectRoot = parent.gameObject;
-
             Matrix4x4 worldToLocalMatrix = target.transform.worldToLocalMatrix;
 
             if (target.RequireLocal)
@@ -224,6 +221,7 @@ namespace DynamicMeshCutter
                 MeshCutting meshcutting = new MeshCutting();
                 VirtualMesh[] virtualMeshes = meshcutting.Cut(ref info);
                 info.CreatedMeshes = virtualMeshes;
+				
                 if (virtualMeshes == null)
                     OnCut(false, info);
                 else

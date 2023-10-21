@@ -236,11 +236,21 @@ public class PlayerController : MonoBehaviour
 	public void TogglePause()
 	{
 		paused = !paused;
+		
+		Cursor.visible = paused;
+		Cursor.lockState = paused ? CursorLockMode.None : CursorLockMode.Locked;
+		
+		if (paused)
+			physicsController.SetFrozen(true);
 	}
 	
 	public void UnPause()
 	{
 		paused = false;
+		physicsController.SetFrozen(false);
+		
+		Cursor.visible = false;
+		Cursor.lockState = CursorLockMode.Locked;
 	}
 
     public void Die()

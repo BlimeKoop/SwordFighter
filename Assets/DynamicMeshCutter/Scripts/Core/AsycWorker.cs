@@ -94,19 +94,10 @@ namespace DynamicMeshCutter
                 VirtualMesh[] cutMeshes = _meshCut.Cut(ref info);
                 info.CreatedMeshes = cutMeshes;
 				
-                if (cutMeshes == null)
-                {
-                    if (OnCut != null)
-                    {
-                        OnCut.Invoke(false, info);
-                    }
-                    return;
-                }
-
-                if (OnCut != null)
-                {
-                    OnCut.Invoke(true, info);
-                }
+				if (OnCut != null)
+				{
+					OnCut.Invoke(cutMeshes != null, info);
+				}
             }
             catch (Exception e)
             {
@@ -114,6 +105,7 @@ namespace DynamicMeshCutter
                 {
                     OnCut.Invoke(false, info);
                 }
+				
                 Debug.LogError("Async cutter failed." + e);
             }
         }

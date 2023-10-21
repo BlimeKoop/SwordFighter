@@ -29,13 +29,16 @@ public class PlayerPhysicsController
 			playerController.GetComponentInChildren<Rigidbody>() == null ?
 			playerController.transform.GetChild(0).gameObject.AddComponent<Rigidbody>() :
 			playerController.GetComponentInChildren<Rigidbody>());
-
-		rigidbody.isKinematic = true;
+			
+		// rigidbody.isKinematic = true;
 	}
 	
 	public void MoveRigidbody(Vector3 movement)
 	{
 		Vector3 interpolatedMovement = Vector3.Lerp(rigidbody.velocity, movement, 0.1f);
+		
+		if (interpolatedMovement.sqrMagnitude < 0.01f)
+			interpolatedMovement *= 0;
 		
 		if (!collisionController.onGround)
 			interpolatedMovement.y = Mathf.Max(Physics.gravity.y, rigidbody.velocity.y + Physics.gravity.y * Time.fixedDeltaTime);
@@ -45,24 +48,29 @@ public class PlayerPhysicsController
 		}
 		
 		if (swordCollisionController.colliding)
+		{
 			interpolatedMovement = MoveAndSlide(interpolatedMovement, swordCollisionController.collision);
+		}
+		
 		if (collisionController.onWall)
+		{
 			interpolatedMovement = MoveAndSlide(interpolatedMovement, collisionController.collisions["w"]);
+		}
 
-		rigidbody.MovePosition(rigidbody.position + interpolatedMovement * Time.fixedDeltaTime);
+		rigidbody.velocity = interpolatedMovement;
 	}
 	
 	private Vector3 MoveAndSlide(Vector3 movement, SwordCollision collision, float friction = 0.0f)
 	{
-		return MoveAndSlide(movement, collision.normal, friction);
+		return MoveAndSlide(movement, collision.point, collision.normal, friction);
 	}
 	
 	private Vector3 MoveAndSlide(Vector3 movement, Collision collision, float friction = 0.0f)
 	{
-		return MoveAndSlide(movement, Collisions.InterpolatedNormal(collision, 3), friction);
+		return MoveAndSlide(movement, collision.GetContact(0).point, Collisions.InterpolatedNormal(collision), friction);
 	}
 	
-	private Vector3 MoveAndSlide(Vector3 movement, Vector3 normal, float friction)
+	private Vector3 MoveAndSlide(Vector3 movement, Vector3 point, Vector3 normal, float friction)
 	{
 		Vector3 cross = Vectors.SafeCross(Vector3.up, normal).normalized;
 		Vector3 movementR = movement + normal * Mathf.Max(0f, Vector3.Dot(movement, -normal));
@@ -96,7 +104,20 @@ public class PlayerPhysicsController
 		Quaternion ikRotation = Quaternion.LookRotation(ikDirection);
 		
 		Quaternion newRotation = Quaternion.Lerp(baseRotation, ikRotation, 0.2f);
-		
+
+		rigidbody.angularVelocity *= 0;
 		rigidbody.MoveRotation(newRotation);
 	}
+	// /*
+	public void ZeroVelocity()
+	{
+		rigidbody.velocity *= 0;
+		rigidbody.angularVelocity *= 0;
+	}
+	
+	public void SetFrozen(bool setTo)
+	{
+		rigidbody.isKinematic = setTo;
+	}
+	// */
 }
