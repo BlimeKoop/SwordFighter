@@ -90,8 +90,7 @@ namespace DynamicMeshCutter
                 switch (behaviour)
                 {
                     case Behaviour.Stone:
-                        CreateMesh(ref child, ref parent, target, mesh, vMesh, materials, bt, i, createdMeshes.Length,
-                             info.isSpawner, true);
+                        CreateMesh(ref child, ref parent, info, target, mesh, vMesh, materials, bt, i, true);
                         break;
                     case Behaviour.Ragdoll:
                         DynamicRagdoll tRagdoll = target.DynamicRagdoll;
@@ -100,13 +99,11 @@ namespace DynamicMeshCutter
                             if (WillBeValidRagdoll(tRagdoll, vMesh))
                                 CreateRagdoll(ref child, ref parent, info, target, mesh, vMesh, materials, bt, behaviour);
                             else
-                                CreateMesh(ref child, ref parent, target, mesh, vMesh, materials, bt, i, createdMeshes.Length,
-                                    info.isSpawner, true);
+                                CreateMesh(ref child, ref parent, info, target, mesh, vMesh, materials, bt, i, true);
                         }
                         else
                         {
-                            CreateMesh(ref child, ref parent, target, mesh, vMesh, materials, bt, i, createdMeshes.Length,
-                                info.isSpawner, true);
+                            CreateMesh(ref child, ref parent, info, target, mesh, vMesh, materials, bt, i, true);
                         }
                         break;
                     case Behaviour.Animation:
@@ -117,8 +114,7 @@ namespace DynamicMeshCutter
                         else
                         {
                             Debug.LogWarning("Beahviour is set to Animation, but there was no Animator found in parent!");
-                            CreateMesh(ref child, ref parent, target, mesh, vMesh, materials, bt, i, createdMeshes.Length,
-                                info.isSpawner, true);
+                            CreateMesh(ref child, ref parent, info, target, mesh, vMesh, materials, bt, i, true);
                         }
                         break;
                 }
@@ -167,24 +163,15 @@ namespace DynamicMeshCutter
             return cData;
         }
 
-        static void CreateMesh(ref GameObject child, ref Transform parent, MeshTarget target, Mesh mesh, VirtualMesh vMesh,
-            Material[] materials, int bt, int index, int meshCount, bool isSpawner, bool forcePhysics = false)
+        static void CreateMesh(ref GameObject child, ref Transform parent, Info info, MeshTarget target,
+		Mesh mesh, VirtualMesh vMesh, Material[] materials, int bt, int index, bool forcePhysics = false)
         {
 			CreateChild(ref child, target, mesh, materials);
 			
-			string name = $"{target.gameObject.name} {RoomManager.sliceCount} ({index + 1}/{meshCount})";
-			
-            if (isSpawner)
-            {
-				parent = PhotonNetwork.Instantiate(
-					"Rigidbody", target.transform.position, target.transform.rotation, 0, new object[] { name }).transform;
+			string name = info.rigidbodyNames[index];
 
-				parent.gameObject.tag = target.gameObject.tag;
-				parent.transform.position = child.GetComponent<Renderer>().bounds.center;
-            }
-			else
-				// Debug.Log(name);
-				parent = GameObject.Find(name).transform;
+			Debug.Log(name);
+			parent = GameObject.Find(name).transform;
 
             child.transform.SetParent(parent, true);
             //child.transform.localScale = target.transform.localScale; //test this

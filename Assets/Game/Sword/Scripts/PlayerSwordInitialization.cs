@@ -61,20 +61,6 @@ public class PlayerSwordInitialization
 		
 		return physicsControllerR;
 	}
-
-	public static SwordCutterBehaviour SwordCutterBehaviour(PlayerSwordController swordController)
-	{
-		Transform sword = swordController.playerController.sword;
-		
-		SwordCutterBehaviour swordCutterBehaviourR = sword.GetComponent<SwordCutterBehaviour>();
-
-		if (swordCutterBehaviourR == null)
-			swordCutterBehaviourR = sword.gameObject.AddComponent<SwordCutterBehaviour>();
-		
-		swordCutterBehaviourR.Separation = 0.1f;
-		
-		return swordCutterBehaviourR;
-	}
 	
 	public static void FractureComponent(Fracture f, PlayerSwordController swordController)
 	{

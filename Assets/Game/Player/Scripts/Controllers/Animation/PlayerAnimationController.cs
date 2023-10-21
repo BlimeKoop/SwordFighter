@@ -54,6 +54,8 @@ public class PlayerAnimationController
 		bones["r"] = playerController.rig;
 		bones["s"] = bones["r"].GetChild(2);
 		bones["c"] = bones["s"].GetChild(0).GetChild(0);
+		bones["n"] = bones["c"].GetChild(1);
+		bones["h"] = bones["n"].GetChild(0);
 		bones["rs"] = bones["c"].GetChild(2);
 		bones["ra"] = bones["rs"].GetChild(0);
 		bones["rfa"] = bones["ra"].GetChild(0);

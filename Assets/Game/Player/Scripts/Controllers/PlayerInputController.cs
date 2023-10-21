@@ -46,6 +46,7 @@ public class PlayerInputController
 		playerMap.Stab.performed += context => playerController.StartStab();
 		playerMap.Stab.canceled += context => playerController.Stab();
 		playerMap.Restart.performed += context => Restart();
+		playerMap.Quit.performed += context => Application.Quit();
     }
 	
 	public void Restart()

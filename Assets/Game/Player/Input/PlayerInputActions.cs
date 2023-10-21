@@ -89,6 +89,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Quit"",
+                    ""type"": ""Button"",
+                    ""id"": ""cd230678-00f3-4789-9b59-c3e31657ca68"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -289,6 +298,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Restart"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""21eae80e-525f-4258-8fe8-93ce6ef0697e"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Quit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""75b16c25-71ef-4687-bf5a-103a7760f9b9"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Quit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -304,6 +335,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_PlayerMap_Block = m_PlayerMap.FindAction("Block", throwIfNotFound: true);
         m_PlayerMap_Stab = m_PlayerMap.FindAction("Stab", throwIfNotFound: true);
         m_PlayerMap_Restart = m_PlayerMap.FindAction("Restart", throwIfNotFound: true);
+        m_PlayerMap_Quit = m_PlayerMap.FindAction("Quit", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -372,6 +404,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerMap_Block;
     private readonly InputAction m_PlayerMap_Stab;
     private readonly InputAction m_PlayerMap_Restart;
+    private readonly InputAction m_PlayerMap_Quit;
     public struct PlayerMapActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -383,6 +416,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Block => m_Wrapper.m_PlayerMap_Block;
         public InputAction @Stab => m_Wrapper.m_PlayerMap_Stab;
         public InputAction @Restart => m_Wrapper.m_PlayerMap_Restart;
+        public InputAction @Quit => m_Wrapper.m_PlayerMap_Quit;
         public InputActionMap Get() { return m_Wrapper.m_PlayerMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -413,6 +447,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Restart.started += instance.OnRestart;
             @Restart.performed += instance.OnRestart;
             @Restart.canceled += instance.OnRestart;
+            @Quit.started += instance.OnQuit;
+            @Quit.performed += instance.OnQuit;
+            @Quit.canceled += instance.OnQuit;
         }
 
         private void UnregisterCallbacks(IPlayerMapActions instance)
@@ -438,6 +475,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Restart.started -= instance.OnRestart;
             @Restart.performed -= instance.OnRestart;
             @Restart.canceled -= instance.OnRestart;
+            @Quit.started -= instance.OnQuit;
+            @Quit.performed -= instance.OnQuit;
+            @Quit.canceled -= instance.OnQuit;
         }
 
         public void RemoveCallbacks(IPlayerMapActions instance)
@@ -464,5 +504,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnBlock(InputAction.CallbackContext context);
         void OnStab(InputAction.CallbackContext context);
         void OnRestart(InputAction.CallbackContext context);
+        void OnQuit(InputAction.CallbackContext context);
     }
 }

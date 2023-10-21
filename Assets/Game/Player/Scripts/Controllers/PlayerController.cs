@@ -245,7 +245,8 @@ public class PlayerController : MonoBehaviour
 
     public void Die()
 	{
-		sword.GetComponent<Rigidbody>().useGravity = true;
+		if (sword != null)
+			sword.GetComponent<Rigidbody>().useGravity = true;
 		
 		dead = true;
 	}

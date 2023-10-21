@@ -3,7 +3,7 @@ using Photon.Pun;
 
 public class PhotonViewRenamer : MonoBehaviour, IPunInstantiateMagicCallback
 {
-    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    public virtual void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         if (info.photonView.InstantiationData == null)
         {

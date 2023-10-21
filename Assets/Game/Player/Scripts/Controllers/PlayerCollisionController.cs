@@ -11,19 +11,17 @@ public class PlayerCollisionController : MonoBehaviour
 	[HideInInspector] public Dictionary<string, Collider> colliders = new Dictionary<string, Collider>();
 	[HideInInspector] public Dictionary<string, Collision> collisions = new Dictionary<string, Collision>()
 	{
-		{"g" , null},
 		{"w" , null},
-		{"t" , null},
 	};
 	
 	[HideInInspector] public Dictionary<string, bool> collisionFlags = new Dictionary<string, bool>()
 	{
-		{"t" , false}
+		{"w" , false}
 	};
 	
 	public RaycastHit groundHit;
 	public bool onGround;
-	public bool onWall { get { return collisionFlags["t"]; } }
+	public bool onWall { get { return collisionFlags["w"]; } }
 	
 	private bool initialized;
 	
@@ -34,6 +32,8 @@ public class PlayerCollisionController : MonoBehaviour
 		physicsController = playerController.physicsController;
 		
 		colliders["t"] = animationController.bones["s"].GetComponent<Collider>();
+		colliders["n"] = animationController.bones["n"].GetComponent<Collider>();
+		colliders["h"] = animationController.bones["h"].GetComponent<Collider>();
 		colliders["lf"] = animationController.bones["lf"].GetComponentInChildren<Collider>();
 		colliders["rf"] = animationController.bones["rf"].GetComponentInChildren<Collider>();
 	
@@ -55,17 +55,10 @@ public class PlayerCollisionController : MonoBehaviour
 		if (col.transform == playerController.sword)
 			return;
 		
-		if (col.GetContact(0).thisCollider == (colliders["t"]))
+		if (Mathf.Abs(col.GetContact(0).normal.y) < 0.6f)
 		{
-			HandleTorsoeCollision(col);
-		}
-		else if(col.GetContact(0).thisCollider == colliders["lf"])
-		{
-			HandleLeftFootCollision(col);
-		}
-		else if(col.GetContact(0).thisCollider == colliders["rf"])
-		{
-			HandleRightFootCollision(col);
+			collisionFlags["w"] = true;
+			collisions["w"] = col;
 		}
 	}
 	
@@ -74,42 +67,10 @@ public class PlayerCollisionController : MonoBehaviour
 		if(playerController.dead || !playerController.photonView.IsMine || !initialized)
 			return;
 		
-		if (collisionFlags["t"] && col.collider == collisions["t"].collider)
+		if (collisionFlags["w"] && col.collider == collisions["w"].collider)
 		{
-			collisionFlags["t"] = false;
+			collisionFlags["w"] = false;
 		}
-	}
-	
-	private void HandleTorsoeCollision(Collision col)
-	{
-		collisions["t"] = col;
-		collisionFlags["t"] = true;
-	}
-	
-	private void HandleLeftFootCollision(Collision col)
-	{
-		if (Mathf.Abs(col.GetContact(0).normal.y) < 0.7f)
-		{
-			collisions["w"] = col;
-			collisionFlags["t"] = true;
-		}
-		// else
-			// collisions["g"] = col;
-		
-		// collisions["lf"] = col;
-	}
-	
-	private void HandleRightFootCollision(Collision col)
-	{
-		if (Mathf.Abs(col.GetContact(0).normal.y) < 0.7f)
-		{
-			collisions["w"] = col;
-			collisionFlags["t"] = true;
-		}
-		// else
-			// collisions["g"] = col;
-		
-		// collisions["rf"] = col;
 	}
 	
 	public float VerticalGroundOffset()

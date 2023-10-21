@@ -45,19 +45,29 @@ public class PlayerPhysicsController
 		}
 		
 		if (swordCollisionController.colliding)
-			interpolatedMovement = MoveAndSlide(interpolatedMovement, swordCollisionController.collision.point, swordCollisionController.collision.normal);
+			interpolatedMovement = MoveAndSlide(interpolatedMovement, swordCollisionController.collision);
 		if (collisionController.onWall)
-			interpolatedMovement = MoveAndSlide(interpolatedMovement, collisionController.collisions["t"].GetContact(0).point, Collisions.InterpolatedNormal(collisionController.collisions["t"], 3));
+			interpolatedMovement = MoveAndSlide(interpolatedMovement, collisionController.collisions["w"]);
 
 		rigidbody.MovePosition(rigidbody.position + interpolatedMovement * Time.fixedDeltaTime);
 	}
 	
-	private Vector3 MoveAndSlide(Vector3 movement, Vector3 collisionPoint, Vector3 collisionNormal, float friction = 0.0f)
+	private Vector3 MoveAndSlide(Vector3 movement, SwordCollision collision, float friction = 0.0f)
 	{
-		Vector3 cross = Vectors.SafeCross(Vector3.up, collisionNormal).normalized;
-		Vector3 movementR = movement + collisionNormal * Mathf.Max(0f, Vector3.Dot(movement, -collisionNormal));
+		return MoveAndSlide(movement, collision.normal, friction);
+	}
+	
+	private Vector3 MoveAndSlide(Vector3 movement, Collision collision, float friction = 0.0f)
+	{
+		return MoveAndSlide(movement, Collisions.InterpolatedNormal(collision, 3), friction);
+	}
+	
+	private Vector3 MoveAndSlide(Vector3 movement, Vector3 normal, float friction)
+	{
+		Vector3 cross = Vectors.SafeCross(Vector3.up, normal).normalized;
+		Vector3 movementR = movement + normal * Mathf.Max(0f, Vector3.Dot(movement, -normal));
 		
-		// Debug.DrawRay(collisionPoint, collisionNormal * 2f, Color.yellow);
+		// Debug.DrawRay(collisionPoint, normal * 2f, Color.yellow);
 		
 		friction = Mathf.Clamp01(friction);
 		

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4957988782524426372}
   - component: {fileID: 5850038105448185343}
   - component: {fileID: 5767546747742119421}
+  - component: {fileID: 6073921674944094275}
   m_Layer: 0
   m_Name: Room Manager
   m_TagString: Untagged
@@ -67,4 +68,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4559bd4ee5428f47bcf89e3a46665f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cutterBehaviour: {fileID: 0}
+  themeSource: {fileID: 0}
+  loopSource: {fileID: 0}
   _deathPlaneHeight: -50
+--- !u!114 &6073921674944094275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2559430736623462552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 948f369322db07b41b5b3331fc92c1b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Separation: 0.1
+  DestroyTargets: 1
+  UseAsync: 1
+  VertexCreationThreshold: 0
+  DefaultMaterial: {fileID: 2100000, guid: eb5748d5d094f884c9a12d3704a9d7d6, type: 2}

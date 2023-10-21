@@ -3,14 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PhotonViewSuffix : MonoBehaviour, IPunInstantiateMagicCallback
+public class PhotonViewSuffix : PhotonViewRenamer
 {
     private PhotonView PhotonView;
 
-    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    public override void OnPhotonInstantiate(PhotonMessageInfo info)
     {
+		base.OnPhotonInstantiate(info);
+		
         PhotonView = GetComponent<PhotonView>();
-
 
         ApplySuffix($"{PhotonView.ViewID}");
 

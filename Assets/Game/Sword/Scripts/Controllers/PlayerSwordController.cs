@@ -17,7 +17,6 @@ public class PlayerSwordController
 	[HideInInspector] public PlayerAnimationController animationController;
 	[HideInInspector] public PlayerInputController inputController;
 	[HideInInspector] public SwordCollisionController collisionController;
-	[HideInInspector] public SwordCutterBehaviour swordCutterBehaviour;
 	
 	[HideInInspector] public Transform rollController;
 	
@@ -62,7 +61,6 @@ public class PlayerSwordController
 		PhotonView = sword.GetComponent<PhotonView>();
 		
 		collisionController = PlayerSwordInitialization.CollisionController(this);
-		swordCutterBehaviour = PlayerSwordInitialization.SwordCutterBehaviour(this);
 		physicsController = PlayerSwordInitialization.PhysicsController(this);
 
 		RecordPositions();
@@ -220,25 +218,11 @@ public class PlayerSwordController
 		Vector3 cross = Vector3.Cross(playerController.sword.transform.up, relativeVelocity);
 		Vector3 cutAxis = Vector3.Cross(relativeVelocity, cross);
 
-        PhotonView.RPC("CutObject", RpcTarget.AllBufferedViaServer, colObj.name, cutAxis, col.GetContact(0).point);
+        RoomManager.CutObject(colObj, cutAxis, col.GetContact(0).point);
 
         hitCooldownTimer = HitCooldown;
 		
 		return true;
-	}
-	
-	private void QueueObjectDestruction(GameObject obj)
-	{
-		GameObject destroy = obj;
-		Transform parent = destroy.transform.parent;
-
-		if (parent != null && parent.GetComponent<Rigidbody>() != null && parent.childCount < 2)
-			destroy = parent.gameObject;
-
-		if (destroy.GetComponent<PhotonView>() == null)
-			RoomManager.photonView.RPC("DestroyObject", RpcTarget.AllBufferedViaServer, destroy.name);
-		else
-			RoomManager.photonView.RPC("NetworkDestroyObject", RpcTarget.AllViaServer, destroy.name);
 	}
 	
 	private bool BackOfObjectFound(Vector3 collisionPoint, Vector3 collisionNormal)

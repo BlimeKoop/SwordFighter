@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
@@ -12,8 +13,8 @@ namespace DynamicMeshCutter
         //basic info
         public MeshTarget MeshTarget;
         public VirtualPlane Plane;
+		public string[] rigidbodyNames;
         public PhotonView photonView;
-        public bool isSpawner;
 
         ////advanced info
         public Mesh TargetOriginalMesh;
@@ -22,15 +23,17 @@ namespace DynamicMeshCutter
 
 
         public Info(MeshTarget target, VirtualPlane plane, OnCut onCut, OnCreated onCreated, object boxed,
-		PhotonView photonView = null, bool isSpawner = true)
+		string[] rigidbodyNames, PhotonView photonView = null)
         {
             this.MeshTarget = target;
             this.Plane = plane;
-            this.isSpawner = isSpawner;
             this.photonView = photonView;
             OnCutCallback = onCut;
             OnCreatedCallback = onCreated;
             BoxedUserData = boxed;
+			
+			this.rigidbodyNames = new string[rigidbodyNames.Length];
+			Array.Copy(rigidbodyNames, this.rigidbodyNames, rigidbodyNames.Length);
 
             MeshCreation.GetMeshInfo(target, out TargetOriginalMesh, out Bindposes);
             TargetVirtualMesh = new VirtualMesh(TargetOriginalMesh);
@@ -170,15 +173,15 @@ namespace DynamicMeshCutter
             }
         }
 
-        public void Cut(MeshTarget target, Vector3 worldPosition, Vector3 worldNormal, OnCut onCut = null,
-            OnCreated onCreated = null, object boxedUserData = null, PhotonView photonView = null, bool isSpawner = true)
+        public void Cut(MeshTarget target, Vector3 worldPosition, Vector3 worldNormal, string[] rigidbodyNames, OnCut onCut = null,
+            OnCreated onCreated = null, object boxedUserData = null, PhotonView photonView = null)
         {
             if (!target.isActiveAndEnabled)
                 return;
 			
 			Transform parent = target.transform.parent;
 
-			if (parent != null && parent.GetComponent<Rigidbody>() != null && parent.childCount < 2)
+			if (parent != null && !parent.gameObject.name.Contains("/2)"))
 				target.GameobjectRoot = parent.gameObject;
 
             Matrix4x4 worldToLocalMatrix = target.transform.worldToLocalMatrix;
@@ -210,7 +213,7 @@ namespace DynamicMeshCutter
             localN.Normalize();
 
             VirtualPlane plane = new VirtualPlane(localP, localN, worldPosition, worldNormal);
-            Info info = new Info(target, plane, onCut, onCreated, boxedUserData, photonView, isSpawner);
+            Info info = new Info(target, plane, onCut, onCreated, boxedUserData, rigidbodyNames, photonView);
 
             if (!UseAsync)
             {
