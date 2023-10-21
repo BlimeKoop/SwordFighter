@@ -120,15 +120,17 @@ public class CameraPivotController : MonoBehaviour
 			autoRotate = false;
 	}
 	
-	public void ChangeDirection(Vector3 newDirection)
+	public void ChangeDirection(Vector2 input)
 	{
-		if (newDirection.magnitude == 0)
+		if (input.magnitude == 0)
 			return;
 		
 		if (rotating)
 			return;
 		
-		newDirection.Normalize();
+		Vector3 newDirection = (
+			Vectors.FlattenVector(transform.right).normalized * input.x +
+			Vectors.FlattenVector(transform.forward).normalized * input.y).normalized;
 		
 		float deg = Vector3.Angle(targetDirection, newDirection);
 		

@@ -22,6 +22,8 @@ public class PlayerSwordMovement
 		Vector3[] orbitDirections = OrbitDirections(
 			playerController.animationController.ApproximateArmPosition(), playerController.swordController.HoldPosition());
 		
+		orbitDirections[1] = playerController.camera.up;
+		
 		Debug.DrawRay(playerController.swordController.HoldPosition(), orbitDirections[0], Color.grey);
 		Debug.DrawRay(playerController.swordController.HoldPosition(), orbitDirections[1], Color.grey);
 		
@@ -45,11 +47,11 @@ public class PlayerSwordMovement
 		
 		Vector3[] orbitDirections = OrbitDirections(playerController.animationController.ApproximateChestPosition(), swordController.HoldPosition());
 
-		Debug.DrawRay(swordController.HoldPosition(), orbitDirections[0] * 3f, Color.white);
-		Debug.DrawRay(swordController.HoldPosition(), camera.up * 3f, Color.white);
-
-		Vector3 horizontal = Vector3.Lerp(orbitDirections[0], Vectors.FlattenVector(camera.right), 0.4f);
+		Vector3 horizontal = orbitDirections[0]; // Vector3.Lerp(orbitDirections[0], Vectors.FlattenVector(camera.right), 0.4f);
 		Vector3 vertical = camera.up;
+		
+		Debug.DrawRay(swordController.HoldPosition(), horizontal * 3f, Color.white);
+		Debug.DrawRay(swordController.HoldPosition(), camera.up * 3f, Color.white);
 		
 		Vector3 direction = (horizontal * input.x + vertical * input.y).normalized;
 		

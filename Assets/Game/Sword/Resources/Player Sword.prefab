@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4067517712351735337}
   - component: {fileID: 5252494176989183669}
   - component: {fileID: 3596739131502784657}
+  - component: {fileID: 1756657174769340039}
   - component: {fileID: 4391209762027733466}
   - component: {fileID: 2857787287369815715}
   m_Layer: 6
@@ -106,6 +107,19 @@ MonoBehaviour:
   playerController: {fileID: 0}
   positionOffset: {x: 0.0000009536743, y: -0.0000150203705, z: 0}
   rotationOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1756657174769340039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056553883052315732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b0e56b4c3206aa4188828cf2aa709e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _UpdateMode: 0
 --- !u!54 &4391209762027733466
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -136,8 +150,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 0
-  m_TeleportIfDistanceGreaterThan: 3
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 0.5
 --- !u!1 &5872234165556647736
 GameObject:
   m_ObjectHideFlags: 0

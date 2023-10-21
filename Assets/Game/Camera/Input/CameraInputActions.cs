@@ -33,13 +33,22 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
                     ""id"": ""a2db557c-98e1-4d43-a4a7-0ce825b61f5b"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""Tap"",
+                    ""interactions"": ""Tap(duration=0.3)"",
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Aim"",
+                    ""name"": ""ToggleDirectionChange"",
+                    ""type"": ""Button"",
+                    ""id"": ""2fea518c-2423-4789-a0da-41c6c73ff823"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""AimInput"",
                     ""type"": ""Value"",
-                    ""id"": ""5d8380a8-958a-4716-a92a-c8e8fb43eccf"",
+                    ""id"": ""4ef97ef4-a9f4-4d86-be39-13ba4b8b0bcd"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -70,68 +79,90 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""WASD"",
-                    ""id"": ""d453b4ba-d837-432c-8996-68e52dc61281"",
+                    ""name"": """",
+                    ""id"": ""fd712785-4e00-45ad-bc2c-fc1b2bbe3a03"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleDirectionChange"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b8760bb1-d16d-4954-8dfe-3943b65272a5"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleDirectionChange"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""84aabe6c-7f89-4c67-bc20-63e23754c39f"",
                     ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Aim"",
+                    ""action"": ""AimInput"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": ""up"",
-                    ""id"": ""a2ef3be1-2b3c-42e6-b731-1e69bcce9a57"",
+                    ""id"": ""8f311336-5509-4950-898f-c330e0852da1"",
                     ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Aim"",
+                    ""action"": ""AimInput"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
                     ""name"": ""down"",
-                    ""id"": ""e3c74b17-1560-42d0-b684-e9a46d7c1a42"",
+                    ""id"": ""3affcba4-b1d7-4569-b698-f6ba984e680e"",
                     ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Aim"",
+                    ""action"": ""AimInput"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
                     ""name"": ""left"",
-                    ""id"": ""a5cee658-fd56-4bd7-8802-7a36e2f4b00f"",
+                    ""id"": ""cb5ffdc7-a9b0-4db0-9cc5-9d3922b69b4d"",
                     ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Aim"",
+                    ""action"": ""AimInput"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
                     ""name"": ""right"",
-                    ""id"": ""91fc2f27-b853-403f-bca6-f4b411b2da30"",
+                    ""id"": ""552b12ff-aa98-410d-9d0c-8d5ee08bd863"",
                     ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Aim"",
+                    ""action"": ""AimInput"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
                     ""name"": """",
-                    ""id"": ""9a551732-a43a-47f1-87a8-532d678cf928"",
+                    ""id"": ""1e287f59-5bea-4fee-b58e-ebb93c92be45"",
                     ""path"": ""<Gamepad>/leftStick"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Aim"",
+                    ""action"": ""AimInput"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -143,7 +174,8 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
         // CameraMap
         m_CameraMap = asset.FindActionMap("CameraMap", throwIfNotFound: true);
         m_CameraMap_ChangeDirection = m_CameraMap.FindAction("ChangeDirection", throwIfNotFound: true);
-        m_CameraMap_Aim = m_CameraMap.FindAction("Aim", throwIfNotFound: true);
+        m_CameraMap_ToggleDirectionChange = m_CameraMap.FindAction("ToggleDirectionChange", throwIfNotFound: true);
+        m_CameraMap_AimInput = m_CameraMap.FindAction("AimInput", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -206,13 +238,15 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_CameraMap;
     private List<ICameraMapActions> m_CameraMapActionsCallbackInterfaces = new List<ICameraMapActions>();
     private readonly InputAction m_CameraMap_ChangeDirection;
-    private readonly InputAction m_CameraMap_Aim;
+    private readonly InputAction m_CameraMap_ToggleDirectionChange;
+    private readonly InputAction m_CameraMap_AimInput;
     public struct CameraMapActions
     {
         private @CameraInputActions m_Wrapper;
         public CameraMapActions(@CameraInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @ChangeDirection => m_Wrapper.m_CameraMap_ChangeDirection;
-        public InputAction @Aim => m_Wrapper.m_CameraMap_Aim;
+        public InputAction @ToggleDirectionChange => m_Wrapper.m_CameraMap_ToggleDirectionChange;
+        public InputAction @AimInput => m_Wrapper.m_CameraMap_AimInput;
         public InputActionMap Get() { return m_Wrapper.m_CameraMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -225,9 +259,12 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
             @ChangeDirection.started += instance.OnChangeDirection;
             @ChangeDirection.performed += instance.OnChangeDirection;
             @ChangeDirection.canceled += instance.OnChangeDirection;
-            @Aim.started += instance.OnAim;
-            @Aim.performed += instance.OnAim;
-            @Aim.canceled += instance.OnAim;
+            @ToggleDirectionChange.started += instance.OnToggleDirectionChange;
+            @ToggleDirectionChange.performed += instance.OnToggleDirectionChange;
+            @ToggleDirectionChange.canceled += instance.OnToggleDirectionChange;
+            @AimInput.started += instance.OnAimInput;
+            @AimInput.performed += instance.OnAimInput;
+            @AimInput.canceled += instance.OnAimInput;
         }
 
         private void UnregisterCallbacks(ICameraMapActions instance)
@@ -235,9 +272,12 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
             @ChangeDirection.started -= instance.OnChangeDirection;
             @ChangeDirection.performed -= instance.OnChangeDirection;
             @ChangeDirection.canceled -= instance.OnChangeDirection;
-            @Aim.started -= instance.OnAim;
-            @Aim.performed -= instance.OnAim;
-            @Aim.canceled -= instance.OnAim;
+            @ToggleDirectionChange.started -= instance.OnToggleDirectionChange;
+            @ToggleDirectionChange.performed -= instance.OnToggleDirectionChange;
+            @ToggleDirectionChange.canceled -= instance.OnToggleDirectionChange;
+            @AimInput.started -= instance.OnAimInput;
+            @AimInput.performed -= instance.OnAimInput;
+            @AimInput.canceled -= instance.OnAimInput;
         }
 
         public void RemoveCallbacks(ICameraMapActions instance)
@@ -258,6 +298,7 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
     public interface ICameraMapActions
     {
         void OnChangeDirection(InputAction.CallbackContext context);
-        void OnAim(InputAction.CallbackContext context);
+        void OnToggleDirectionChange(InputAction.CallbackContext context);
+        void OnAimInput(InputAction.CallbackContext context);
     }
 }

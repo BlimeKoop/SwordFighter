@@ -13,47 +13,55 @@ namespace DynamicMeshCutter
 	{
 		private PhotonView photonView;
 
-        bool ready;
+        bool initialized, cutting;
 
         private void Start()
         {
             photonView = GetComponent<PhotonView>();
 
-            ready = true;
+            initialized = true;
         }
 
         [PunRPC]
 		public void CutObject(string objectName, Vector3 cutAxis, Vector3 point)
         {
-            if (!ready)
+            if (!initialized)
                 Start();
 
-            // Debug.Log("Going to cut " + objectName);
-
+            Debug.Log("Going to cut " + objectName);
+			
             StartCoroutine(CutObjectWhenReady(objectName, cutAxis, point));
         }
 
 		private IEnumerator CutObjectWhenReady(string objectName, Vector3 cutAxis, Vector3 point)
 		{
+			// This client may still be cutting something so wait if that's the case
+			yield return new WaitWhile(() => cutting);
+			
+			cutting = true;
+			
+			GameObject obj = GameObject.Find(objectName);
+			
+			MeshTarget meshTarget = InitializeMeshTarget(obj);
+			
+			Debug.Log(meshTarget == null);
+			
             // If i'm not the client instantiating the rigidbodies on the server
-            if (!photonView.IsMine)
+            if (!photonView.IsMine)	
             {
-                string searchFor = $"{objectName} {RoomManager.sliceCount} (1/";
-
                 // Should probably wait until they're spawned
-                yield return new WaitUntil(() => FoundObject(searchFor));
+                yield return new WaitUntil(() => FoundObject($"{meshTarget.gameObject.name} {RoomManager.sliceCount} (1/"));
             }
-
-            Debug.Log($"Cutting {objectName}");
-
-            MeshTarget meshTarget = InitializeMeshTarget(GameObject.Find(objectName));
 
 			PlayerController playerController = meshTarget.GetComponentInParent<PlayerController>();
 			
 			if (playerController != null)
 				playerController.Die();
 
-            Cut(meshTarget, point, cutAxis.normalized, null, OnCreated, null, meshTarget.GetComponent<PhotonView>());
+			Debug.Log("Cutting " + objectName);
+
+            Cut(meshTarget, point, cutAxis.normalized, null, OnCreated, null,
+			meshTarget.GetComponentInParent<PhotonView>(), photonView.IsMine);
         }
 
         private bool FoundObject(string searchFor)
@@ -70,13 +78,20 @@ namespace DynamicMeshCutter
         }
 
 		private MeshTarget InitializeMeshTarget(GameObject obj)
-		{			
-			MeshTarget meshTargetR = obj.AddComponent<MeshTarget>();
+		{
+			MeshTarget meshTargetR = Objects.GetComponentInFamily<MeshTarget>(obj);
+			
+			if (meshTargetR == null)
+			{
+				if (Objects.GetComponentInFamily<Renderer>(obj) == null)
+					return null;
+				
+				meshTargetR = Objects.GetComponentInFamily<Renderer>(obj).gameObject.AddComponent<MeshTarget>();
+			}
 			
 			if (obj.name.Contains("Player"))
 				meshTargetR.OverrideFaceMaterial = DefaultMaterial;
 			
-			meshTargetR.GameobjectRoot = obj;
 			meshTargetR.SeparateMeshes = false; // true;
 			
 			return meshTargetR;
@@ -89,6 +104,9 @@ namespace DynamicMeshCutter
             MeshCreation.CenterPivots(cData.CreatedObjects);
 
             RoomManager.sliceCount++;
+			cutting = false;
+			
+			Debug.Log("cutting set to" + cutting);
         }
 
         private void EnableRigidbodies(MeshCreationData cData)

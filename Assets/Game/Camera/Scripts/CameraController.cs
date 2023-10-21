@@ -9,6 +9,8 @@ public class CameraController : MonoBehaviour
 	public GameObject target;
 	public CameraPivotController pivotController;
 	
+	private bool directionChange;
+	
 	[HideInInspector] public PlayerController playerController;
 
     public void Initialize(PlayerController playerController)
@@ -41,23 +43,8 @@ public class CameraController : MonoBehaviour
 	
 	public void ChangeDirection()
 	{
-		pivotController.ChangeDirection(playerController.movement);
+		pivotController.ChangeDirection(cameraInputController.aimInput);
 		playerController.CancelStab();
-	}
-	
-	private Vector3 NonPlayerAimDirection(CameraInputActions cameraInputActions) {
-		Vector3 aimInput = cameraInputActions.CameraMap.Aim.ReadValue<Vector2>();
-		float inputX = aimInput.x;
-		
-		if (aimInput.sqrMagnitude == 0)
-			return transform.forward;
-		
-		Vector3 rightFlat = new Vector3(transform.right.x, 0f, transform.right.z).normalized;
-		Vector3 forwardFlat = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;	
-		
-		Vector3 directionR = (rightFlat * inputX + forwardFlat * (1.0f - Mathf.Abs(inputX))).normalized;
-		
-		return directionR;
 	}
 
 	public void Rotate(float degrees)
@@ -70,4 +57,9 @@ public class CameraController : MonoBehaviour
 		pivotController.enabled = false;
 		this.enabled = false;
     }
+	
+	public void ToggleDirectionChange()
+	{
+		directionChange = !directionChange;
+	}
 }

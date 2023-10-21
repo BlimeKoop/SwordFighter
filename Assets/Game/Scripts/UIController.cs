@@ -6,21 +6,14 @@ public class UIController : MonoBehaviour
 {
 	public Transform canvas;
 	
-	private GameObject startButton;
-	private GameObject winText;
-	private GameObject loseText;
+	public GameObject startButton;
+	public GameObject winText;
+	public GameObject loseText;
+	public GameObject background;
 	
 	private void Awake()
 	{
 		canvas.gameObject.SetActive(true);
-		
-		startButton = canvas.Find("Button").gameObject;
-		winText = canvas.Find("Win Text").gameObject;
-		loseText = canvas.Find("Lose Text").gameObject;
-		
-		DisableWinText();
-		DisableLoseText();
-		DisableStartButton();
 	}
 	
 	public void EnableStartButton()
@@ -51,5 +44,15 @@ public class UIController : MonoBehaviour
 	public void DisableLoseText()
 	{
 		loseText.SetActive(false);
+	}
+
+	public void EnableBackground()
+	{
+		background.SetActive(true);
+	}
+
+	public void DisableBackground()
+	{
+		background.SetActive(false);
 	}
 }

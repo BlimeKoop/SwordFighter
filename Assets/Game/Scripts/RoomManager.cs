@@ -7,6 +7,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
 {
 	public static PhotonView photonView;
 	
+	public AudioSource themeSource;
+	public AudioSource loopSource;
+	
 	public int _deathPlaneHeight = -50;
 	
 	public static int deathPlaneHeight;
@@ -42,6 +45,11 @@ public class RoomManager : MonoBehaviourPunCallbacks
         spawnedPlayerCount -= decrement;
     }
 	
+	public static void InstantiateRigidbody(string name, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion())
+	{
+		PhotonNetwork.Instantiate("Rigidbody", target.transform.position, target.transform.rotation, 0, new object[] { name }).transform;
+	}
+	
 	[PunRPC]
 	public void DestroyObject(string objectName)
 	{
@@ -53,9 +61,52 @@ public class RoomManager : MonoBehaviourPunCallbacks
 			return;
 		}
 		
+		Debug.Log($"Destroying {objectName}");
+		Destroy(obj);
+	}
+	
+	[PunRPC]
+	public void NetworkDestroyObject(string objectName)
+	{
+		GameObject obj = GameObject.Find(objectName);
+		
+		if (obj == null)
+		{
+			Debug.Log($"Can't find {objectName}");
+			return;
+		}
+		
+		if (obj.GetComponent<PhotonView>() == null)
+		{
+			Debug.Log($"Can't network destroy {objectName} without a photonView");
+			return;
+		}
+		
 		if (!obj.GetComponent<PhotonView>().AmOwner)
 			return;
 		
+		Debug.Log($"Network destroying {objectName}");
 		PhotonNetwork.Destroy(obj);
+	}
+	
+	public void DestroyAudioListener()
+	{
+		if (GetComponent<AudioListener>() != null)
+			Destroy(GetComponent<AudioListener>());
+	}
+	
+	public void PlayTheme()
+	{
+		themeSource.Play();
+	}
+	
+	public void PlayMusic()
+	{
+		loopSource.Play();
+	}
+
+	public void StopMusic()
+	{
+		loopSource.Stop();
 	}
 }

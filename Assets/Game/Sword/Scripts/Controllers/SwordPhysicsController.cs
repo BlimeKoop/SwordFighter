@@ -9,6 +9,7 @@ public class SwordPhysicsController
 	[HideInInspector] public PlayerController playerController;
 	[HideInInspector] public PlayerSwordController swordController;
 	[HideInInspector] public SwordCollisionController collisionController;
+	[HideInInspector] public PositionDeltaTracker positionDeltaTracker;
 	
 	public Rigidbody rigidbody;
 	
@@ -35,6 +36,7 @@ public class SwordPhysicsController
 		this.swordController = swordController;
 		collisionController = swordController.collisionController;
 		playerController = swordController.playerController;
+		positionDeltaTracker = playerController.sword.GetComponent<PositionDeltaTracker>();
 		
 		rigidbody = PlayerSwordInitialization.Rigidbody(playerController);
 		rigidbody = PlayerSwordInitialization.Rigidbody(playerController);

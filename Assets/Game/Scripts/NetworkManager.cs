@@ -11,8 +11,9 @@ using System;
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
 	public PhotonView player;
+	public RoomManager roomManager;
 	
-	public List<Transform> spawnPoints;
+	public Transform spawnPoints;
 
 	private UIController uiController;
 	private PhotonView roomManagerView;
@@ -29,12 +30,20 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         if (!PhotonNetwork.IsConnected)
         {
+			roomManager.PlayTheme();
+			uiController.EnableBackground();
+			
             ConfigureLocalPlayer();
             Connect();
         }
 
         if (PhotonNetwork.InRoom)
+		{
+			roomManager.DestroyAudioListener();
+			roomManager.PlayMusic();
+			
             SpawnThings();
+		}
 	}
 
     private void ConfigureLocalPlayer()
@@ -56,9 +65,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     private void InstantiatePlayer()
     {
-        int index = (PhotonNetwork.LocalPlayer.ActorNumber - 1) % spawnPoints.Count;
+        int index = (PhotonNetwork.LocalPlayer.ActorNumber - 1) % spawnPoints.childCount;
 
-        PhotonNetwork.Instantiate(player.gameObject.name, spawnPoints[index].position, spawnPoints[index].rotation);
+        PhotonNetwork.Instantiate(player.gameObject.name, spawnPoints.GetChild(index).position, spawnPoints.GetChild(index).rotation);
         PhotonNetwork.LocalPlayer.CustomProperties["spawned"] = true;
 
         roomManagerView.RPC("IncreasePlayerCount", RpcTarget.AllBuffered, 1);
@@ -129,7 +138,23 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         SpawnThings();
 
+		roomManager.DestroyAudioListener();
 		uiController.DisableStartButton();
+		
+		if (PhotonNetwork.CurrentRoom.PlayerCount >= 2)
+			roomManager.PlayMusic();
+	}
+	
+	public override void OnPlayerEnteredRoom(Player player)
+	{
+		if (PhotonNetwork.CurrentRoom.PlayerCount == 2)
+			roomManager.PlayMusic();
+	}
+	
+	public override void OnPlayerLeftRoom(Player player)
+	{
+		if (PhotonNetwork.CurrentRoom.PlayerCount < 2)
+			roomManager.StopMusic();
 	}
 
     public void Play()

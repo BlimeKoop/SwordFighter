@@ -17,7 +17,8 @@ public class PlayerDetection
 			Vector3.down,
 			out RaycastHit hit,
 			distance,
-			~(1 << Collisions.PlayerLayer)))
+			~(1 << Collisions.PlayerLayer)) ||
+			hit.collider.transform == playerController.swordModel)
 		{
 			return new RaycastHit();
 		}

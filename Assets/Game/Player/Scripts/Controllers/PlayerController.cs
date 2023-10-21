@@ -52,8 +52,8 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-		// Cursor.visible = false;
-		// Cursor.lockState = CursorLockMode.Locked;
+		Cursor.visible = false;
+		Cursor.lockState = CursorLockMode.Locked;
 
 		animationController = new PlayerAnimationController();
 		animationController.Initialize(this);
@@ -162,10 +162,14 @@ public class PlayerController : MonoBehaviour
 		if (transform.position.y < RoomManager.deathPlaneHeight)
 			inputController.Restart();
 		
-		if (dead || paused)
+		if (dead)
 			return;
 		
 		animationController.DoUpdate();
+		
+		if (paused)
+			return;
+		
 		inputController.DoUpdate();
 		collisionController.DoUpdate();
 		

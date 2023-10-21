@@ -53,7 +53,7 @@ public class PlayerSwordMovementClamping
 		if (!playerController.SwordRight())
 			return HorizontalArmClamping(playerController, swordController, 45f);
 		else
-			return HorizontalArmClamping(playerController, swordController, 85f);
+			return HorizontalArmClamping(playerController, swordController, 100f);
 		
 		/*
 		float armfoldIncrease = 0.4f;
@@ -75,16 +75,20 @@ public class PlayerSwordMovementClamping
 
 		Vector3 armPositionApprox = playerController.animationController.ApproximateArmPosition();
 		Vector3 pos = swordController.physicsController.Position();
-		Vector3 fromArmDir = (pos - armPositionApprox).normalized;
+		Vector3 fromArm = (pos - armPositionApprox);
 		
 		Vector3 clampToward = Vectors.FlattenVector(playerController.camera.forward).normalized;
 
-		float dot = Vector3.Dot(fromArmDir, clampToward);
+		float dot = Vector3.Dot(fromArm.normalized, clampToward);
 		float dotMin = 1.0f - (maxForwardAngle / 90f);
 		
 		if (dot < dotMin)
 		{
-			return clampToward * (dotMin - dot);
+			Vector3 clamping = (clampToward * (dotMin - dot));
+			Vector3 fromArmClamped = ((pos + clamping) - armPositionApprox);
+			Vector3 distanceRestore = fromArmClamped.normalized * Mathf.Max(0.0f, fromArm.magnitude - fromArmClamped.magnitude);
+			
+			return clamping + distanceRestore * 1.5f;
 		}
 
 		return Vector3.zero;

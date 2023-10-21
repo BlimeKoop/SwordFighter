@@ -26,7 +26,10 @@ namespace DynamicMeshCutter
         public static MeshCreationData CreateObjects(Info info, Material defaultMaterial, int vertexCreationThreshold)
         {
             if (info.MeshTarget == null)
-                return null;
+			{
+				Debug.Log("info.MeshTarget is null");
+				return null;
+			}
 
             VirtualMesh[] createdMeshes = info.CreatedMeshes;
 
@@ -48,7 +51,7 @@ namespace DynamicMeshCutter
                 int bt = info.BT[i]; //is this meshtarget bottom or top ?
 
                 Transform parent = null;
-                GameObject root = null;
+                GameObject child = null;
 
 
                 VirtualMesh vMesh = createdMeshes[i];
@@ -87,7 +90,7 @@ namespace DynamicMeshCutter
                 switch (behaviour)
                 {
                     case Behaviour.Stone:
-                        CreateMesh(ref root, ref parent, target, mesh, vMesh, materials, bt, i, createdMeshes.Length,
+                        CreateMesh(ref child, ref parent, target, mesh, vMesh, materials, bt, i, createdMeshes.Length,
                              info.isSpawner, true);
                         break;
                     case Behaviour.Ragdoll:
@@ -95,34 +98,34 @@ namespace DynamicMeshCutter
                         if (tRagdoll != null && vMesh.DynamicGroups.Count > 1)
                         {
                             if (WillBeValidRagdoll(tRagdoll, vMesh))
-                                CreateRagdoll(ref root, ref parent, info, target, mesh, vMesh, materials, bt, behaviour);
+                                CreateRagdoll(ref child, ref parent, info, target, mesh, vMesh, materials, bt, behaviour);
                             else
-                                CreateMesh(ref root, ref parent, target, mesh, vMesh, materials, bt, i, createdMeshes.Length,
+                                CreateMesh(ref child, ref parent, target, mesh, vMesh, materials, bt, i, createdMeshes.Length,
                                     info.isSpawner, true);
                         }
                         else
                         {
-                            CreateMesh(ref root, ref parent, target, mesh, vMesh, materials, bt, i, createdMeshes.Length,
+                            CreateMesh(ref child, ref parent, target, mesh, vMesh, materials, bt, i, createdMeshes.Length,
                                 info.isSpawner, true);
                         }
                         break;
                     case Behaviour.Animation:
                         if (target.Animator != null)
                         {
-                            CreateAnimatedMesh(ref root, ref parent, info, target, mesh, vMesh, materials, bt, behaviour);
+                            CreateAnimatedMesh(ref child, ref parent, info, target, mesh, vMesh, materials, bt, behaviour);
                         }
                         else
                         {
                             Debug.LogWarning("Beahviour is set to Animation, but there was no Animator found in parent!");
-                            CreateMesh(ref root, ref parent, target, mesh, vMesh, materials, bt, i, createdMeshes.Length,
+                            CreateMesh(ref child, ref parent, target, mesh, vMesh, materials, bt, i, createdMeshes.Length,
                                 info.isSpawner, true);
                         }
                         break;
                 }
 
-                var nTarget = root.GetComponent<MeshTarget>();
+                var nTarget = child.GetComponent<MeshTarget>();
                 if (nTarget == null)
-                    nTarget = root.AddComponent<MeshTarget>();
+                    nTarget = child.AddComponent<MeshTarget>();
 				
                 nTarget.GameobjectRoot = parent.gameObject;
                 nTarget.OverrideFaceMaterial = target.OverrideFaceMaterial;
@@ -164,33 +167,27 @@ namespace DynamicMeshCutter
             return cData;
         }
 
-        static void CreateMesh(ref GameObject root, ref Transform parent, MeshTarget target, Mesh mesh, VirtualMesh vMesh,
+        static void CreateMesh(ref GameObject child, ref Transform parent, MeshTarget target, Mesh mesh, VirtualMesh vMesh,
             Material[] materials, int bt, int index, int meshCount, bool isSpawner, bool forcePhysics = false)
         {
+			CreateChild(ref child, target, mesh, materials);
+			
+			string name = $"{target.gameObject.name} {RoomManager.sliceCount} ({index + 1}/{meshCount})";
+			
             if (isSpawner)
             {
-                CreateMeshAsSpawner(ref root, ref parent, target, mesh, vMesh, materials, bt, index, meshCount, forcePhysics);
+				parent = PhotonNetwork.Instantiate(
+					"Rigidbody", target.transform.position, target.transform.rotation, 0, new object[] { name }).transform;
 
-                return;
+				parent.gameObject.tag = target.gameObject.tag;
+				parent.transform.position = child.GetComponent<Renderer>().bounds.center;
             }
+			else
+				// Debug.Log(name);
+				parent = GameObject.Find(name).transform;
 
-            string name = $"{target.GameobjectRoot.name} {RoomManager.sliceCount} ({index + 1}/{meshCount})";
-
-            parent = GameObject.Find(name).transform;
-
-            Rigidbody rigidbody = parent.GetComponent<Rigidbody>();
-
-            root = new GameObject($"{target.GameobjectRoot.name}");
-            root.transform.position = rigidbody.transform.position;
-            root.transform.rotation = rigidbody.transform.rotation;
-
-            root.gameObject.tag = target.transform.tag;
-
-            root.AddComponent<MeshFilter>().mesh = mesh;
-            root.AddComponent<MeshRenderer>().materials = materials;
-
-            root.transform.SetParent(parent, true);
-            //root.transform.localScale = target.transform.localScale; //test this
+            child.transform.SetParent(parent, true);
+            //child.transform.localScale = target.transform.localScale; //test this
 
             if (target.CreateRigidbody[bt])
             {
@@ -201,55 +198,24 @@ namespace DynamicMeshCutter
                 //only create when more than or equal unique vertices. if we don't run floodfill algorithm, the uniquevertice amount will be unset and equals -1
                 if (vMesh.UniqueVerticesCount < 0 || vMesh.UniqueVerticesCount > 3 && vMesh.Vertices.Length > 20)
                 {
-                    MeshCollider collider = root.AddComponent<MeshCollider>();
+                    MeshCollider collider = child.AddComponent<MeshCollider>();
                     //remark: BE CAREFUL ABOUT CONVEX MESH COLLIDER CREATION. THIS WILL THROW PHYSICS.PHYSX ERRORS IF MESH IS TOO SMALL.
                     collider.convex = true;
                 }
             }
         }
+		
+		private static void CreateChild(ref GameObject child, MeshTarget target, Mesh mesh, Material[] materials)
+		{
+            child = new GameObject($"{target.gameObject.name}");
+            child.transform.position = target.transform.position;
+            child.transform.rotation = target.transform.rotation;
 
-        static void CreateMeshAsSpawner(ref GameObject root, ref Transform parent, MeshTarget target, Mesh mesh, VirtualMesh vMesh,
-            Material[] materials, int bt, int index, int meshCount, bool forcePhysics = false)
-        {
-            string name = $"{target.GameobjectRoot.name} {RoomManager.sliceCount} ({index + 1}/{meshCount})";
+            child.gameObject.tag = target.transform.tag;
 
-            parent = PhotonNetwork.Instantiate(
-                "Rigidbody", target.transform.position, target.transform.rotation, 0, new object[] { name }).transform;
-
-            parent.gameObject.tag = target.GameobjectRoot.tag;
-
-            root = new GameObject($"{target.GameobjectRoot.name}");
-            root.transform.position = target.transform.position;
-            root.transform.rotation = target.transform.rotation;
-
-            root.gameObject.tag = target.GameobjectRoot.transform.tag;
-
-            var filter = root.AddComponent<MeshFilter>();
-            var renderer = root.AddComponent<MeshRenderer>();
-
-            filter.mesh = mesh;
-            renderer.materials = materials;
-
-            parent.transform.position = renderer.bounds.center;
-
-            root.transform.SetParent(parent, true);
-            //root.transform.localScale = target.transform.localScale; //test this
-
-            if (target.CreateRigidbody[bt])
-            {
-                ConfigureTargetRigidbody(target, parent.GetComponent<Rigidbody>(), mesh);
-            }
-            if (target.CreateMeshCollider[bt])
-            {
-                //only create when more than or equal unique vertices. if we don't run floodfill algorithm, the uniquevertice amount will be unset and equals -1
-                if (vMesh.UniqueVerticesCount < 0 || vMesh.UniqueVerticesCount > 3 && vMesh.Vertices.Length > 20)
-                {
-                    MeshCollider collider = root.AddComponent<MeshCollider>();
-                    //remark: BE CAREFUL ABOUT CONVEX MESH COLLIDER CREATION. THIS WILL THROW PHYSICS.PHYSX ERRORS IF MESH IS TOO SMALL.
-                    collider.convex = true;
-                }
-            }
-        }
+            child.AddComponent<MeshFilter>().mesh = mesh;
+            child.AddComponent<MeshRenderer>().materials = materials;
+		}
 
         private static void ConfigureTargetRigidbody(MeshTarget target, Rigidbody targetRB, Mesh mesh)
         {
@@ -339,9 +305,9 @@ namespace DynamicMeshCutter
                 }
             }
         }
-        static void CreateRagdoll(ref GameObject root, ref Transform parent, Info info, MeshTarget target, Mesh mesh, VirtualMesh vMesh, Material[] materials, int bt, Behaviour behaviour)
+        static void CreateRagdoll(ref GameObject child, ref Transform parent, Info info, MeshTarget target, Mesh mesh, VirtualMesh vMesh, Material[] materials, int bt, Behaviour behaviour)
         {
-            Transform rootBone = CreateSkinnedMeshRenderer(ref root, ref parent, info, target, mesh, vMesh, materials, bt, behaviour);
+            Transform rootBone = CreateSkinnedMeshRenderer(ref child, ref parent, info, target, mesh, vMesh, materials, bt, behaviour);
 
             parent.transform.position = target.GameobjectRoot.transform.position;
             parent.transform.rotation = target.GameobjectRoot.transform.rotation;
@@ -354,7 +320,7 @@ namespace DynamicMeshCutter
                 Debug.LogError("This shouldnt happen. (Bugreport: Parts of ragdoll is 0)");
             }
 
-            //find outermost "root" parts
+            //find outermost "child" parts
             List<DynamicRagdollPart> roots = new List<DynamicRagdollPart>();
             List<DynamicRagdollPart> remainingPartsToCheck = ragdoll.Parts.Values.ToList();
             while (remainingPartsToCheck.Count > 0)
@@ -397,7 +363,7 @@ namespace DynamicMeshCutter
                 }
             }
 
-            //flat hierarchy, move to closest root
+            //flat hierarchy, move to closest child
             for (int j = 0; j < childrenToMove.Count; j++)
             {
                 DynamicRagdollPart closestRoot = roots[0];
@@ -466,13 +432,13 @@ namespace DynamicMeshCutter
             }
         }
 
-        static void CreateAnimatedMesh(ref GameObject root, ref Transform parent, Info info, MeshTarget target, Mesh mesh, VirtualMesh vMesh, Material[] materials, int bt, Behaviour behaviour)
+        static void CreateAnimatedMesh(ref GameObject child, ref Transform parent, Info info, MeshTarget target, Mesh mesh, VirtualMesh vMesh, Material[] materials, int bt, Behaviour behaviour)
         {
             Animator tAnimator = target.Animator;
 
             if (target.IsSkinned)
             {
-                CreateSkinnedMeshRenderer(ref root, ref parent, info, target, mesh, vMesh, materials, bt, behaviour);
+                CreateSkinnedMeshRenderer(ref child, ref parent, info, target, mesh, vMesh, materials, bt, behaviour);
             }
             else
             {
@@ -482,10 +448,10 @@ namespace DynamicMeshCutter
 
                 parent = GameObject.Instantiate(target.Animator.gameObject).transform;
                 //parent.name = target.Animator.gameObject.name.Replace("(Clone)", "");
-                root = parent.GetComponentInChildren<MeshTarget>().gameObject;
+                child = parent.GetComponentInChildren<MeshTarget>().gameObject;
 
-                var filter = root.GetComponent<MeshFilter>();
-                var renderer = root.GetComponent<MeshRenderer>();
+                var filter = child.GetComponent<MeshFilter>();
+                var renderer = child.GetComponent<MeshRenderer>();
                 filter.mesh = mesh;
                 renderer.materials = materials;
             }
@@ -617,11 +583,11 @@ namespace DynamicMeshCutter
 
         public static Material[] GetMaterials(GameObject target)
         {
-            MeshRenderer renderer = Objects.GetComponentInHeirarchy<MeshRenderer>(target);
+            MeshRenderer renderer = Objects.GetComponentInFamily<MeshRenderer>(target);
             if (renderer != null)
                 return renderer.materials;// sharedMaterials;
 
-            SkinnedMeshRenderer sRenderer = Objects.GetComponentInHeirarchy<SkinnedMeshRenderer>(target);
+            SkinnedMeshRenderer sRenderer = Objects.GetComponentInFamily<SkinnedMeshRenderer>(target);
             if (sRenderer != null)
                 return sRenderer.materials;
 
@@ -644,7 +610,7 @@ namespace DynamicMeshCutter
 
         public static void GetMeshInfo(MeshTarget target, out Mesh outMesh, out Matrix4x4[] outBindposes)
         {
-            MeshFilter filter = Objects.GetComponentInHeirarchy<MeshFilter>(target);
+            MeshFilter filter = Objects.GetComponentInFamily<MeshFilter>(target);
             if (filter != null)
             {
                 outMesh = filter.mesh;
@@ -652,7 +618,7 @@ namespace DynamicMeshCutter
                 return;
             }
 
-            SkinnedMeshRenderer renderer = Objects.GetComponentInHeirarchy<SkinnedMeshRenderer>(target);
+            SkinnedMeshRenderer renderer = Objects.GetComponentInFamily<SkinnedMeshRenderer>(target);
             if (renderer != null)
             {
                 Mesh mesh = new Mesh();

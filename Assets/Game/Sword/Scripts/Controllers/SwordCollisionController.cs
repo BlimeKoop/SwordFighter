@@ -13,6 +13,8 @@ public class SwordCollisionController : MonoBehaviour
 	private BoxCollider boxCol;
 	private Renderer rend;
 	
+	private List<GameObject> cuttingObjects = new List<GameObject>();
+	
 	[HideInInspector] public bool cutting;
 	[HideInInspector] public bool colliding
 	{
@@ -61,7 +63,7 @@ public class SwordCollisionController : MonoBehaviour
 		if (swordController.TryShatter(col.gameObject))
 			return;
 
-		if (swordController.TryCut(col))
+		if (!cuttingObjects.Contains(col.gameObject) && swordController.TryCut(col))
 		{
 			cutting = true;
 			boxCol.gameObject.layer = Collisions.PhaseLayer;
@@ -70,8 +72,11 @@ public class SwordCollisionController : MonoBehaviour
 			
 			if (col.gameObject.name.Contains("Player"))
 				GameObject.Find("UI Controller").GetComponent<UIController>().EnableWinText();
-			
+
 			StartCoroutine(StopCutting(swordController.physicsController.velocity.magnitude * Time.fixedDeltaTime));
+			
+			// This may not be necessary
+			StartCoroutine(MonitorCuttingObject(col.gameObject));
 			
 			return;
 		}
@@ -103,6 +108,16 @@ public class SwordCollisionController : MonoBehaviour
 		cutting = false;
 		boxCol.gameObject.layer = Collisions.SwordLayer;
 	}
+	
+	public IEnumerator MonitorCuttingObject(GameObject obj)
+	{
+		cuttingObjects.Add(obj);
+		
+		// Wait until it's been destroyed
+		yield return new WaitUntil(() => obj == null);
+		
+		cuttingObjects.Remove(obj);
+	}
 
 	private IEnumerator CheckStillColliding(float delay)
 	{
@@ -125,7 +140,9 @@ public class SwordCollisionController : MonoBehaviour
 	
 	private void StopPhasing()
 	{
-		collision.collider.gameObject.layer = layerStore;
+		if (collision.collider != null)
+			collision.collider.gameObject.layer = layerStore;
+		
 		boxCol.gameObject.layer = Collisions.SwordLayer;
 	}
 	

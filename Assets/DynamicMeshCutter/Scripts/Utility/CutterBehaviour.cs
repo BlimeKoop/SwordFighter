@@ -171,10 +171,15 @@ namespace DynamicMeshCutter
         }
 
         public void Cut(MeshTarget target, Vector3 worldPosition, Vector3 worldNormal, OnCut onCut = null,
-            OnCreated onCreated = null, object boxedUserData = null, PhotonView photonView = null)
+            OnCreated onCreated = null, object boxedUserData = null, PhotonView photonView = null, bool isSpawner = true)
         {
             if (!target.isActiveAndEnabled)
                 return;
+			
+			Transform parent = target.transform.parent;
+
+			if (parent != null && parent.GetComponent<Rigidbody>() != null && parent.childCount < 2)
+				target.GameobjectRoot = parent.gameObject;
 
             Matrix4x4 worldToLocalMatrix = target.transform.worldToLocalMatrix;
 
@@ -205,7 +210,7 @@ namespace DynamicMeshCutter
             localN.Normalize();
 
             VirtualPlane plane = new VirtualPlane(localP, localN, worldPosition, worldNormal);
-            Info info = new Info(target, plane, onCut, onCreated, boxedUserData, photonView);
+            Info info = new Info(target, plane, onCut, onCreated, boxedUserData, photonView, isSpawner);
 
             if (!UseAsync)
             {
@@ -239,15 +244,7 @@ namespace DynamicMeshCutter
             MeshCreationData creationInfo = MeshCreation.CreateObjects(info, DefaultMaterial, VertexCreationThreshold);
 			
 			if (DestroyTargets && info.MeshTarget)
-			{
-				GameObject destroy = (
-					info.MeshTarget.GameobjectRoot != null ? info.MeshTarget.GameobjectRoot : info.MeshTarget.gameObject);
-				
-				if (info.photonView == null)
-					Destroy(destroy);
-				else if (info.photonView.AmOwner)
-					RoomManager.photonView.RPC("DestroyObject", RpcTarget.AllBuffered, destroy.name);
-			}
+				Destroy(info.MeshTarget.GameobjectRoot != null ? info.MeshTarget.GameobjectRoot : info.MeshTarget.gameObject);
 			
 			if (creationInfo == null)
 			{

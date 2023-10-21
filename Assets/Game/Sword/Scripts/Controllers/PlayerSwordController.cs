@@ -189,42 +189,56 @@ public class PlayerSwordController
 		if (col.gameObject.layer == Collisions.SwordLayer)
 			return false;
 		
-		GameObject obj = col.gameObject;
+		Vector3 relativeVelocity = (
+			col.rigidbody != null ?
+			col.rigidbody.velocity - physicsController.positionDeltaTracker.positionDelta / Time.fixedDeltaTime :
+			physicsController.positionDeltaTracker.positionDelta / Time.fixedDeltaTime);
 		
-		if (obj.GetComponentInParent<PlayerController>() == playerController)
+		GameObject colObj = col.gameObject;
+		
+		if (colObj.GetComponentInParent<PlayerController>() == playerController)
 			return false;
 		
-		if (obj.name.Contains("Player"))
+		if (colObj.name.Contains("Player"))
 		{
-			// if (col.relativeVelocity.magnitude < 1f)
+			// if (relativeVelocity.magnitude < 1f)
 				// return false;
-			
-			PlayerController _playerController = obj.GetComponentInParent<PlayerController>();
-			
-			if (_playerController != null)
-				obj = _playerController.gameObject;
 		}
 		else 
 		{
-			if (col.relativeVelocity.magnitude < 3f)
+			if (relativeVelocity.magnitude < 3f)
 				return false;
 			
 			if (!BackOfObjectFound(col.GetContact(0).point, col.GetContact(0).normal))
 				return false;
 			
-			if (Vector3.Scale(obj.GetComponentInChildren<Renderer>().bounds.size,
+			if (Vector3.Scale(colObj.GetComponentInChildren<Renderer>().bounds.size,
 			new Vector3(1f, 0f, 1f)).magnitude > 20f)
 				return false;
 		}
 
-		Vector3 cross = Vector3.Cross(playerController.sword.transform.up, col.relativeVelocity);
-		Vector3 cutAxis = Vector3.Cross(col.relativeVelocity, cross);
+		Vector3 cross = Vector3.Cross(playerController.sword.transform.up, relativeVelocity);
+		Vector3 cutAxis = Vector3.Cross(relativeVelocity, cross);
 
-        PhotonView.RPC("CutObject", RpcTarget.AllBuffered, obj.name, cutAxis, col.GetContact(0).point);
+        PhotonView.RPC("CutObject", RpcTarget.AllBufferedViaServer, colObj.name, cutAxis, col.GetContact(0).point);
 
         hitCooldownTimer = HitCooldown;
 		
 		return true;
+	}
+	
+	private void QueueObjectDestruction(GameObject obj)
+	{
+		GameObject destroy = obj;
+		Transform parent = destroy.transform.parent;
+
+		if (parent != null && parent.GetComponent<Rigidbody>() != null && parent.childCount < 2)
+			destroy = parent.gameObject;
+
+		if (destroy.GetComponent<PhotonView>() == null)
+			RoomManager.photonView.RPC("DestroyObject", RpcTarget.AllBufferedViaServer, destroy.name);
+		else
+			RoomManager.photonView.RPC("NetworkDestroyObject", RpcTarget.AllViaServer, destroy.name);
 	}
 	
 	private bool BackOfObjectFound(Vector3 collisionPoint, Vector3 collisionNormal)

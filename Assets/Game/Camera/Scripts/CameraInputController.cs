@@ -7,13 +7,13 @@ public class CameraInputController : MonoBehaviour
 {
 	CameraController cameraController;
 	CameraInputActions inputActions;
+	
+	[HideInInspector]
+	public Vector2 aimInput;
 
     public void Initialize(CameraController cameraController)
     {
 		this.cameraController = cameraController;
-
-		if (!cameraController.playerController.photonView.IsMine)
-			return;
 		
         inputActions = new CameraInputActions();
 
@@ -26,6 +26,18 @@ public class CameraInputController : MonoBehaviour
 	{
 		inputActions.CameraMap.ChangeDirection.performed += (
 			context => cameraController.ChangeDirection());
+			
+		inputActions.CameraMap.ToggleDirectionChange.performed += (
+			context => cameraController.ToggleDirectionChange());
+
+		inputActions.CameraMap.ToggleDirectionChange.canceled += (
+			context => cameraController.ToggleDirectionChange());
+			
+		inputActions.CameraMap.AimInput.performed += (
+			context => SetAimInput());
+			
+		inputActions.CameraMap.AimInput.canceled += (
+			context => SetAimInput());
 	}
 	
 	private IEnumerator EnableInput(float delay)
@@ -33,5 +45,10 @@ public class CameraInputController : MonoBehaviour
 		yield return new WaitForSeconds(delay);
 		
 		inputActions.Enable();
+	}
+	
+	private void SetAimInput()
+	{
+		aimInput = inputActions.CameraMap.AimInput.ReadValue<Vector2>();
 	}
 }

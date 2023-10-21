@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -41,17 +42,17 @@ public class Objects
 			Mathf.Abs(Vector3.Dot(axisReference.forward, toMax)));
 	}
 	
-	public static T GetComponentInHeirarchy<T>(GameObject obj)
+	public static T GetComponentInFamily<T>(GameObject obj)
 	{
 		var found = obj.GetComponentInChildren<T>();
 		
-		if (obj != null)
+		if (found != null)
 			return found;
 		
 		return obj.GetComponentInParent<T>();
 	}
 	
-	public static T GetComponentInHeirarchy<T>(Component component)
+	public static T GetComponentInFamily<T>(Component component)
 	{
 		var found = component.GetComponentInChildren<T>();
 		
