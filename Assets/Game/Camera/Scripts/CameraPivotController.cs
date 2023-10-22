@@ -16,16 +16,17 @@ public class CameraPivotController : MonoBehaviour
 	public float DirectionCooldownMin = 0.1f;
 	public float DirectionCooldownMax = 0.1f;
 	
-	private float directionChangeCooldown;
 	private float directionChangeDuration;
-	private float directionChangeStep;
 
 	private float directionChangeCooldownTimer;
 	private float directionChangeTimer;
 	
+	private float rotateDegrees;
 	private float autoRotateDegrees;
 	
 	private float autoRotateTimer;
+	
+	private Vector3 lastDirection;
 	
 	[HideInInspector]
 	public Vector3 targetDirection;
@@ -77,25 +78,26 @@ public class CameraPivotController : MonoBehaviour
 	}
 	
 	private void Rotate()
-	{
+	{		
+		float changeCompletionFactor = directionChangeTimer / directionChangeDuration;
+		float t = Mathf.Min(1.0f - Mathf.Pow(1.0f - changeCompletionFactor, 2), 1.0f);
+		// float smoothingFactor = (1.0f - (Mathf.Abs(changeCompletionFactor - 0.3f) / 0.7f)) * 2;
+		
+		transform.forward = Vector3.RotateTowards(
+			lastDirection,
+			targetDirection,
+			rotateDegrees * t * Mathf.Deg2Rad,
+			1.0f);
+		
 		if (directionChangeTimer > directionChangeDuration)
 		{
 			rotating = false;
-			// transform.forward = targetDirection;
+			transform.forward = targetDirection;
+			
+			directionChangeCooldownTimer = 0;
 			
 			return;
 		}
-		
-		float changeCompletionFactor = directionChangeTimer / directionChangeDuration;
-		float smoothingFactor = (1.0f - (Mathf.Abs(changeCompletionFactor - 0.3f) / 0.7f)) * 2;
-		
-		transform.forward = Vector3.RotateTowards(
-			transform.forward,
-			targetDirection,
-			directionChangeStep * smoothingFactor * Time.deltaTime * Mathf.Deg2Rad,
-			1.0f);
-		
-		directionChangeCooldownTimer = 0;
 	}
 	
 	private void HandleAutoRotation()
@@ -128,26 +130,24 @@ public class CameraPivotController : MonoBehaviour
 		if (rotating)
 			return;
 		
-		Vector3 newDirection = (
-			Vectors.FlattenVector(transform.right).normalized * input.x +
-			Vectors.FlattenVector(transform.forward).normalized * input.y).normalized;
+		Vector3 _lastDirection = transform.forward;
+		Vector3 _targetDirection = (transform.right * input.x + transform.forward * input.y).normalized;
+		float _rotateDegrees = Vector3.Angle(_lastDirection, _targetDirection);
 		
-		float deg = Vector3.Angle(targetDirection, newDirection);
+		float cooldown = (
+			_rotateDegrees < 160f ?
+			DirectionCooldownMin :
+			Mathf.Lerp(DirectionCooldownMin, DirectionCooldownMax, _rotateDegrees / 180f));
 		
-		if (deg < 160f)
-			directionChangeCooldown = DirectionCooldownMin;
-		
-		if (directionChangeCooldownTimer < directionChangeCooldown)
+		if (directionChangeCooldownTimer < cooldown)
 			return;
 		
-		directionChangeDuration = Mathf.Lerp(0.5f * (1f - rotateSpeed), 1f - rotateSpeed, deg / 180f);
-		directionChangeStep = deg / directionChangeDuration;
+		lastDirection = _lastDirection;
+		targetDirection = _targetDirection;
+		rotateDegrees = _rotateDegrees;
 		
-		directionChangeCooldown = Mathf.Lerp(
-			DirectionCooldownMin, DirectionCooldownMax, deg / 180f);
-		
+		directionChangeDuration = Mathf.Lerp(0.5f * (1f - rotateSpeed), 1f - rotateSpeed, rotateDegrees / 180f);
 		directionChangeTimer = 0;
-		targetDirection = newDirection;
 		
 		rotate = true;
 	}

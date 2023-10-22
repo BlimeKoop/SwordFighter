@@ -48,8 +48,6 @@ public class PlayerController : MonoBehaviour
 	
 	[HideInInspector] public float stabHoldTimer;
 
-	private bool initialized;
-
     void Start()
     {
 		Cursor.visible = false;
@@ -84,8 +82,6 @@ public class PlayerController : MonoBehaviour
 		physicsController.Initialize(this);
 		inputController.Initialize(this); StartCoroutine(StartInput(0.2f));
 		collisionController.Initialize(this);
-
-		initialized = true;
 	}
 	
 	private void InitializeSword()

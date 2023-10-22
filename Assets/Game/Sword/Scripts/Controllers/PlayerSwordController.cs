@@ -222,8 +222,7 @@ public class PlayerSwordController
 				return false;
 		}
 
-		Vector3 cross = Vector3.Cross(playerController.sword.transform.up, relativeVelocity);
-		Vector3 cutAxis = Vector3.Cross(relativeVelocity, cross);
+		Vector3 cutAxis = Vector3.Cross(relativeVelocity, playerController.sword.transform.forward);
 
         RoomManager.CutObject(colObj, cutAxis, col.GetContact(0).point);
 

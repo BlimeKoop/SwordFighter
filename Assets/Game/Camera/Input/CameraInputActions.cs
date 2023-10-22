@@ -33,7 +33,7 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
                     ""id"": ""a2db557c-98e1-4d43-a4a7-0ce825b61f5b"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""Tap(duration=0.3)"",
+                    ""interactions"": ""Tap(duration=0.25)"",
                     ""initialStateCheck"": false
                 },
                 {

@@ -140,7 +140,7 @@ public class SwordCollisionController : MonoBehaviour
 	
 	private void StopPhasing()
 	{
-		if (collision.collider != null)
+		if (collision != null && collision.collider != null)
 			collision.collider.gameObject.layer = layerStore;
 		
 		boxCol.gameObject.layer = Collisions.SwordLayer;
