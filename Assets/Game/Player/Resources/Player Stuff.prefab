@@ -1730,6 +1730,7 @@ MonoBehaviour:
   swordModel: {fileID: 0}
   moveSpeed: 8
   _swingSpeed: 30
+  jumpHeight: 4
   groundDetectionRadius: 0.6
   groundStepUpDistance: 2
   movement: {x: 0, y: 0, z: 0}
@@ -1740,6 +1741,9 @@ MonoBehaviour:
   holdStab: 0
   paused: 0
   dead: 0
+  disableGround: 0
+  jumpGrace: 0
+  jumpInputGrace: 0
   SwordHoldDistance: 0.5
   stabHoldTimer: 0
 --- !u!54 &2997729287698268668

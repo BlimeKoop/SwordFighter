@@ -20,6 +20,7 @@ public class PlayerCollisionController : MonoBehaviour
 	};
 	
 	public RaycastHit groundHit;
+	public float groundDistance;
 	public bool onGround;
 	public bool onWall { get { return collisionFlags["w"]; } }
 	
@@ -41,11 +42,23 @@ public class PlayerCollisionController : MonoBehaviour
 	
 	public void DoUpdate()
 	{
-		groundHit = PlayerDetection.GroundHit(playerController);
+		bool onGroundStore = onGround;
 		
-		onGround = groundHit.transform != null;
+		onGround = PlayerDetection.GroundHit(playerController, out groundHit, out groundDistance);
+		
+		if (onGroundStore && !onGround)
+		{
+			playerController.StopCoroutine(playerController.JumpGracePeriod());
+			playerController.StartCoroutine(playerController.JumpGracePeriod());
+		}
+		else if (!onGroundStore && onGround && playerController.jumpInputGrace)
+		{
+			groundHit = new RaycastHit();
+			
+			playerController.Jump();
+		}
 	}
-		
+	
 	private void OnCollisionEnter(Collision col)
 	{
 		if(playerController.dead || !playerController.photonView.IsMine || !initialized)

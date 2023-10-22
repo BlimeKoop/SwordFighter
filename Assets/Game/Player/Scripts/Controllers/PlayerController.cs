@@ -31,6 +31,8 @@ public class PlayerController : MonoBehaviour
 	
 	public float moveSpeed = 8.0f;
 	public float _swingSpeed = 8.0f; [HideInInspector] public float swingSpeed { get { return _swingSpeed * 140f; } }
+	
+	public float jumpHeight = 4f;
 
 	public float groundDetectionRadius = 0.6f;
 	public float groundStepUpDistance = 0.4f;
@@ -41,12 +43,17 @@ public class PlayerController : MonoBehaviour
 	
 	[HideInInspector] public bool crouching, block, alignStab, stab, holdStab, paused, dead;
 	
+	[HideInInspector]
+	public bool disableGround, jumpGrace, jumpInputGrace;
+	
 	public float SwordHoldDistance = 0.5f;
 	
 	private const float StabHoldDuration = 0.5f;
 	private const float InputAngleSwivelThreshold = 90f;
 	
 	[HideInInspector] public float stabHoldTimer;
+	
+	bool aerialCameraRotation;
 
     void Start()
     {
@@ -188,7 +195,16 @@ public class PlayerController : MonoBehaviour
 		swordController.DoUpdate();
 		
 		float deg = Vector3.Dot(movement, camera.right);
-		deg *= 1 + (Mathf.Abs(Vector3.Dot(movement, camera.forward)) * 0.6f);
+		
+		if (!aerialCameraRotation && collisionController.groundDistance > 5f)
+			aerialCameraRotation = true;
+		else if (aerialCameraRotation && collisionController.onGround)
+			aerialCameraRotation = false;
+		
+		if (!aerialCameraRotation)
+			deg *= 1 + (Mathf.Abs(Vector3.Dot(movement, camera.forward)) * 0.6f);
+		else
+			deg *= 8.8f;
 		
 		cameraController.Rotate(deg);
 		RotateModel();
@@ -238,6 +254,46 @@ public class PlayerController : MonoBehaviour
 		collisionController.colliders["n"].isTrigger = crouching;
 	}
 
+	public void TryJump()
+	{
+		if (!jumpGrace && !collisionController.onGround)
+		{
+			StopCoroutine(JumpInputGracePeriod());
+			StartCoroutine(JumpInputGracePeriod());
+			
+			return;
+		}
+		
+		Jump();
+	}
+	
+	public void Jump()
+	{		
+		jumpGrace = false;
+		
+		physicsController.Jump();
+		
+		StartCoroutine(DisableGround());
+	}
+	
+	public IEnumerator JumpGracePeriod()
+	{
+		jumpGrace = true;
+		
+		yield return new WaitForSeconds(0.2f);
+		
+		jumpGrace = false;
+	}
+	
+	public IEnumerator JumpInputGracePeriod()
+	{
+		jumpInputGrace = true;
+		
+		yield return new WaitForSeconds(0.2f);
+		
+		jumpInputGrace = false;
+	}
+
 	public void TogglePause()
 	{
 		paused = !paused;
@@ -264,6 +320,15 @@ public class PlayerController : MonoBehaviour
 			sword.GetComponent<Rigidbody>().useGravity = true;
 		
 		dead = true;
+	}
+	
+	public IEnumerator DisableGround()
+	{
+		disableGround = true;
+		
+		yield return new WaitForSeconds(Time.fixedDeltaTime * 2);
+		
+		disableGround = false;
 	}
 
     public Vector3 ToSword() {

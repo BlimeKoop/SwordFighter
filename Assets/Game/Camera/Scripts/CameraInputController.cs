@@ -9,7 +9,18 @@ public class CameraInputController : MonoBehaviour
 	CameraInputActions inputActions;
 	
 	[HideInInspector]
-	public Vector2 aimInput;
+	public Vector2 aimInput, aimInputActive;
+	
+	private bool isInput;
+	
+	[HideInInspector]
+	public float timeSinceInput;
+
+	private void LateUpdate()
+	{
+		if (!isInput)
+			timeSinceInput += Time.deltaTime;
+	}
 
     public void Initialize(CameraController cameraController)
     {
@@ -50,5 +61,16 @@ public class CameraInputController : MonoBehaviour
 	private void SetAimInput()
 	{
 		aimInput = inputActions.CameraMap.AimInput.ReadValue<Vector2>();
+		
+		if (aimInput.sqrMagnitude > 0)
+		{
+			aimInputActive = aimInput;
+			isInput = true;
+			timeSinceInput = 0;
+		}
+		else
+		{
+			isInput = false;
+		}
 	}
 }

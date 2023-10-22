@@ -44,7 +44,10 @@ public class PlayerPhysicsController
 			interpolatedMovement.y = Mathf.Max(Physics.gravity.y, rigidbody.velocity.y + Physics.gravity.y * Time.fixedDeltaTime);
 		else
 		{
-			interpolatedMovement.y = Mathf.Clamp(collisionController.VerticalGroundOffset(), 0f, 0.2f) / Time.fixedDeltaTime;
+			interpolatedMovement.y = Mathf.Max(-20.0f, Mathf.Lerp(
+				rigidbody.velocity.y,
+				Mathf.Clamp(collisionController.VerticalGroundOffset(), 0f, 0.15f) / Time.fixedDeltaTime,
+				0.4f));
 		}
 		
 		if (swordCollisionController.colliding)
@@ -108,6 +111,18 @@ public class PlayerPhysicsController
 		rigidbody.angularVelocity *= 0;
 		rigidbody.MoveRotation(Quaternion.Slerp(rigidbody.rotation, newRotation, 0.9f));
 	}
+	
+	public void Jump()
+	{
+		float scaledJumpHeight = playerController.jumpHeight * 2.25f;
+		
+		if (rigidbody.velocity.y > 0)
+			scaledJumpHeight += rigidbody.velocity.y ;
+		
+		rigidbody.velocity -= Vector3.up * rigidbody.velocity.y;
+		rigidbody.AddForce(Vector3.up * scaledJumpHeight, ForceMode.VelocityChange);
+	}
+	
 	// /*
 	public void ZeroVelocity()
 	{

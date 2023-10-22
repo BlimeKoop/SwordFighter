@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-	CameraInputController cameraInputController;
+	CameraInputController inputController;
 	
 	public GameObject target;
 	public CameraPivotController pivotController;
@@ -18,8 +18,8 @@ public class CameraController : MonoBehaviour
 		this.playerController = playerController;
 		
 		pivotController = InitializeCameraPivotController(pivotController);
-		cameraInputController = InitializeCameraInputController();
-		cameraInputController.Initialize(this);
+		inputController = InitializeCameraInputController();
+		inputController.Initialize(this);
 		
 		transform.parent = pivotController.transform;
     }
@@ -46,7 +46,10 @@ public class CameraController : MonoBehaviour
 		if (pivotController == null)
 			return;
 		
-		pivotController.ChangeDirection(cameraInputController.aimInput);
+		// if (inputController.timeSinceInput > 2f)
+			// return;
+		
+		pivotController.ChangeDirection(inputController.aimInputActive);
 		playerController.CancelStab();
 	}
 
