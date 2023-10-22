@@ -9,6 +9,9 @@ public class PlayerDetection
 		Vector3 originOffset = Vector3.up * (
 			playerController.groundDetectionRadius + Mathf.Max(0.01f, playerController.groundStepUpDistance));
 			
+		if (playerController.crouching)
+			originOffset /= 3;
+			
 		float distance = originOffset.y - playerController.groundDetectionRadius + 0.1f;
 			
 		if (!Physics.SphereCast(

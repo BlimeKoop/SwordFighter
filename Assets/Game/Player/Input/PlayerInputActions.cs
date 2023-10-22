@@ -98,6 +98,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Crouch"",
+                    ""type"": ""Button"",
+                    ""id"": ""14aafb02-ee69-433d-ad95-16dec70526de"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -320,6 +329,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Quit"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e822e22f-ea30-474c-8936-f2b1c6b32f93"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -336,6 +356,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_PlayerMap_Stab = m_PlayerMap.FindAction("Stab", throwIfNotFound: true);
         m_PlayerMap_Restart = m_PlayerMap.FindAction("Restart", throwIfNotFound: true);
         m_PlayerMap_Quit = m_PlayerMap.FindAction("Quit", throwIfNotFound: true);
+        m_PlayerMap_Crouch = m_PlayerMap.FindAction("Crouch", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -405,6 +426,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerMap_Stab;
     private readonly InputAction m_PlayerMap_Restart;
     private readonly InputAction m_PlayerMap_Quit;
+    private readonly InputAction m_PlayerMap_Crouch;
     public struct PlayerMapActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -417,6 +439,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Stab => m_Wrapper.m_PlayerMap_Stab;
         public InputAction @Restart => m_Wrapper.m_PlayerMap_Restart;
         public InputAction @Quit => m_Wrapper.m_PlayerMap_Quit;
+        public InputAction @Crouch => m_Wrapper.m_PlayerMap_Crouch;
         public InputActionMap Get() { return m_Wrapper.m_PlayerMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -450,6 +473,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Quit.started += instance.OnQuit;
             @Quit.performed += instance.OnQuit;
             @Quit.canceled += instance.OnQuit;
+            @Crouch.started += instance.OnCrouch;
+            @Crouch.performed += instance.OnCrouch;
+            @Crouch.canceled += instance.OnCrouch;
         }
 
         private void UnregisterCallbacks(IPlayerMapActions instance)
@@ -478,6 +504,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Quit.started -= instance.OnQuit;
             @Quit.performed -= instance.OnQuit;
             @Quit.canceled -= instance.OnQuit;
+            @Crouch.started -= instance.OnCrouch;
+            @Crouch.performed -= instance.OnCrouch;
+            @Crouch.canceled -= instance.OnCrouch;
         }
 
         public void RemoveCallbacks(IPlayerMapActions instance)
@@ -505,5 +534,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnStab(InputAction.CallbackContext context);
         void OnRestart(InputAction.CallbackContext context);
         void OnQuit(InputAction.CallbackContext context);
+        void OnCrouch(InputAction.CallbackContext context);
     }
 }

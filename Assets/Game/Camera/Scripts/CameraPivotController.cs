@@ -9,7 +9,7 @@ public class CameraPivotController : MonoBehaviour
 	[Range(0,1)] public float followSpeed = 0.4f;
 	public float rotateSpeed = 0.5f;
 	
-	public float DirectionChangeDelay = 0.05f;
+	public float DirectionChangeDelay = 0f;
 	public float AutoRotateDelay = 0.2f;
 	public float AutoRotateEaseDuration = 0.2f;
 	

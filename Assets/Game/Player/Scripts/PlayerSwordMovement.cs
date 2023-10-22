@@ -45,7 +45,7 @@ public class PlayerSwordMovement
 	{
 		Transform camera = playerController.camera;
 		
-		Vector3[] orbitDirections = OrbitDirections(playerController.animationController.ApproximateChestPosition(), swordController.HoldPosition());
+		Vector3[] orbitDirections = OrbitDirections(playerController.animationController.bones["c"].position, swordController.HoldPosition());
 
 		Vector3 horizontal = orbitDirections[0]; // Vector3.Lerp(orbitDirections[0], Vectors.FlattenVector(camera.right), 0.4f);
 		Vector3 vertical = camera.up;

@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
 
 	[HideInInspector] public Vector3 movement;
 	
-	[HideInInspector] public bool block, alignStab, stab, holdStab, paused, dead;
+	[HideInInspector] public bool crouching, block, alignStab, stab, holdStab, paused, dead;
 	
 	public float SwordHoldDistance = 0.5f;
 	
@@ -201,7 +201,7 @@ public class PlayerController : MonoBehaviour
 		model.localRotation = Quaternion.Lerp(
 			model.localRotation,
 			Quaternion.Euler(0f, 45f * inputController.MovementInput().x, 0f),
-			0.14f);
+			Time.fixedDeltaTime * 2f);
 	}
 
 	private void LateUpdate()
@@ -228,6 +228,15 @@ public class PlayerController : MonoBehaviour
 	}
 	
 	public void StopStab() { holdStab = false; }
+
+	public void ToggleCrouch()
+	{
+		crouching = !crouching;
+		
+		// This is just so the sword doesn't bonk the head or neck
+		collisionController.colliders["h"].isTrigger = crouching;
+		collisionController.colliders["n"].isTrigger = crouching;
+	}
 
 	public void TogglePause()
 	{
@@ -278,7 +287,7 @@ public class PlayerController : MonoBehaviour
 	}
 
 	public Vector3 ApproximateChestToSword() {
-		return swordController.physicsController.Position() - animationController.ApproximateChestPosition();
+		return swordController.physicsController.Position() - animationController.bones["c"].position;
 	}
 	
 	public bool SwordHeldVertically(float maxY) {

@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
 
 public class PlayerAnimationController
 {
@@ -32,8 +31,9 @@ public class PlayerAnimationController
 	
 	public void DoUpdate()
 	{
-		SetAnimatorFloat("Speed", rigidbody.velocity.magnitude * 0.35f);
+		SetAnimatorFloat("Speed", (rigidbody.velocity.magnitude - Mathf.Abs(rigidbody.velocity.y)) * 0.35f);
 		SetAnimatorLayerWeight(1, rigidbody.velocity.magnitude / playerController.moveSpeed);
+		SetAnimatorLayerWeight(2, Mathf.Lerp(GetAnimatorLayerWeight(2), playerController.crouching ? 0.76f : 0.0f, Time.deltaTime * 10f));
 		
 		if (!playerController.photonView.IsMine)
 			return;
@@ -92,30 +92,28 @@ public class PlayerAnimationController
 			RightArmIKTarget.position);
 	}
 	
-	public Vector3 ApproximateChestPosition() {
-		return new Vector3(
-		transform.position.x, transform.position.y + verticalArmDistance, transform.position.z);
-	}
-	
 	public Vector3 ApproximateArmPosition() {
-		Vector3 chestToSwordApprox = playerController.ApproximateChestToSword();
+		Vector3 chestToSword = playerController.ChestToSword();
 		Vector3 camRightRotated = Vector3.Lerp(
-		Vectors.FlattenVector(playerController.camera.right), chestToSwordApprox.normalized, chestArmHandRatio).normalized;
+		Vectors.FlattenVector(playerController.camera.right), chestToSword.normalized, chestArmHandRatio).normalized;
 		
-		return ApproximateChestPosition() + Vectors.FlattenVector(playerController.camera.right) * chestArmDistance;
+		return bones["c"].position + Vectors.FlattenVector(playerController.camera.right) * chestArmDistance;
 	}
 	
-	public Vector3 ApproximateChestToSword() {
-		return playerController.swordController.physicsController.Position() - ApproximateChestPosition();
+	public Vector3 ChestToSword() {
+		return playerController.swordController.physicsController.Position() - bones["c"].position;
 	}
 	
 	public Vector3 ArmRestPosition() {
-		return ApproximateChestPosition() + playerController.camera.right * horizontalArmDistance;
+		return bones["c"].position + playerController.camera.right * horizontalArmDistance;
 	}
 	
 	public float ArmLength() { return humerusLength + foreArmLength; }
 	public float ArmBendAngle() { return Vector3.Angle(bones["ra"].up, bones["rfa"].up); }
 
+	public float GetAnimatorFloat(string name) { return animator.GetFloat(name); }
 	public void SetAnimatorFloat(string name, float setTo) { animator.SetFloat(name, setTo); }
+	
+	public float GetAnimatorLayerWeight(int index) { return animator.GetLayerWeight(index); }
 	public void SetAnimatorLayerWeight(int index, float setTo) { animator.SetLayerWeight(index, setTo); }
 }

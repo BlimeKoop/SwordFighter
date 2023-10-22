@@ -96,7 +96,7 @@ public class PlayerSword
 		Vector3 forward = playerController.animationController.SwordAimDirection();
 		
 		if (playerController.block)
-			forward = -Vector3.Cross(Vector3.up, playerController.animationController.ApproximateChestToSword()).normalized;
+			forward = -Vector3.Cross(Vector3.up, playerController.animationController.ChestToSword()).normalized;
 		
 		Vector3 up = (
 			forward.y < 1f ?

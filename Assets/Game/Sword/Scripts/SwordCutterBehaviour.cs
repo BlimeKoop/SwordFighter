@@ -100,7 +100,7 @@ namespace DynamicMeshCutter
 				meshTargetR = Objects.GetComponentInFamily<Renderer>(obj).gameObject.AddComponent<MeshTarget>();
 			}
 			
-			if (obj.name.Contains("Player"))
+			if (obj.layer == Collisions.PlayerLayer)
 				meshTargetR.OverrideFaceMaterial = DefaultMaterial;
 			
 			meshTargetR.SeparateMeshes = false; // true;

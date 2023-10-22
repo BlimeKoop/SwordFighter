@@ -31,7 +31,6 @@ public class PlayerCollisionController : MonoBehaviour
 		animationController = playerController.animationController;
 		physicsController = playerController.physicsController;
 		
-		colliders["t"] = animationController.bones["s"].GetComponent<Collider>();
 		colliders["n"] = animationController.bones["n"].GetComponent<Collider>();
 		colliders["h"] = animationController.bones["h"].GetComponent<Collider>();
 		colliders["lf"] = animationController.bones["lf"].GetComponentInChildren<Collider>();

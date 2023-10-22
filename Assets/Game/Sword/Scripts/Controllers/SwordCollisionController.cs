@@ -31,10 +31,15 @@ public class SwordCollisionController : MonoBehaviour
 		this.swordController = swordController;
 		
 		GameObject meshObj = playerController.swordModel.GetComponentInChildren<MeshFilter>().gameObject;
-		boxCol = meshObj.GetComponent<BoxCollider>();
+		boxCol = meshObj.GetComponentInChildren<BoxCollider>();
 		
 		if (boxCol == null)
+		{
+			foreach (Collider c in meshObj.GetComponentsInChildren<Collider>())
+				Destroy(c);
+				
 			boxCol = meshObj.AddComponent<BoxCollider>();
+		}
 
 		boxCol.isTrigger = false;
 		boxCol.gameObject.layer = Collisions.SwordLayer;
@@ -44,10 +49,7 @@ public class SwordCollisionController : MonoBehaviour
 
 	private void OnCollisionEnter(Collision col)
 	{
-		if (cutting)
-			return;
-		
-		if (colliding)
+		if (cutting || colliding)
 			return;
 		
 		if (playerController == null)
@@ -63,20 +65,10 @@ public class SwordCollisionController : MonoBehaviour
 		if (swordController.TryShatter(col.gameObject))
 			return;
 
-		if (!cuttingObjects.Contains(col.gameObject) && swordController.TryCut(col))
+		if (!cuttingObjects.Contains(col.gameObject) &&
+			swordController.TryCut(col.gameObject, col.GetContact(0).point, col.rigidbody))
 		{
-			cutting = true;
-			boxCol.gameObject.layer = Collisions.PhaseLayer;
-			
-			// swordController.physicsController.RevertVelocity();
-			
-			if (col.gameObject.name.Contains("Player"))
-				GameObject.Find("UI Controller").GetComponent<UIController>().EnableWinText();
-
-			StartCoroutine(StopCutting(swordController.physicsController.velocity.magnitude * Time.fixedDeltaTime));
-			
-			// This may not be necessary
-			StartCoroutine(MonitorCuttingObject(col.gameObject));
+			StartCut(col.gameObject);
 			
 			return;
 		}
@@ -96,6 +88,46 @@ public class SwordCollisionController : MonoBehaviour
 			
 			StartCoroutine(CheckStillColliding(0.05f));
 		}
+	}
+
+	private void OnTriggerEnter(Collider col)
+	{
+		if (cutting || colliding)
+			return;
+		
+		if (playerController == null)
+		{
+			this.enabled = false;
+			
+			return;
+		}
+		
+		if (col.GetComponentInParent<PlayerController>() == playerController)
+			return;
+		
+		if (!cuttingObjects.Contains(col.gameObject) &&
+			swordController.TryCut(col.gameObject, col.ClosestPoint(swordController.MiddlePoint()), col.GetComponentInParent<Rigidbody>()))
+		{
+			StartCut(col.gameObject);
+			
+			return;
+		}
+	}	
+
+	private void StartCut(GameObject obj)
+	{
+		cutting = true;
+		boxCol.gameObject.layer = Collisions.PhaseLayer;
+		
+		// swordController.physicsController.RevertVelocity();
+		
+		if (obj.layer == Collisions.PlayerLayer)
+			GameObject.Find("UI Controller").GetComponent<UIController>().EnableWinText();
+
+		StartCoroutine(StopCutting(swordController.physicsController.velocity.magnitude * Time.fixedDeltaTime));
+		
+		// This may not be necessary
+		StartCoroutine(MonitorCuttingObject(obj));
 	}
 	
 	private IEnumerator StopCutting(float delay)

@@ -179,31 +179,29 @@ public class PlayerSwordController
 		return rotReturn;
 	}
 	
-	public bool TryCut(Collision col)
+	public bool TryCut(GameObject obj, Vector3 collisionPoint, Rigidbody rigidbody = null)
 	{
-		GameObject colObj = col.gameObject;
-		
-		if (colObj.tag == "CantCut")
+		if (obj.tag == "CantCut")
 		{
-			Debug.Log($"{colObj.name} tagged as CantCut");
+			Debug.Log($"{obj.name} tagged as CantCut");
 			return false;
 		}
 			
 		if (hitCooldownTimer > 0)
 			return false;
 		
-		if (colObj.layer == Collisions.SwordLayer)
+		if (obj.layer == Collisions.SwordLayer)
 			return false;
 
-		if (colObj.GetComponentInParent<PlayerController>() == playerController)
+		if (obj.GetComponentInParent<PlayerController>() == playerController)
 			return false;
 		
 		Vector3 relativeVelocity = (
-			col.rigidbody != null ?
-			col.rigidbody.velocity - physicsController.positionDeltaTracker.positionDelta / Time.fixedDeltaTime :
+			rigidbody != null ?
+			rigidbody.velocity - physicsController.positionDeltaTracker.positionDelta / Time.fixedDeltaTime :
 			physicsController.positionDeltaTracker.positionDelta / Time.fixedDeltaTime);
 		
-		if (colObj.name.Contains("Player"))
+		if (obj.layer == Collisions.PlayerLayer)
 		{
 			// if (relativeVelocity.magnitude < 1f)
 				// return false;
@@ -214,17 +212,17 @@ public class PlayerSwordController
 				return false;
 			
 			// This is scuffed
-			// if (!BackOfObjectFound(col.GetContact(0).point, col.GetContact(0).normal))
+			// if (!BackOfObjectFound(collisionPoint, -relativeVelocity))
 				// return false;
 			
-			if (Vector3.Scale(colObj.GetComponentInChildren<Renderer>().bounds.size,
+			if (Vector3.Scale(Objects.GetComponentInFamily<Renderer>(obj).bounds.size,
 			new Vector3(1f, 0f, 1f)).magnitude > 20f)
 				return false;
 		}
 
 		Vector3 cutAxis = Vector3.Cross(relativeVelocity, playerController.sword.transform.forward);
 
-        RoomManager.CutObject(colObj, cutAxis, col.GetContact(0).point);
+        RoomManager.CutObject(obj, cutAxis, collisionPoint);
 
         hitCooldownTimer = HitCooldown;
 		

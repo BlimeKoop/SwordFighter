@@ -106,7 +106,7 @@ public class PlayerPhysicsController
 		Quaternion newRotation = Quaternion.Lerp(baseRotation, ikRotation, 0.2f);
 
 		rigidbody.angularVelocity *= 0;
-		rigidbody.MoveRotation(newRotation);
+		rigidbody.MoveRotation(Quaternion.Slerp(rigidbody.rotation, newRotation, 0.9f));
 	}
 	// /*
 	public void ZeroVelocity()
