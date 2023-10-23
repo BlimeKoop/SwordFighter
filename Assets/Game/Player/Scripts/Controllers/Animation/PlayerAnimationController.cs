@@ -31,7 +31,14 @@ public class PlayerAnimationController
 	
 	public void DoUpdate()
 	{
-		SetAnimatorFloat("Speed", (rigidbody.velocity.magnitude - Mathf.Abs(rigidbody.velocity.y)) * 0.35f);
+		float horizontalSpeedAbs = rigidbody.velocity.magnitude - Mathf.Abs(rigidbody.velocity.y);
+		float forwardSpeed = Mathf.Abs(Vector3.Dot(rigidbody.velocity, playerController.camera.forward));
+		float speed = horizontalSpeedAbs * Math.FloatN1P1(forwardSpeed);
+		
+		if (playerController.crouching)
+			speed *= 1.2f;
+		
+		SetAnimatorFloat("Speed", speed);
 		SetAnimatorLayerWeight(1, rigidbody.velocity.magnitude / playerController.moveSpeed);
 		SetAnimatorLayerWeight(2, Mathf.Lerp(GetAnimatorLayerWeight(2), playerController.crouching ? 0.76f : 0.0f, Time.deltaTime * 10f));
 		

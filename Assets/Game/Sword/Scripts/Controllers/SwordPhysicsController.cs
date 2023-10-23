@@ -72,6 +72,9 @@ public class SwordPhysicsController
 	{
 		foreach(Vector3 f in dampForces)
 		{
+			if (f.sqrMagnitude == 0)
+				continue;
+			
 			rigidbody.velocity -=
 			f.normalized *
 			Mathf.Clamp(Vector3.Dot(rigidbody.velocity, f.normalized), 0.0f, f.magnitude) * linearDamping;
@@ -93,9 +96,13 @@ public class SwordPhysicsController
 		baseForce = PlayerSwordMovement.SwingMovement(playerController, input) / Time.fixedDeltaTime;
 		
 		distanceForce = PlayerSwordMovement.DistanceMovement(playerController, swordController);
-		swingClampingForce = PlayerSwordMovementClamping.HorizontalArmClampForce(swordController, playerController, 1.02f);
+		swingClampingForce = PlayerSwordMovementClamping.HorizontalArmClampForce(swordController, playerController);
 		distanceClampingForce = PlayerSwordMovementClamping.DistanceClampForce(swordController, playerController);
 		playerForce = swordController.swordPlayerConstraint.positionOffset / Time.fixedDeltaTime;
+		
+		baseForce += swingClampingForce.normalized * Mathf.Max(0.0f, Vector3.Dot(baseForce, -swingClampingForce.normalized));
+		distanceForce += swingClampingForce.normalized * Mathf.Max(0.0f, Vector3.Dot(distanceForce, -swingClampingForce.normalized));
+		rigidbody.velocity += swingClampingForce.normalized * Mathf.Max(0.0f, Vector3.Dot(rigidbody.velocity, -swingClampingForce.normalized));
 		
 		dampForces[0] = distanceForce;
 		dampForces[1] = swingClampingForce;

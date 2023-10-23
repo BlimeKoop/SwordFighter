@@ -113,10 +113,10 @@ public class PlayerSwordController
 	private float ArmBendAmount()
 	{
 		if (playerController.block)
-			return 0.7f;
+			return 0.4f;
 		
 		if (playerController.alignStab)
-			return 0.4f;
+			return 0.41f;
 		
 		if (playerController.stab || playerController.holdStab)
 			return 0f;
@@ -208,7 +208,7 @@ public class PlayerSwordController
 		}
 		else 
 		{
-			Debug.Log(relativeVelocity.magnitude);
+			// Debug.Log(relativeVelocity.magnitude);
 			
 			if (relativeVelocity.magnitude < playerController.moveSpeed + 2f)
 				return false;

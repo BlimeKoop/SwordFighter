@@ -1728,12 +1728,15 @@ MonoBehaviour:
   _sword: {fileID: 1039132079828965541}
   sword: {fileID: 2334086443958952622, guid: b86c005d61c8e5a49b8147e4f1a24d18, type: 3}
   swordModel: {fileID: 0}
+  walkSpeed: 8
+  runSpeed: 9.1
   moveSpeed: 8
   _swingSpeed: 30
-  jumpHeight: 4
+  jumpHeight: 3.65
   groundDetectionRadius: 0.6
   groundStepUpDistance: 2
   movement: {x: 0, y: 0, z: 0}
+  movementActive: {x: 0, y: 0, z: 0}
   crouching: 0
   block: 0
   alignStab: 0

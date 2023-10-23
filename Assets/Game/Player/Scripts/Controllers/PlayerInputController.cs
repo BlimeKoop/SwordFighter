@@ -40,6 +40,8 @@ public class PlayerInputController
 		playerMap.Move.canceled += context => RecordMoveInput();
 		playerMap.Crouch.performed += context => playerController.ToggleCrouch();
 		playerMap.Jump.performed += context => playerController.TryJump();
+		playerMap.Run.performed += context => playerController.Dash();
+		playerMap.Run.canceled += context => playerController.StopRunning();
 		playerMap.Swing.performed += context => RecordSwingInput();
 		playerMap.Block.performed += context => playerController.Block();
 		playerMap.Block.canceled += context => playerController.StopBlock();

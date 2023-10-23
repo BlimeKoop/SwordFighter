@@ -29,8 +29,18 @@ public class PlayerController : MonoBehaviour
 	[HideInInspector] public Transform sword;
 	[HideInInspector] public Transform swordModel;
 	
-	public float moveSpeed = 8.0f;
-	public float _swingSpeed = 8.0f; [HideInInspector] public float swingSpeed { get { return _swingSpeed * 140f; } }
+	public float walkSpeed = 8.0f;
+	public float runSpeed = 10.0f; 
+	
+	[HideInInspector]
+	public float moveSpeed;
+	
+	// [HideInInspector]
+	// public float dashSpeed = 4;
+	
+	public float _swingSpeed = 8.0f;
+	
+	[HideInInspector] public float swingSpeed { get { return _swingSpeed * 140f; } }
 	
 	public float jumpHeight = 4f;
 
@@ -39,7 +49,7 @@ public class PlayerController : MonoBehaviour
 
 	public RaycastHit groundHit;
 
-	[HideInInspector] public Vector3 movement;
+	[HideInInspector] public Vector3 movement, movementActive;
 	
 	[HideInInspector] public bool crouching, block, alignStab, stab, holdStab, paused, dead;
 	
@@ -89,6 +99,8 @@ public class PlayerController : MonoBehaviour
 		physicsController.Initialize(this);
 		inputController.Initialize(this); StartCoroutine(StartInput(0.2f));
 		collisionController.Initialize(this);
+		
+		moveSpeed = walkSpeed;
 	}
 	
 	private void InitializeSword()
@@ -177,6 +189,9 @@ public class PlayerController : MonoBehaviour
 		collisionController.DoUpdate();
 		
 		movement = inputController.MoveDirection() * moveSpeed;
+		
+		if (movement.sqrMagnitude > 0.01f)
+			movementActive = movement;
 		
 		if (swordController.inputAngleChange > InputAngleSwivelThreshold)
 		{
@@ -292,6 +307,18 @@ public class PlayerController : MonoBehaviour
 		yield return new WaitForSeconds(0.2f);
 		
 		jumpInputGrace = false;
+	}
+	
+	public void Dash()
+	{
+		physicsController.Dash(movementActive.normalized);
+		
+		moveSpeed = runSpeed;
+	}
+	
+	public void StopRunning()
+	{
+		moveSpeed = walkSpeed;
 	}
 
 	public void TogglePause()

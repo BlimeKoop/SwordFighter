@@ -122,11 +122,16 @@ public class PlayerPhysicsController
 		if (rigidbody.velocity.y > 0)
 		{
 			scaledJumpHeight += rigidbody.velocity.y - groundClampForce;
-			scaledJumpHeight += Mathf.Min(groundClampForce, scaledJumpHeight * 0.35f);
+			scaledJumpHeight += Mathf.Min(groundClampForce, scaledJumpHeight * 0.37f);
 		}
 		
 		rigidbody.velocity -= Vector3.up * rigidbody.velocity.y;
 		rigidbody.AddForce(Vector3.up * scaledJumpHeight, ForceMode.VelocityChange);
+	}
+	
+	public void Dash(Vector3 direction)
+	{
+		rigidbody.AddForce(direction * playerController.runSpeed * 0.65f, ForceMode.VelocityChange);
 	}
 	
 	// /*
