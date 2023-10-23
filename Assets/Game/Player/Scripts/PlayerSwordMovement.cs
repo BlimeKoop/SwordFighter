@@ -19,10 +19,8 @@ public class PlayerSwordMovement
 	
 	public static Vector3 SwingMovement(PlayerController playerController, Vector2 input)
 	{		
-		Vector3[] orbitDirections = OrbitDirections(
-			playerController.animationController.ApproximateArmPosition(), playerController.swordController.HoldPosition());
-		
-		orbitDirections[1] = playerController.camera.up;
+		Vector3[] orbitDirections = SwingOrbitDirections(
+			playerController.animationController.ApproximateArmPosition(), playerController.swordController.HoldPosition(), playerController);
 		
 		Debug.DrawRay(playerController.swordController.HoldPosition(), orbitDirections[0], Color.grey);
 		Debug.DrawRay(playerController.swordController.HoldPosition(), orbitDirections[1], Color.grey);
@@ -97,6 +95,16 @@ public class PlayerSwordMovement
 		directionR.Normalize();
 		
 		return directionR;
+	}
+	
+	public static Vector3[] SwingOrbitDirections(Vector3 fromPos, Vector3 toPos, PlayerController playerController)
+	{
+		Vector3 fromToDir = (toPos - fromPos).normalized;
+		
+		Vector3 c0 = Vector3.Cross(Vector3.up, fromToDir).normalized;
+		Vector3 c1 = playerController.camera.up;
+		
+		return new Vector3[2] { c0, c1 };
 	}
 	
 	private static Vector3[] OrbitDirections(Vector3 fromPos, Vector3 toPos)

@@ -14,6 +14,8 @@ public class PlayerPhysicsController
 	private SwordCollisionController swordCollisionController;
 	
 	[HideInInspector] public Rigidbody rigidbody;
+	
+	private float groundClampForce;
 
     public void Initialize(
 		PlayerController playerController)
@@ -44,10 +46,11 @@ public class PlayerPhysicsController
 			interpolatedMovement.y = Mathf.Max(Physics.gravity.y, rigidbody.velocity.y + Physics.gravity.y * Time.fixedDeltaTime);
 		else
 		{
-			interpolatedMovement.y = Mathf.Max(-20.0f, Mathf.Lerp(
-				rigidbody.velocity.y,
-				Mathf.Clamp(collisionController.VerticalGroundOffset(), 0f, 0.15f) / Time.fixedDeltaTime,
-				0.4f));
+			groundClampForce = Mathf.Clamp(collisionController.VerticalGroundOffset(), 0f, 0.2f) / Time.fixedDeltaTime;
+			
+			interpolatedMovement.y = Mathf.Max(
+				-20.0f,
+				Mathf.Lerp(rigidbody.velocity.y, groundClampForce, 0.4f));
 		}
 		
 		if (swordCollisionController.colliding)
@@ -114,10 +117,13 @@ public class PlayerPhysicsController
 	
 	public void Jump()
 	{
-		float scaledJumpHeight = playerController.jumpHeight * 2.25f;
+		float scaledJumpHeight = playerController.jumpHeight * 2.5f;
 		
 		if (rigidbody.velocity.y > 0)
-			scaledJumpHeight += rigidbody.velocity.y ;
+		{
+			scaledJumpHeight += rigidbody.velocity.y - groundClampForce;
+			scaledJumpHeight += Mathf.Min(groundClampForce, scaledJumpHeight * 0.35f);
+		}
 		
 		rigidbody.velocity -= Vector3.up * rigidbody.velocity.y;
 		rigidbody.AddForce(Vector3.up * scaledJumpHeight, ForceMode.VelocityChange);

@@ -22,6 +22,8 @@ public class RoomManager : MonoBehaviourPunCallbacks
 	{
 		photonView = GetComponent<PhotonView>();
 		cutterBehaviour = GetComponent<SwordCutterBehaviour>();
+		
+		new GameObject("Death Plane").AddComponent<DeathPlane>().Initialize(_deathPlaneHeight);
 	}
 	
 	private void Start()

@@ -29,7 +29,9 @@ public class SwordPhysicsController
 	[HideInInspector] public float drag = 0.7f;
 	[HideInInspector] public float angularDrag = 0.75f;
 	
-	private Vector3[] dampForces = new Vector3[2];
+	private float distanceForceMultiplier = 0.3f;
+	
+	private Vector3[] dampForces = new Vector3[3];
 	
     public void Initialize(PlayerSwordController swordController)
     {
@@ -91,28 +93,24 @@ public class SwordPhysicsController
 		baseForce = PlayerSwordMovement.SwingMovement(playerController, input) / Time.fixedDeltaTime;
 		
 		distanceForce = PlayerSwordMovement.DistanceMovement(playerController, swordController);
-		swingClampingForce = PlayerSwordMovementClamping.HorizontalArmClampForce(swordController, playerController);
+		swingClampingForce = PlayerSwordMovementClamping.HorizontalArmClampForce(swordController, playerController, 1.02f);
 		distanceClampingForce = PlayerSwordMovementClamping.DistanceClampForce(swordController, playerController);
 		playerForce = swordController.swordPlayerConstraint.positionOffset / Time.fixedDeltaTime;
 		
 		dampForces[0] = distanceForce;
+		dampForces[1] = swingClampingForce;
+		dampForces[2] = distanceClampingForce;
 	}
 
 	public void Move(PlayerController playerController, PlayerSwordController swordController)
 	{
-		if (!collisionController.colliding)
-		{
-			rigidbody.AddForce(baseForce);
-			rigidbody.AddForce(distanceForce * 0.3f, ForceMode.VelocityChange);
-			rigidbody.AddForce(playerForce, ForceMode.VelocityChange);
-		}
-		else
-		{
-			rigidbody.AddForce(SwordPhysics.StickSwordMovementToCollision(this, baseForce + distanceForce));
-			rigidbody.AddForce(SwordPhysics.StickSwordMovementToCollision(this, playerForce));
-		}
-		
-		rigidbody.MovePosition(rigidbody.position + swingClampingForce + distanceClampingForce);
+		rigidbody.AddForce(baseForce);
+		rigidbody.AddForce(distanceForce * distanceForceMultiplier, ForceMode.VelocityChange);
+		rigidbody.AddForce(playerForce, ForceMode.VelocityChange);
+		rigidbody.AddForce((swingClampingForce + distanceClampingForce) / Time.fixedDeltaTime, ForceMode.VelocityChange);
+
+		if (collisionController.colliding)
+			rigidbody.velocity = SwordPhysics.StickSwordMovementToCollision(this, rigidbody.velocity);
 		
 		lastVelocity = rigidbody.velocity;
 	}
@@ -156,7 +154,11 @@ public class SwordPhysicsController
 		rigidbody.velocity = SwordPhysics.StickSwordMovementToCollision(this, rigidbody.velocity);
 	}
 	
-	public Vector3 NextPosition() { return rigidbody.position + rigidbody.velocity * Time.fixedDeltaTime; }
+	public Vector3 NextPosition()
+	{
+		return rigidbody.position + rigidbody.velocity * Time.fixedDeltaTime;
+	}
+		
 	public Vector3 NextPosition(Vector3 force)
 	{
 		return rigidbody.position + (rigidbody.velocity + force) * Time.fixedDeltaTime;

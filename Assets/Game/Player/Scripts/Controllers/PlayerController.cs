@@ -326,7 +326,7 @@ public class PlayerController : MonoBehaviour
 	{
 		disableGround = true;
 		
-		yield return new WaitForSeconds(Time.fixedDeltaTime * 2);
+		yield return new WaitForSeconds(Time.fixedDeltaTime * 8);
 		
 		disableGround = false;
 	}

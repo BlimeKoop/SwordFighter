@@ -208,7 +208,9 @@ public class PlayerSwordController
 		}
 		else 
 		{
-			if (relativeVelocity.magnitude < 3f)
+			Debug.Log(relativeVelocity.magnitude);
+			
+			if (relativeVelocity.magnitude < playerController.moveSpeed + 2f)
 				return false;
 			
 			// This is scuffed

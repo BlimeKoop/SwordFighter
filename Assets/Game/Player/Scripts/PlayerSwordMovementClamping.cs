@@ -40,20 +40,21 @@ public class PlayerSwordMovementClamping
 		return (clampedPos - swordPos);
 	}
 	
-	public static Vector3 HorizontalArmClampForce(PlayerSwordController swordController, PlayerController playerController)
+	public static Vector3 HorizontalArmClampForce(PlayerSwordController swordController, PlayerController playerController,
+	float restorationMultiplier = 1.0f)
 	{
 		if (playerController.block)
 		{
 			if (!playerController.SwordRight())
-				return HorizontalArmClamping(playerController, swordController, 80f);
+				return HorizontalArmClamping(playerController, swordController, 80f, restorationMultiplier);
 			else
-				return HorizontalArmClamping(playerController, swordController, 120f);
+				return HorizontalArmClamping(playerController, swordController, 120f, restorationMultiplier);
 		}
 		
 		if (!playerController.SwordRight())
-			return HorizontalArmClamping(playerController, swordController, 45f);
+			return HorizontalArmClamping(playerController, swordController, 45f, restorationMultiplier);
 		else
-			return HorizontalArmClamping(playerController, swordController, 100f);
+			return HorizontalArmClamping(playerController, swordController, 100f, restorationMultiplier);
 		
 		/*
 		float armfoldIncrease = 0.4f;
@@ -69,7 +70,8 @@ public class PlayerSwordMovementClamping
 		*/
 	}
 	
-	private static Vector3 HorizontalArmClamping(PlayerController playerController, PlayerSwordController swordController, float maxForwardAngle)
+	private static Vector3 HorizontalArmClamping(PlayerController playerController, PlayerSwordController swordController,
+	float maxForwardAngle, float restorationMultiplier = 1.0f)
 	{ 
 		Transform player = playerController.transform;
 
@@ -79,16 +81,30 @@ public class PlayerSwordMovementClamping
 		
 		Vector3 clampToward = Vectors.FlattenVector(playerController.camera.forward).normalized;
 
-		float dot = Vector3.Dot(fromArm.normalized, clampToward);
-		float dotMin = 1.0f - (maxForwardAngle / 90f);
+		float angle = Vector3.Angle(fromArm.normalized, clampToward);
 		
-		if (dot < dotMin)
+		if (angle > maxForwardAngle)
 		{
-			Vector3 clamping = (clampToward * (dotMin - dot));
-			Vector3 fromArmClamped = ((pos + clamping) - armPositionApprox);
-			Vector3 distanceRestore = fromArmClamped.normalized * Mathf.Max(0.0f, fromArm.magnitude - fromArmClamped.magnitude);
+			Vector3 cross = (
+				Mathf.Abs(fromArm.normalized.y) - Mathf.Abs(playerController.camera.up.y) != 0 ?
+				Vector3.Cross(playerController.camera.up, fromArm) :
+				Vector3.Cross(fromArm, playerController.camera.forward));
+				
+			Vector3 axis = (
+				Vector3.Dot(fromArm, playerController.camera.up) > 0 ?
+				Vector3.Cross(cross, fromArm).normalized :
+				Vector3.Cross(fromArm, cross)).normalized;
 			
-			return clamping + distanceRestore * 1.5f;
+			// Debug.DrawRay(pos, axis, Color.gray);
+			
+			// Could use trig instead for optimization ?
+			Vector3 rotated = Vector3.RotateTowards(
+				fromArm, clampToward, (angle - maxForwardAngle) * Mathf.Deg2Rad, 1.0f).normalized * fromArm.magnitude;
+			Vector3 clampedPos = armPositionApprox + rotated * restorationMultiplier;
+			Vector3 clamping = clampedPos - pos;
+			Vector3 axisRestore = axis * (Vector3.Dot(fromArm, axis) - Vector3.Dot(rotated, axis)) * restorationMultiplier * 0.8f;
+			
+			return clamping + axisRestore;
 		}
 
 		return Vector3.zero;
