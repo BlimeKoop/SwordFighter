@@ -9,7 +9,7 @@ public class CameraController : MonoBehaviour
 	public GameObject target;
 	public CameraPivotController pivotController;
 	
-	private bool directionChange;
+	private bool orbit;
 	
 	[HideInInspector] public PlayerController playerController;
 
@@ -41,21 +41,29 @@ public class CameraController : MonoBehaviour
 		return cicReturn;
 	}
 	
+	public void DoUpdate()
+	{
+		inputController.DoUpdate();
+		
+		if (orbit)
+			pivotController.Rotate(inputController.orbitInput * 18f);
+	}
+	
 	public void ChangeDirection()
 	{
 		if (pivotController == null)
 			return;
 		
-		// if (inputController.timeSinceInput > 2f)
-			// return;
-		
 		pivotController.ChangeDirection(inputController.aimInputActive);
 		playerController.CancelStab();
 	}
 
-	public void Rotate(float degrees)
+	public void AutoRotate(float degrees)
 	{
-		pivotController.Rotate(degrees);
+		if (orbit)
+			return;
+		
+		pivotController.SetAutoRotateDegrees(degrees);
 	}
 
     public void Disable()
@@ -64,8 +72,13 @@ public class CameraController : MonoBehaviour
 		this.enabled = false;
     }
 	
-	public void ToggleDirectionChange()
+	public void Orbit()
 	{
-		directionChange = !directionChange;
+		orbit = true;
+	}
+
+	public void StopOrbit()
+	{
+		orbit = false;
 	}
 }

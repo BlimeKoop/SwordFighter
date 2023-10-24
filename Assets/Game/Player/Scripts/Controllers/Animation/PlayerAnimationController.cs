@@ -36,7 +36,7 @@ public class PlayerAnimationController
 		float speed = horizontalSpeedAbs * Math.FloatN1P1(forwardSpeed);
 		
 		if (playerController.crouching)
-			speed *= 1.2f;
+			speed *= 1.25f;
 		
 		SetAnimatorFloat("Speed", speed);
 		SetAnimatorLayerWeight(1, rigidbody.velocity.magnitude / playerController.moveSpeed);

@@ -23,20 +23,32 @@ public class PlayerDetection
 			Vector3.down,
 			10f);
 		
+		float yOffset;
+		float largestYOffset = -10f;
+		
+		int hitCount = 0;
+		
 		foreach(RaycastHit h in hits)
 		{
 			if (h.transform.gameObject.layer == Collisions.PlayerLayer && h.transform.gameObject == playerController.gameObject)
 				continue;
 			
-			if (h.transform.gameObject.layer == Collisions.SwordLayer && h.transform.gameObject == playerController.sword)
+			if (h.transform.gameObject.layer == Collisions.SwordLayer && h.transform == playerController.sword)
 				continue;
 			
-			hit = h;
-			break;
+			yOffset = h.point.y - playerController.transform.position.y;
+			
+			if (yOffset > largestYOffset)
+			{
+				largestYOffset = yOffset;
+				hit = h;
+				
+				hitCount++;
+			}
 		}
 		
-		if (hits.Length == 0 ||
-			playerController.disableGround ||
+		if (hitCount == 0 ||
+			playerController.lockJump ||
 			hit.distance > maxDistance ||
 			hit.collider.transform == playerController.swordModel)
 		{

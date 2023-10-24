@@ -58,14 +58,22 @@ namespace DynamicMeshCutter
 		private IEnumerator CutObjectWhenReady(string objectName, string[] rigidbodyNames,
 		Vector3 localAxis, Vector3 localPoint, IEnumeratorBox box)
 		{
-			GameObject obj = GameObject.Find(objectName);
-			
 			Debug.Log(rigidbodyNames[0]);
 			Debug.Log(rigidbodyNames[1]);
 			
 			// Wait until these have spawned in on this client
 			yield return new WaitUntil(() => GameObject.Find(rigidbodyNames[0]) != null);
 			yield return new WaitUntil(() => GameObject.Find(rigidbodyNames[1]) != null);
+			
+			GameObject obj = GameObject.Find(objectName);
+			
+			// Before going on to actually cutting the object check that some other player hasnt already cut/destroyed it
+			// ( This is done after all waiting is completed oc )
+			if (obj == null)
+			{
+				OnCut(false, null);
+				yield break;
+			}
 
 			MeshTarget meshTarget = InitializeMeshTarget(obj);
 

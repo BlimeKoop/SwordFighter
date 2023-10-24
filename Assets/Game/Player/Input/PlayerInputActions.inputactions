@@ -241,7 +241,7 @@
                 {
                     "name": "",
                     "id": "4ecf137b-7768-4310-aba2-54e18c5aa666",
-                    "path": "<Keyboard>/escape",
+                    "path": "<Keyboard>/p",
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardMouse",
@@ -285,7 +285,7 @@
                 {
                     "name": "",
                     "id": "21eae80e-525f-4258-8fe8-93ce6ef0697e",
-                    "path": "<Keyboard>/q",
+                    "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardMouse;Gamepad",

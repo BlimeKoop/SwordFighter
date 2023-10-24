@@ -1647,6 +1647,7 @@ GameObject:
   - component: {fileID: 392825233207719236}
   - component: {fileID: 2997729287698268668}
   - component: {fileID: 5539269796808136236}
+  - component: {fileID: 1081961379465516074}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -1690,6 +1691,7 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 5539269796808136236}
+  - {fileID: 1081961379465516074}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -1744,7 +1746,7 @@ MonoBehaviour:
   holdStab: 0
   paused: 0
   dead: 0
-  disableGround: 0
+  lockJump: 0
   jumpGrace: 0
   jumpInputGrace: 0
   SwordHoldDistance: 0.5
@@ -1781,6 +1783,22 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 1
   m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &1081961379465516074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2706303673850933844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!1 &3067136511593841582
 GameObject:
   m_ObjectHideFlags: 0
@@ -1826,14 +1844,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   followSpeed: 0.4
-  rotateSpeed: 0.5
+  directionChangeSpeed: 0.5
   DirectionChangeDelay: 0.05
-  AutoRotateDelay: 0.2
-  AutoRotateEaseDuration: 0.2
   DirectionCooldownMin: 0.1
   DirectionCooldownMax: 0.1
   targetDirection: {x: 0, y: 0, z: 0}
-  rotating: 0
 --- !u!1 &3258221538358510220
 GameObject:
   m_ObjectHideFlags: 0
@@ -2071,6 +2086,8 @@ MonoBehaviour:
     LayerIndex: 0
   - SynchronizeType: 1
     LayerIndex: 1
+  - SynchronizeType: 1
+    LayerIndex: 2
 --- !u!114 &6452546442128705418
 MonoBehaviour:
   m_ObjectHideFlags: 0

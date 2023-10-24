@@ -131,7 +131,7 @@ public class PlayerPhysicsController
 	
 	public void Dash(Vector3 direction)
 	{
-		rigidbody.AddForce(direction * playerController.runSpeed * 0.65f, ForceMode.VelocityChange);
+		rigidbody.AddForce(direction * playerController.runSpeed * 0.7f, ForceMode.VelocityChange);
 	}
 	
 	// /*

@@ -37,9 +37,54 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""ToggleDirectionChange"",
+                    ""name"": ""OrbitPress"",
+                    ""type"": ""Button"",
+                    ""id"": ""6ea251ec-854d-4a59-bc26-152317b27f77"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OrbitTap"",
+                    ""type"": ""Button"",
+                    ""id"": ""b71de588-66c3-4323-87c9-a99c5473ff44"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OrbitTapAlt"",
+                    ""type"": ""Button"",
+                    ""id"": ""a732cd9d-9107-455e-b8a4-ecc980fb0b35"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OrbitHold"",
                     ""type"": ""Button"",
                     ""id"": ""2fea518c-2423-4789-a0da-41c6c73ff823"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OrbitInput"",
+                    ""type"": ""Value"",
+                    ""id"": ""5fbf1bff-f10c-4d8b-9896-203c5c7bde18"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""OrbitStop"",
+                    ""type"": ""Button"",
+                    ""id"": ""73e264e6-9331-41f5-9bef-4ff4bc7479df"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -62,7 +107,7 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""KeyboardMouse"",
                     ""action"": ""ChangeDirection"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -73,6 +118,17 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Gamepad>/rightShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""ChangeDirection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""73656684-af1d-408b-8f62-b28d59d1034d"",
+                    ""path"": ""<Gamepad>/rightStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
                     ""groups"": """",
                     ""action"": ""ChangeDirection"",
                     ""isComposite"": false,
@@ -81,22 +137,22 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""fd712785-4e00-45ad-bc2c-fc1b2bbe3a03"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
+                    ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": ""Hold"",
                     ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ToggleDirectionChange"",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""OrbitHold"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""b8760bb1-d16d-4954-8dfe-3943b65272a5"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
-                    ""interactions"": """",
+                    ""id"": ""a732b67b-7a8b-4787-a46c-f9df918b2be2"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": ""Hold"",
                     ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ToggleDirectionChange"",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""OrbitHold"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -117,7 +173,7 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""KeyboardMouse"",
                     ""action"": ""AimInput"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -128,7 +184,7 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""KeyboardMouse"",
                     ""action"": ""AimInput"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -139,7 +195,7 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""KeyboardMouse"",
                     ""action"": ""AimInput"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -150,7 +206,7 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""KeyboardMouse"",
                     ""action"": ""AimInput"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -161,20 +217,168 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Gamepad>/leftStick"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""AimInput"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6f5a5a5b-c502-4f60-8df8-72ebc7278ded"",
+                    ""path"": ""<Mouse>/delta/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""OrbitInput"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""44824a7c-ce7d-4a44-9fc4-73dad5784c18"",
+                    ""path"": ""<Gamepad>/rightStick/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""OrbitInput"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e2873a2-51bf-4eff-82ac-aff21a964e07"",
+                    ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""OrbitPress"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9bba4e7e-5276-4fcd-945f-d26f86d0ac40"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""OrbitPress"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""da16473e-8cfc-46f0-9093-39bac1a698d4"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""OrbitStop"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7cddd044-55be-4d90-ad9a-edb36ee2e3e7"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""OrbitStop"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""73455a73-56f6-4aa4-a53e-5b0659d3468c"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""Tap"",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""OrbitTap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""051c781c-f937-4c3f-bea0-11d28f67e9da"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": ""Tap"",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""OrbitTap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ee18ab34-be70-4b19-ac51-26e76623423d"",
+                    ""path"": ""<Gamepad>/rightStickPress"",
+                    ""interactions"": ""Tap"",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""OrbitTap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f1238492-f85e-4775-b3fc-26575eb85690"",
+                    ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": ""Tap"",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""OrbitTapAlt"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a31de1bc-b7cd-4927-a6c2-831720d3cac7"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": ""Tap"",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""OrbitTapAlt"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
             ]
         }
     ],
-    ""controlSchemes"": []
+    ""controlSchemes"": [
+        {
+            ""name"": ""KeyboardMouse"",
+            ""bindingGroup"": ""KeyboardMouse"",
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Keyboard>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                },
+                {
+                    ""devicePath"": ""<Mouse>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Gamepad"",
+            ""bindingGroup"": ""Gamepad"",
+            ""devices"": []
+        }
+    ]
 }");
         // CameraMap
         m_CameraMap = asset.FindActionMap("CameraMap", throwIfNotFound: true);
         m_CameraMap_ChangeDirection = m_CameraMap.FindAction("ChangeDirection", throwIfNotFound: true);
-        m_CameraMap_ToggleDirectionChange = m_CameraMap.FindAction("ToggleDirectionChange", throwIfNotFound: true);
+        m_CameraMap_OrbitPress = m_CameraMap.FindAction("OrbitPress", throwIfNotFound: true);
+        m_CameraMap_OrbitTap = m_CameraMap.FindAction("OrbitTap", throwIfNotFound: true);
+        m_CameraMap_OrbitTapAlt = m_CameraMap.FindAction("OrbitTapAlt", throwIfNotFound: true);
+        m_CameraMap_OrbitHold = m_CameraMap.FindAction("OrbitHold", throwIfNotFound: true);
+        m_CameraMap_OrbitInput = m_CameraMap.FindAction("OrbitInput", throwIfNotFound: true);
+        m_CameraMap_OrbitStop = m_CameraMap.FindAction("OrbitStop", throwIfNotFound: true);
         m_CameraMap_AimInput = m_CameraMap.FindAction("AimInput", throwIfNotFound: true);
     }
 
@@ -238,14 +442,24 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_CameraMap;
     private List<ICameraMapActions> m_CameraMapActionsCallbackInterfaces = new List<ICameraMapActions>();
     private readonly InputAction m_CameraMap_ChangeDirection;
-    private readonly InputAction m_CameraMap_ToggleDirectionChange;
+    private readonly InputAction m_CameraMap_OrbitPress;
+    private readonly InputAction m_CameraMap_OrbitTap;
+    private readonly InputAction m_CameraMap_OrbitTapAlt;
+    private readonly InputAction m_CameraMap_OrbitHold;
+    private readonly InputAction m_CameraMap_OrbitInput;
+    private readonly InputAction m_CameraMap_OrbitStop;
     private readonly InputAction m_CameraMap_AimInput;
     public struct CameraMapActions
     {
         private @CameraInputActions m_Wrapper;
         public CameraMapActions(@CameraInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @ChangeDirection => m_Wrapper.m_CameraMap_ChangeDirection;
-        public InputAction @ToggleDirectionChange => m_Wrapper.m_CameraMap_ToggleDirectionChange;
+        public InputAction @OrbitPress => m_Wrapper.m_CameraMap_OrbitPress;
+        public InputAction @OrbitTap => m_Wrapper.m_CameraMap_OrbitTap;
+        public InputAction @OrbitTapAlt => m_Wrapper.m_CameraMap_OrbitTapAlt;
+        public InputAction @OrbitHold => m_Wrapper.m_CameraMap_OrbitHold;
+        public InputAction @OrbitInput => m_Wrapper.m_CameraMap_OrbitInput;
+        public InputAction @OrbitStop => m_Wrapper.m_CameraMap_OrbitStop;
         public InputAction @AimInput => m_Wrapper.m_CameraMap_AimInput;
         public InputActionMap Get() { return m_Wrapper.m_CameraMap; }
         public void Enable() { Get().Enable(); }
@@ -259,9 +473,24 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
             @ChangeDirection.started += instance.OnChangeDirection;
             @ChangeDirection.performed += instance.OnChangeDirection;
             @ChangeDirection.canceled += instance.OnChangeDirection;
-            @ToggleDirectionChange.started += instance.OnToggleDirectionChange;
-            @ToggleDirectionChange.performed += instance.OnToggleDirectionChange;
-            @ToggleDirectionChange.canceled += instance.OnToggleDirectionChange;
+            @OrbitPress.started += instance.OnOrbitPress;
+            @OrbitPress.performed += instance.OnOrbitPress;
+            @OrbitPress.canceled += instance.OnOrbitPress;
+            @OrbitTap.started += instance.OnOrbitTap;
+            @OrbitTap.performed += instance.OnOrbitTap;
+            @OrbitTap.canceled += instance.OnOrbitTap;
+            @OrbitTapAlt.started += instance.OnOrbitTapAlt;
+            @OrbitTapAlt.performed += instance.OnOrbitTapAlt;
+            @OrbitTapAlt.canceled += instance.OnOrbitTapAlt;
+            @OrbitHold.started += instance.OnOrbitHold;
+            @OrbitHold.performed += instance.OnOrbitHold;
+            @OrbitHold.canceled += instance.OnOrbitHold;
+            @OrbitInput.started += instance.OnOrbitInput;
+            @OrbitInput.performed += instance.OnOrbitInput;
+            @OrbitInput.canceled += instance.OnOrbitInput;
+            @OrbitStop.started += instance.OnOrbitStop;
+            @OrbitStop.performed += instance.OnOrbitStop;
+            @OrbitStop.canceled += instance.OnOrbitStop;
             @AimInput.started += instance.OnAimInput;
             @AimInput.performed += instance.OnAimInput;
             @AimInput.canceled += instance.OnAimInput;
@@ -272,9 +501,24 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
             @ChangeDirection.started -= instance.OnChangeDirection;
             @ChangeDirection.performed -= instance.OnChangeDirection;
             @ChangeDirection.canceled -= instance.OnChangeDirection;
-            @ToggleDirectionChange.started -= instance.OnToggleDirectionChange;
-            @ToggleDirectionChange.performed -= instance.OnToggleDirectionChange;
-            @ToggleDirectionChange.canceled -= instance.OnToggleDirectionChange;
+            @OrbitPress.started -= instance.OnOrbitPress;
+            @OrbitPress.performed -= instance.OnOrbitPress;
+            @OrbitPress.canceled -= instance.OnOrbitPress;
+            @OrbitTap.started -= instance.OnOrbitTap;
+            @OrbitTap.performed -= instance.OnOrbitTap;
+            @OrbitTap.canceled -= instance.OnOrbitTap;
+            @OrbitTapAlt.started -= instance.OnOrbitTapAlt;
+            @OrbitTapAlt.performed -= instance.OnOrbitTapAlt;
+            @OrbitTapAlt.canceled -= instance.OnOrbitTapAlt;
+            @OrbitHold.started -= instance.OnOrbitHold;
+            @OrbitHold.performed -= instance.OnOrbitHold;
+            @OrbitHold.canceled -= instance.OnOrbitHold;
+            @OrbitInput.started -= instance.OnOrbitInput;
+            @OrbitInput.performed -= instance.OnOrbitInput;
+            @OrbitInput.canceled -= instance.OnOrbitInput;
+            @OrbitStop.started -= instance.OnOrbitStop;
+            @OrbitStop.performed -= instance.OnOrbitStop;
+            @OrbitStop.canceled -= instance.OnOrbitStop;
             @AimInput.started -= instance.OnAimInput;
             @AimInput.performed -= instance.OnAimInput;
             @AimInput.canceled -= instance.OnAimInput;
@@ -295,10 +539,33 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
         }
     }
     public CameraMapActions @CameraMap => new CameraMapActions(this);
+    private int m_KeyboardMouseSchemeIndex = -1;
+    public InputControlScheme KeyboardMouseScheme
+    {
+        get
+        {
+            if (m_KeyboardMouseSchemeIndex == -1) m_KeyboardMouseSchemeIndex = asset.FindControlSchemeIndex("KeyboardMouse");
+            return asset.controlSchemes[m_KeyboardMouseSchemeIndex];
+        }
+    }
+    private int m_GamepadSchemeIndex = -1;
+    public InputControlScheme GamepadScheme
+    {
+        get
+        {
+            if (m_GamepadSchemeIndex == -1) m_GamepadSchemeIndex = asset.FindControlSchemeIndex("Gamepad");
+            return asset.controlSchemes[m_GamepadSchemeIndex];
+        }
+    }
     public interface ICameraMapActions
     {
         void OnChangeDirection(InputAction.CallbackContext context);
-        void OnToggleDirectionChange(InputAction.CallbackContext context);
+        void OnOrbitPress(InputAction.CallbackContext context);
+        void OnOrbitTap(InputAction.CallbackContext context);
+        void OnOrbitTapAlt(InputAction.CallbackContext context);
+        void OnOrbitHold(InputAction.CallbackContext context);
+        void OnOrbitInput(InputAction.CallbackContext context);
+        void OnOrbitStop(InputAction.CallbackContext context);
         void OnAimInput(InputAction.CallbackContext context);
     }
 }

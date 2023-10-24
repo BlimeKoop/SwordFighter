@@ -90,6 +90,8 @@ public class PlayerInputController
 		ZeroSwingInput();
     }
 	
+	// This is framerate variable
+	// Need to make it a coroutine like cameraInputController's
 	private void ZeroSwingInput()
 	{
 		consecutiveSwingZeroCounter++;

@@ -46,7 +46,7 @@ public class PlayerCollisionController : MonoBehaviour
 		
 		onGround = PlayerDetection.GroundHit(playerController, out groundHit, out groundDistance);
 		
-		if (onGroundStore && !onGround)
+		if (onGroundStore && !onGround && !playerController.lockJump)
 		{
 			playerController.StopCoroutine(playerController.JumpGracePeriod());
 			playerController.StartCoroutine(playerController.JumpGracePeriod());

@@ -54,7 +54,7 @@ public class PlayerController : MonoBehaviour
 	[HideInInspector] public bool crouching, block, alignStab, stab, holdStab, paused, dead;
 	
 	[HideInInspector]
-	public bool disableGround, jumpGrace, jumpInputGrace;
+	public bool lockJump, jumpGrace, jumpInputGrace;
 	
 	public float SwordHoldDistance = 0.5f;
 	
@@ -221,7 +221,8 @@ public class PlayerController : MonoBehaviour
 		else
 			deg *= 8.8f;
 		
-		cameraController.Rotate(deg);
+		cameraController.DoUpdate();
+		cameraController.AutoRotate(deg);
 		RotateModel();
 
 		stabHoldTimer += Time.deltaTime;
@@ -288,7 +289,7 @@ public class PlayerController : MonoBehaviour
 		
 		physicsController.Jump();
 		
-		StartCoroutine(DisableGround());
+		StartCoroutine(LockJump());
 	}
 	
 	public IEnumerator JumpGracePeriod()
@@ -325,11 +326,10 @@ public class PlayerController : MonoBehaviour
 	{
 		paused = !paused;
 		
+		physicsController.SetFrozen(paused);
+		
 		Cursor.visible = paused;
 		Cursor.lockState = paused ? CursorLockMode.None : CursorLockMode.Locked;
-		
-		if (paused)
-			physicsController.SetFrozen(true);
 	}
 	
 	public void UnPause()
@@ -349,13 +349,13 @@ public class PlayerController : MonoBehaviour
 		dead = true;
 	}
 	
-	public IEnumerator DisableGround()
+	public IEnumerator LockJump()
 	{
-		disableGround = true;
+		lockJump = true;
 		
 		yield return new WaitForSeconds(Time.fixedDeltaTime * 8);
 		
-		disableGround = false;
+		lockJump = false;
 	}
 
     public Vector3 ToSword() {
