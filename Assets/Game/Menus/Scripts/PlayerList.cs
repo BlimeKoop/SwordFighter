@@ -24,7 +24,10 @@ namespace Photon.Pun.Demo.Asteroids
 
         public Image PlayerColorImage;
         public Button PlayerReadyButton;
-        public Image PlayerReadyImage;
+        // public Image PlayerReadyImage;
+
+		public Color PlayerNotReadyColor;
+		public Color PlayerReadyColor;
 
         private int ownerId;
         private bool isPlayerReady;
@@ -33,7 +36,7 @@ namespace Photon.Pun.Demo.Asteroids
 
         public void OnEnable()
         {
-            PlayerNumbering.OnPlayerNumberingChanged += OnPlayerNumberingChanged;
+            // PlayerNumbering.OnPlayerNumberingChanged += OnPlayerNumberingChanged;
         }
 
         public void Start()
@@ -66,7 +69,7 @@ namespace Photon.Pun.Demo.Asteroids
 
         public void OnDisable()
         {
-            PlayerNumbering.OnPlayerNumberingChanged -= OnPlayerNumberingChanged;
+            // PlayerNumbering.OnPlayerNumberingChanged -= OnPlayerNumberingChanged;
         }
 
         #endregion
@@ -76,7 +79,7 @@ namespace Photon.Pun.Demo.Asteroids
             ownerId = playerId;
             PlayerNameText.text = playerName;
         }
-
+/*
         private void OnPlayerNumberingChanged()
         {
             foreach (Player p in PhotonNetwork.PlayerList)
@@ -87,11 +90,11 @@ namespace Photon.Pun.Demo.Asteroids
                 }
             }
         }
-
+*/
         public void SetPlayerReady(bool playerReady)
         {
             PlayerReadyButton.GetComponentInChildren<Text>().text = playerReady ? "Ready!" : "Ready?";
-            PlayerReadyImage.enabled = playerReady;
+            PlayerColorImage.color = playerReady ? PlayerReadyColor : PlayerNotReadyColor;
         }
     }
 }

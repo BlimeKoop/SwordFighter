@@ -120,6 +120,7 @@ namespace Photon.Pun.Demo.Asteroids
             {
                 GameObject entry = Instantiate(PlayerListPrefab);
                 entry.transform.SetParent(InsideRoomPanel.transform);
+				entry.transform.localPosition = Vector3.zero;
                 entry.transform.localScale = Vector3.one;
                 entry.GetComponent<PlayerList>().Initialize(p.ActorNumber, p.NickName);
 
@@ -158,6 +159,7 @@ namespace Photon.Pun.Demo.Asteroids
         {
             GameObject entry = Instantiate(PlayerListPrefab);
             entry.transform.SetParent(InsideRoomPanel.transform);
+			entry.transform.localPosition = Vector3.zero;
             entry.transform.localScale = Vector3.one;
             entry.GetComponent<PlayerList>().Initialize(newPlayer.ActorNumber, newPlayer.NickName);
 
@@ -362,6 +364,7 @@ namespace Photon.Pun.Demo.Asteroids
             {
                 GameObject entry = Instantiate(RoomListPrefab);
                 entry.transform.SetParent(RoomListContent.transform);
+				entry.transform.localPosition = Vector3.zero;
                 entry.transform.localScale = Vector3.one;
                 entry.GetComponent<RoomList>().Initialize(info.Name, (byte)info.PlayerCount, (byte)info.MaxPlayers);
 
