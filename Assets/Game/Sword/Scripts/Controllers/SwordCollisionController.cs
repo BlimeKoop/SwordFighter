@@ -13,6 +13,7 @@ public class SwordCollisionController : MonoBehaviour
 	private BoxCollider boxCol;
 	private Renderer rend;
 	
+	private List<GameObject> collidingObjects = new List<GameObject>();
 	private List<GameObject> cuttingObjects = new List<GameObject>();
 	
 	[HideInInspector] public bool cutting;
@@ -70,6 +71,9 @@ public class SwordCollisionController : MonoBehaviour
 		{
 			StartCut(col.gameObject);
 			
+			StopCoroutine(StopCutting());
+			StartCoroutine(StopCutting());
+			
 			return;
 		}
 
@@ -77,16 +81,19 @@ public class SwordCollisionController : MonoBehaviour
 		{
 			colliding = true;
 			
+			collidingObjects.Add(col.gameObject);
+			
 			// Debug.Log($"Colliding with {col.gameObject}");
 					
 			collision = SwordCollisions.SwordCollision(swordController, col);
 			
 			layerStore = col.collider.gameObject.layer;
-			col.collider.gameObject.layer = Collisions.IgnoreSelfLayer;
 			
+			col.collider.gameObject.layer = Collisions.IgnoreSelfLayer;
 			boxCol.gameObject.layer = Collisions.IgnoreSelfLayer;
 			
-			StartCoroutine(CheckStillColliding(0.05f));
+			StopCoroutine(StopColliding());
+			StartCoroutine(StopColliding());
 		}
 	}
 
@@ -123,22 +130,9 @@ public class SwordCollisionController : MonoBehaviour
 		
 		if (obj.layer == Collisions.PlayerLayer)
 			GameObject.Find("UI Controller").GetComponent<UIController>().EnableWinText();
-
-		StartCoroutine(StopCutting(swordController.physicsController.velocity.magnitude * Time.fixedDeltaTime));
 		
 		// This may not be necessary
 		StartCoroutine(MonitorCuttingObject(obj));
-	}
-	
-	private IEnumerator StopCutting(float delay)
-	{
-		yield return new WaitForFixedUpdate();
-		yield return new WaitForFixedUpdate();
-		
-		yield return new WaitForSeconds(delay);
-		
-		cutting = false;
-		boxCol.gameObject.layer = Collisions.SwordLayer;
 	}
 	
 	public IEnumerator MonitorCuttingObject(GameObject obj)
@@ -151,23 +145,33 @@ public class SwordCollisionController : MonoBehaviour
 		cuttingObjects.Remove(obj);
 	}
 
-	private IEnumerator CheckStillColliding(float delay)
+	private IEnumerator StopColliding(float delay = 0.02f)
 	{
 		yield return new WaitForSeconds(delay);
 		
 		if (StillColliding())
 		{
-			StartCoroutine(CheckStillColliding(delay));
+			StartCoroutine(StopColliding(delay));
 			yield break;
 		}
 		
 		StopPhasing();
-		StopColliding();
+		
+		collision = null;
 	}
 	
-	private void StopColliding()
+	private IEnumerator StopCutting(float delay = 0.05f)
 	{
-		collision = null;
+		yield return new WaitForSeconds(delay);
+		
+		if (StillCutting())
+		{
+			StartCoroutine(StopCutting(delay));
+			yield break;
+		}
+		
+		boxCol.gameObject.layer = Collisions.SwordLayer;
+		cutting = false;
 	}
 	
 	private void StopPhasing()
@@ -186,8 +190,24 @@ public class SwordCollisionController : MonoBehaviour
 			swordController.rollController.rotation,
 			(1 << Collisions.IgnoreSelfLayer));
 		
-		if (overlapBox.Length > 1)
-			return true;
+		foreach(Collider c in overlapBox)
+			if (collidingObjects.Contains(c.gameObject))
+				return true;
+		
+		return false;
+	}
+	
+	private bool StillCutting()
+	{
+		Collider[] overlapBox = Physics.OverlapBox(
+			ColliderCheckOrigin(),
+			ColliderCheckExtents(),
+			swordController.rollController.rotation,
+			~(1 << Collisions.PhaseLayer));
+		
+		foreach(Collider c in overlapBox)
+			if (cuttingObjects.Contains(c.gameObject))
+				return true;
 		
 		return false;
 	}

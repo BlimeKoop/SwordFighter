@@ -30,8 +30,8 @@ public class PlayerSwordController
 	
 	[HideInInspector] public float inputAngleChange, inputSpeedChange;
 	
-	private float hitCooldownTimer, straightenTimer;
-	private float HitCooldown = 0.06f, StraightenDuration = 0.5f;
+	private float straightenTimer;
+	private float StraightenDuration = 0.5f;
 	
 	private Vector2 baseInput, tipInput;
 	[HideInInspector] public Vector3 lastBasePosition, lastHoldPosition, lastTipPosition;
@@ -89,6 +89,8 @@ public class PlayerSwordController
 		
 		RecordPositions();
 		swordPlayerConstraint.RecordOffsets();
+		
+		PlayerSwordMovementClamping.UpdateSide(playerController.SwordRight(), playerController.SwordFront());
 	}
 	
 	private void RecordPositions()
@@ -107,7 +109,6 @@ public class PlayerSwordController
 		HandleSwingLock();
 
 		straightenTimer -= Time.deltaTime;
-		hitCooldownTimer -= Time.deltaTime;
 	}
 	
 	private float ArmBendAmount()
@@ -186,9 +187,6 @@ public class PlayerSwordController
 			Debug.Log($"{obj.name} tagged as CantCut");
 			return false;
 		}
-			
-		if (hitCooldownTimer > 0)
-			return false;
 		
 		if (obj.layer == Collisions.SwordLayer)
 			return false;
@@ -225,8 +223,6 @@ public class PlayerSwordController
 		Vector3 cutAxis = Vector3.Cross(relativeVelocity, playerController.sword.transform.forward);
 
         RoomManager.CutObject(obj, cutAxis, collisionPoint);
-
-        hitCooldownTimer = HitCooldown;
 		
 		return true;
 	}
@@ -256,9 +252,6 @@ public class PlayerSwordController
 		
 		if (physicsController.velocity.magnitude < 8f)
 			return false;
-		
-		if (hitCooldownTimer > 0)
-			return false;
 
 		obj.GetComponent<Rigidbody>().AddForce(sword.forward * 2f, ForceMode.Impulse);
 
@@ -266,8 +259,6 @@ public class PlayerSwordController
 		PlayerSwordInitialization.FractureComponent(f, this);
 
 		f.CauseFracture();
-		
-		hitCooldownTimer = HitCooldown;
 		
 		return true;
 	}

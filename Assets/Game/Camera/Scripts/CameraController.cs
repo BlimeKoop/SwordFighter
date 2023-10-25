@@ -81,4 +81,14 @@ public class CameraController : MonoBehaviour
 	{
 		orbit = false;
 	}
+	
+	private void OnDestroy()
+	{
+		inputController.DisableInput();
+	}
+	
+	private void OnDisable()
+	{
+		inputController.DisableInput();
+	}
 }

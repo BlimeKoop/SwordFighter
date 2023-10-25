@@ -6,6 +6,7 @@ public class SwordPhysics : MonoBehaviour
 {
 	public static Vector3 StickSwordMovementToCollision(SwordPhysicsController swordPhysicsController, Vector3 movement)
 	{
+		// This isn't called with vertical normals
 		Vector3 colNormal = swordPhysicsController.collisionController.collision.normal;
 		Vector3 movementR = movement + colNormal * Mathf.Max(0f, Vector3.Dot(movement, -colNormal));
 		

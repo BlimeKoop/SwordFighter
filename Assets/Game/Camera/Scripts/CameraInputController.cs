@@ -111,7 +111,8 @@ public class CameraInputController : MonoBehaviour
 	
 	private void StopOrbit()
 	{
-		StartCoroutine(StopOrbitCR());
+		if (cameraController.gameObject.active)
+			StartCoroutine(StopOrbitCR());
 	}
 	
 	private IEnumerator StopOrbitCR()
@@ -128,11 +129,28 @@ public class CameraInputController : MonoBehaviour
 		StopCoroutine(ZeroOrbitInput());
 	}
 	
-	private IEnumerator EnableInput(float delay)
+	public IEnumerator EnableInput(float delay)
 	{
 		yield return new WaitForSeconds(delay);
 		
+		EnableInput();
+	}
+	
+	public void EnableInput()
+	{
 		inputActions.Enable();
+	}
+	
+	public IEnumerator DisableInput(float delay)
+	{
+		yield return new WaitForSeconds(delay);
+		
+		DisableInput();
+	}
+	
+	public void DisableInput()
+	{
+		inputActions.Disable();
 	}
 	
 	public void DoUpdate()

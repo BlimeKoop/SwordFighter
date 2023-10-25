@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Photon.Pun;
 
-public class PlayerInputController
+public class PlayerInputController : MonoBehaviour
 {
 	public PhotonView photonView;
 	
@@ -23,7 +23,7 @@ public class PlayerInputController
 	private float swingZeroDelay = 0.07f;
 	private float swingZeroTimer;
 	
-	private int consecutiveSwingZeroCount = 6;
+	private int consecutiveSwingZeroCount = 2;
 	private int consecutiveSwingZeroCounter;
 	
 	[HideInInspector]
@@ -52,6 +52,11 @@ public class PlayerInputController
 		playerMap.Restart.performed += context => Restart();
 		playerMap.Quit.performed += context => Application.Quit();
     }
+	
+	private void Update()
+	{
+		swingZeroTimer += Time.deltaTime;
+	}
 	
 	public void Restart()
 	{
@@ -84,28 +89,23 @@ public class PlayerInputController
 	{
 		return swingInput;
 	}
-
-    public void DoUpdate()
-    {
-		ZeroSwingInput();
-    }
 	
-	// This is framerate variable
-	// Need to make it a coroutine like cameraInputController's
-	private void ZeroSwingInput()
+	public IEnumerator ZeroSwingInput()
 	{
 		consecutiveSwingZeroCounter++;
 		
 		if (playerInputActions.PlayerMap.Swing.ReadValue<Vector2>().magnitude > 0.0f)
 			consecutiveSwingZeroCounter = 0;
 		
-		swingZeroTimer += Time.deltaTime;
-		
 		if (consecutiveSwingZeroCounter < consecutiveSwingZeroCount)
 			swingZeroTimer = 0;
 		
 		if (swingZeroTimer >= swingZeroDelay)
 			swingInput = Vector2.zero;	
+		
+		yield return new WaitForSeconds(Time.fixedDeltaTime * 2);
+		
+		StartCoroutine(ZeroSwingInput());
 	}
 	
 	public Vector3 MoveDirection() {

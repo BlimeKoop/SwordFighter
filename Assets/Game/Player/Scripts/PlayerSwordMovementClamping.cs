@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerSwordMovementClamping
 {
+	public static bool rightSide;
+	
 	public static Vector3 DistanceClampForce(PlayerSwordController swordController, PlayerController playerController,
 	Vector3 clamping = new Vector3())
 	{
@@ -41,20 +43,46 @@ public class PlayerSwordMovementClamping
 	}
 	
 	public static Vector3 HorizontalArmClampForce(PlayerSwordController swordController, PlayerController playerController,
-	float restorationMultiplier = 1.0f)
+	float restorationMultiplier = 0.0f)
 	{
+		Vector3 clampingR;
+		
 		if (playerController.block)
 		{
-			if (!playerController.SwordRight())
-				return HorizontalArmClamping(playerController, swordController, 80f, restorationMultiplier);
+			if (!rightSide)
+			{
+				clampingR = ArmClamping(playerController, swordController, 80f,
+				Vectors.FlattenVector(playerController.camera.forward), restorationMultiplier);
+	
+				return clampingR;
+			}
 			else
-				return HorizontalArmClamping(playerController, swordController, 120f, restorationMultiplier);
+			{
+				clampingR = ArmClamping(playerController, swordController, 100f,
+				Vectors.FlattenVector(playerController.camera.forward), restorationMultiplier);
+	
+				return clampingR;
+			}
 		}
 		
-		if (!playerController.SwordRight())
-			return HorizontalArmClamping(playerController, swordController, 45f, restorationMultiplier);
+		if (!rightSide)
+		{
+			clampingR = ArmClamping(playerController, swordController, 45f,
+			Vectors.FlattenVector(playerController.camera.forward), restorationMultiplier);
+
+			return clampingR;
+		}
 		else
-			return HorizontalArmClamping(playerController, swordController, 100f, restorationMultiplier);
+		{
+			clampingR = ArmClamping(playerController, swordController, 130f,
+			Vectors.FlattenVector(playerController.camera.forward), restorationMultiplier);
+			
+			if (!playerController.SwordFront())
+				clampingR += ArmClamping(playerController, swordController, 110f,
+				Vectors.FlattenVector(playerController.camera.right), restorationMultiplier);
+				
+			return clampingR;
+		}
 		
 		/*
 		float armfoldIncrease = 0.4f;
@@ -70,16 +98,16 @@ public class PlayerSwordMovementClamping
 		*/
 	}
 	
-	private static Vector3 HorizontalArmClamping(PlayerController playerController, PlayerSwordController swordController,
-	float maxForwardAngle, float restorationMultiplier = 1.0f)
+	private static Vector3 ArmClamping(PlayerController playerController, PlayerSwordController swordController,
+	float maxForwardAngle, Vector3 clampToward, float restorationMultiplier = 0.0f, Vector3 currentClamping = new Vector3())
 	{ 
 		Transform player = playerController.transform;
 
 		Vector3 armPositionApprox = playerController.animationController.ApproximateArmPosition();
-		Vector3 pos = swordController.physicsController.Position();
+		Vector3 pos = swordController.physicsController.Position() + currentClamping;
 		Vector3 fromArm = (pos - armPositionApprox);
 		
-		Vector3 clampToward = Vectors.FlattenVector(playerController.camera.forward).normalized;
+		clampToward.Normalize();
 
 		float angle = Vector3.Angle(fromArm.normalized, clampToward);
 		
@@ -100,7 +128,7 @@ public class PlayerSwordMovementClamping
 			// Could use trig instead for optimization ?
 			Vector3 rotated = Vector3.RotateTowards(
 				fromArm, clampToward, (angle - maxForwardAngle) * Mathf.Deg2Rad, 1.0f).normalized * fromArm.magnitude;
-			Vector3 clampedPos = armPositionApprox + rotated * restorationMultiplier;
+			Vector3 clampedPos = armPositionApprox + rotated * (1.0f + restorationMultiplier);
 			Vector3 clamping = clampedPos - pos;
 			Vector3 axisRestore = axis * (Vector3.Dot(fromArm, axis) - Vector3.Dot(rotated, axis)) * restorationMultiplier * 0.8f;
 			
@@ -133,5 +161,13 @@ public class PlayerSwordMovementClamping
 		}
 
 		return (clampedPos - swordPos);
+	}
+	
+	public static void UpdateSide(bool right, bool front)
+	{
+		if (front)
+		{
+			rightSide = right;
+		}
 	}
 }

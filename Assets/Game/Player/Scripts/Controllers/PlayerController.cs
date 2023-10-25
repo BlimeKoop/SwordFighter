@@ -92,7 +92,7 @@ public class PlayerController : MonoBehaviour
 		
 		input = GetComponent<PlayerInput>();
 		
-		inputController = new PlayerInputController();
+		inputController = gameObject.AddComponent<PlayerInputController>();
 		collisionController = gameObject.AddComponent<PlayerCollisionController>();
 		
 		swordController.Initialize(this, inputController, animationController);
@@ -130,6 +130,8 @@ public class PlayerController : MonoBehaviour
 		inputController.EnableInput();
 		StartCoroutine(SwingInput());
 		StartCoroutine(CheckInputChange());
+		
+		inputController.StartCoroutine(inputController.ZeroSwingInput());
 	}
 	
 	private IEnumerator SwingInput()
@@ -185,7 +187,6 @@ public class PlayerController : MonoBehaviour
 		if (paused)
 			return;
 		
-		inputController.DoUpdate();
 		collisionController.DoUpdate();
 		
 		movement = inputController.MoveDirection() * moveSpeed;
@@ -395,9 +396,9 @@ public class PlayerController : MonoBehaviour
 	public float GetStabHoldDuration() { return StabHoldDuration; }
 	
 	public bool SwordFront() {
-		return Math.FloatN1P1(Vector3.Dot(ArmToSword().normalized, camera.forward)) > 0;
+		return Math.FloatN1P1(Vector3.Dot(ArmToSword().normalized, Vectors.FlattenVector(camera.forward))) > 0;
 	}
 	public bool SwordRight() {
-		return Math.FloatN1P1(Vector3.Dot(ArmToSword().normalized, camera.right)) > 0;
+		return Math.FloatN1P1(Vector3.Dot(ArmToSword().normalized, Vectors.FlattenVector(camera.right))) > 0;
 	}
 }
