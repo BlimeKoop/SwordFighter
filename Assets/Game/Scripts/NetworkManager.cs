@@ -30,11 +30,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         if (!PhotonNetwork.IsConnected)
         {
+			/*
 			roomManager.PlayTheme();
 			uiController.EnableBackground();
 			
             ConfigureLocalPlayer();
             Connect();
+			*/
         }
 
         if (PhotonNetwork.InRoom)

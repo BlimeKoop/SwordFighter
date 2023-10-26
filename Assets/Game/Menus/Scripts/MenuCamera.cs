@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MenuFace : MonoBehaviour
+public class MenuCamera : MonoBehaviour
 {
 	private enum FacePosition
 	{
