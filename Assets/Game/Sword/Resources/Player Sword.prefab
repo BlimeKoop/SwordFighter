@@ -58,7 +58,6 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 0}
   - {fileID: 2890464696274740146}
   sceneViewId: 0
   InstantiationId: 0
@@ -76,6 +75,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cutting: 0
+  colliding: 0
 --- !u!114 &5252494176989183669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -120,7 +120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0e56b4c3206aa4188828cf2aa709e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _UpdateMode: 0
+  updateMode: 0
 --- !u!54 &4391209762027733466
 Rigidbody:
   m_ObjectHideFlags: 0

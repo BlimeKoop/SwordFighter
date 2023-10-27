@@ -3,6 +3,7 @@ using Photon.Realtime;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace Photon.Pun.Demo.Asteroids
 {
@@ -45,13 +46,41 @@ namespace Photon.Pun.Demo.Asteroids
 
         public void Awake()
         {
+			Cursor.lockState = CursorLockMode.None;
+			Cursor.visible = true;
+			
             PhotonNetwork.AutomaticallySyncScene = true;
 
             cachedRoomList = new Dictionary<string, RoomInfo>();
             roomListEntries = new Dictionary<string, GameObject>();
             
-            PlayerNameInput.text = "Player " + Random.Range(1000, 10000);
+			if (!PhotonNetwork.IsConnected)
+			{
+				this.SetActivePanel(LoginPanel.name);
+				
+				PlayerNameInput.text = RandomName();
+			}
+			else
+			{
+				this.SetActivePanel(SelectionPanel.name);
+			}
         }
+		
+		public string RandomName()
+		{
+			string[] characters = new string[] { "aeiou", "qwrtypsdfghjklzxcvbnm" };
+            string nameR = "";
+			
+			int stringI = Random.value > 0.5f ? 1 : 0;
+			
+			for (int i = 0; i < Random.Range(3, 7); i++)
+			{
+				nameR += characters[stringI][(int) (Random.value * (characters[stringI].Length - 1))];
+				stringI = (stringI + 1) % 2;
+			}
+			
+			return nameR;
+		}
 
         #endregion
 
@@ -98,7 +127,7 @@ namespace Photon.Pun.Demo.Asteroids
         {
             string roomName = "Room " + Random.Range(1000, 10000);
 
-            RoomOptions options = new RoomOptions {MaxPlayers = 8};
+            RoomOptions options = new RoomOptions {MaxPlayers = 2};
 
             PhotonNetwork.CreateRoom(roomName, options, null);
         }
@@ -121,6 +150,7 @@ namespace Photon.Pun.Demo.Asteroids
                 GameObject entry = Instantiate(PlayerListPrefab);
                 entry.transform.SetParent(InsideRoomPanel.transform);
 				entry.transform.localPosition = Vector3.zero;
+				entry.transform.localRotation = Quaternion.identity;
                 entry.transform.localScale = Vector3.one;
                 entry.GetComponent<PlayerList>().Initialize(p.ActorNumber, p.NickName);
 
@@ -160,7 +190,8 @@ namespace Photon.Pun.Demo.Asteroids
             GameObject entry = Instantiate(PlayerListPrefab);
             entry.transform.SetParent(InsideRoomPanel.transform);
 			entry.transform.localPosition = Vector3.zero;
-            entry.transform.localScale = Vector3.one;
+			entry.transform.localRotation = Quaternion.identity;
+			entry.transform.localScale = Vector3.one;
             entry.GetComponent<PlayerList>().Initialize(newPlayer.ActorNumber, newPlayer.NickName);
 
             playerListEntries.Add(newPlayer.ActorNumber, entry);
@@ -225,7 +256,7 @@ namespace Photon.Pun.Demo.Asteroids
 
             byte maxPlayers;
             byte.TryParse(MaxPlayersInputField.text, out maxPlayers);
-            maxPlayers = (byte) Mathf.Clamp(maxPlayers, 2, 8);
+            maxPlayers = 2; // (byte) Mathf.Clamp(maxPlayers, 2, 8);
 
             RoomOptions options = new RoomOptions {MaxPlayers = maxPlayers, PlayerTtl = 10000 };
 
@@ -273,8 +304,8 @@ namespace Photon.Pun.Demo.Asteroids
         {
             PhotonNetwork.CurrentRoom.IsOpen = false;
             PhotonNetwork.CurrentRoom.IsVisible = false;
-
-            PhotonNetwork.LoadLevel("Multiplayer");
+			
+            NetworkSceneManager.LoadLevel("Multiplayer");
         }
 
         #endregion
@@ -365,11 +396,18 @@ namespace Photon.Pun.Demo.Asteroids
                 GameObject entry = Instantiate(RoomListPrefab);
                 entry.transform.SetParent(RoomListContent.transform);
 				entry.transform.localPosition = Vector3.zero;
+				entry.transform.localRotation = Quaternion.identity;
                 entry.transform.localScale = Vector3.one;
                 entry.GetComponent<RoomList>().Initialize(info.Name, (byte)info.PlayerCount, (byte)info.MaxPlayers);
 
                 roomListEntries.Add(info.Name, entry);
             }
         }
+		
+		private void OnApplicationFocus(bool focused)
+		{
+			if (focused)
+				Cursor.visible = true;
+		}
     }
 }

@@ -48,6 +48,15 @@ MonoBehaviour:
   - IncreasePlayerCount
   - DestroyObject
   - NetworkDestroyObject
+  - LoadLevelRPC
+  - UpdatePlayerLivesRPC
+  - DecreaseLives
+  - IncreaseLives
+  - SetLives
+  - AddPlayer
+  - RemovePlayer
+  - ResetObjectsRPC
+  - UpdatePlayerLivesUI
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

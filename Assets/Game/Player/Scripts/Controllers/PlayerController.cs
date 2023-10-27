@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
 	[HideInInspector] public PlayerInput input;
 	
 	public PhotonView photonView;
+	private PhotonView dataPhotonView;
 	
 	public Transform rig;
 	public Transform swordRig;
@@ -77,12 +78,24 @@ public class PlayerController : MonoBehaviour
 		
 		InitializeSword();
 		
+		dataPhotonView = GameObject.FindObjectOfType<PlayerData>().GetComponent<PhotonView>();
+
 		if (!photonView.IsMine)
 		{
-			camera.gameObject.SetActive(false);
+			camera.GetComponent<Camera>().enabled = false;
+			camera.GetComponent<CameraController>().enabled = false;
+			Destroy(camera.GetComponent<AudioListener>());
+			
 			// GetComponent<Animator>().enabled = false;
 			
+			GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+			sword.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+			
 			return;
+		}
+		else
+		{
+			transform.Find("Player Name").gameObject.SetActive(false);
 		}
 		
 		physicsController = new PlayerPhysicsController();
@@ -174,13 +187,21 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
 		if (!photonView.IsMine)
+		{
 			return;
+		}
 		
-		if (transform.position.y < RoomManager.deathPlaneHeight)
-			inputController.Restart();
-		
+		if (Input.GetKeyDown(KeyCode.L))
+			PhotonNetwork.LeaveRoom();
+
 		if (dead)
 			return;
+		
+		if (transform.position.y < MatchManager.deathPlaneHeight)
+		{
+			Die();
+			inputController.ResetObjects();
+		}
 		
 		animationController.DoUpdate();
 		
@@ -242,7 +263,7 @@ public class PlayerController : MonoBehaviour
 		if(dead || !photonView.IsMine || paused)
 			return;
 		
-		cameraController.pivotController.DoLateUpdate();
+		cameraController.pivot.DoLateUpdate();
 	}
 
     public void Block() { block = true; }
@@ -346,6 +367,12 @@ public class PlayerController : MonoBehaviour
 	{
 		if (sword != null)
 			sword.GetComponent<Rigidbody>().useGravity = true;
+		
+		if (photonView.IsMine)
+		{
+			UIController.EnableLoseText();
+			dataPhotonView.RPC("DecreaseLives", RpcTarget.All, photonView.Controller.ActorNumber);
+		}
 		
 		dead = true;
 	}

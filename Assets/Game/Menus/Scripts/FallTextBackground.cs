@@ -6,8 +6,10 @@ public class FallTextBackground : MonoBehaviour
 {
 	public float speed = 0.3f;
 	
-	private float resetDelay = 20f;
+	private float resetDelay = 30f;
 	private float resetTimer;
+	
+	private float startingY;
 	
 	private Transform fallText;
 
@@ -19,10 +21,17 @@ public class FallTextBackground : MonoBehaviour
     private void Update()
     {
 		if (resetTimer > resetDelay)
-			fallText.position += Vector3.up * 100f;
+		{
+			Vector3 position = fallText.position;
+			position.y = startingY;
 			
-        fallText.position -= Vector3.up * speed * Time.deltaTime * 0.5f;
+			fallText.position = position;
 		
+			resetTimer = 0;
+		}
+		
+		fallText.Translate(Vector3.up * -speed * 0.5f * Time.deltaTime);
+
 		resetTimer += Time.deltaTime;
     }
 }

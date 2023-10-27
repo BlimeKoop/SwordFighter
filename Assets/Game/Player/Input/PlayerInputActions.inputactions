@@ -60,18 +60,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Restart",
+                    "name": "ResetObjects",
                     "type": "Button",
                     "id": "f15eb6d1-eba6-4f5c-94bd-731bd22fa551",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Quit",
-                    "type": "Button",
-                    "id": "cd230678-00f3-4789-9b59-c3e31657ca68",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -99,6 +90,15 @@
                     "name": "Run",
                     "type": "Button",
                     "id": "22dadff8-9dfe-46a4-b8f5-2edd26b613f2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Quit",
+                    "type": "Button",
+                    "id": "0896cf5e-0d69-48b1-ba1f-b21f9e7e50dd",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -241,7 +241,7 @@
                 {
                     "name": "",
                     "id": "4ecf137b-7768-4310-aba2-54e18c5aa666",
-                    "path": "<Keyboard>/p",
+                    "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardMouse",
@@ -267,7 +267,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardMouse",
-                    "action": "Restart",
+                    "action": "ResetObjects",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -278,29 +278,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Restart",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "21eae80e-525f-4258-8fe8-93ce6ef0697e",
-                    "path": "<Keyboard>/escape",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "KeyboardMouse;Gamepad",
-                    "action": "Quit",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "75b16c25-71ef-4687-bf5a-103a7760f9b9",
-                    "path": "<Gamepad>/select",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "KeyboardMouse",
-                    "action": "Quit",
+                    "action": "ResetObjects",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -400,6 +378,28 @@
                     "processors": "ScaleVector2(x=1.8,y=1.8)",
                     "groups": "Gamepad",
                     "action": "Swing",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "aed5ce23-49fa-4a23-90af-d9def834c57b",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Quit",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0e4c01e5-26e1-4cd4-8c76-036a2cd141bf",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Quit",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -17,11 +17,7 @@ public class SwordCollisionController : MonoBehaviour
 	private List<GameObject> cuttingObjects = new List<GameObject>();
 	
 	[HideInInspector] public bool cutting;
-	[HideInInspector] public bool colliding
-	{
-		get { return collision != null && collision.normal.y < 0.9f; }
-		set {}
-	}
+	[HideInInspector] public bool colliding;
 	
 	private int layerStore;
 	
@@ -66,16 +62,18 @@ public class SwordCollisionController : MonoBehaviour
 		if (swordController.TryShatter(col.gameObject))
 			return;
 
-		if (!cuttingObjects.Contains(col.gameObject) &&
-			swordController.TryCut(col.gameObject, col.GetContact(0).point, col.rigidbody))
+		if (cuttingObjects.Contains(col.gameObject))
+			return;
+
+		if (swordController.TryCut(col.gameObject, col.GetContact(0).point, col.rigidbody))
 		{
 			StartCut(col.gameObject);
-			
-			StopCoroutine(StopCutting());
-			StartCoroutine(StopCutting());
-			
+
 			return;
 		}
+		
+		if (playerController.dead)
+			return;
 
 		if (!colliding)
 		{
@@ -109,6 +107,9 @@ public class SwordCollisionController : MonoBehaviour
 			return;
 		}
 		
+		if (col.gameObject.layer != Collisions.PlayerLayer)
+			return;
+		
 		if (col.GetComponentInParent<PlayerController>() == playerController)
 			return;
 		
@@ -129,18 +130,27 @@ public class SwordCollisionController : MonoBehaviour
 		// swordController.physicsController.RevertVelocity();
 		
 		if (obj.layer == Collisions.PlayerLayer)
-			GameObject.Find("UI Controller").GetComponent<UIController>().EnableWinText();
+			UIController.EnableWinText();
 		
 		// This may not be necessary
 		StartCoroutine(MonitorCuttingObject(obj));
+		
+		StopCoroutine(StopCutting());
+		StartCoroutine(StopCutting());
 	}
 	
 	public IEnumerator MonitorCuttingObject(GameObject obj)
 	{
 		cuttingObjects.Add(obj);
 		
-		// Wait until it's been destroyed
-		yield return new WaitUntil(() => obj == null);
+		float overloadTimer = 0;
+		
+		// Attempt to Wait until it's been destroyed
+		while(obj != null && overloadTimer < 3f)
+		{
+			overloadTimer += Time.deltaTime;
+			yield return null;
+		}
 		
 		cuttingObjects.Remove(obj);
 	}
@@ -158,6 +168,7 @@ public class SwordCollisionController : MonoBehaviour
 		StopPhasing();
 		
 		collision = null;
+		colliding = false;
 	}
 	
 	private IEnumerator StopCutting(float delay = 0.05f)

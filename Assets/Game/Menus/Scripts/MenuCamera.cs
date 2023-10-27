@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MenuCamera : MonoBehaviour
 {
-	private enum FacePosition
+	private enum TargetPosition
 	{
 		Login,
 		Selection,
@@ -14,62 +14,88 @@ public class MenuCamera : MonoBehaviour
 		InsideRoom
 	}
 	
-	public Transform facePositionParent;
+	public Transform positionParent;
 	
-	private FacePosition facePosition;
+	private TargetPosition targetPosition;
+	private Quaternion rotationStore;
+	private float moveDistance;
 	
-	private Vector3 targetPosition;
-	private Quaternion targetRotation;
-	
-	private Dictionary<FacePosition, Transform> positions = new Dictionary<FacePosition, Transform>();
+	private Dictionary<TargetPosition, Transform> positions = new Dictionary<TargetPosition, Transform>();
 	
 	public float speed = 7f;
 	
+	private bool moveDistanceSet;
+	
     private void Start()
     {
-        positions[FacePosition.Login] = facePositionParent.GetChild(0);
-        positions[FacePosition.Selection] = facePositionParent.GetChild(1);
-        positions[FacePosition.CreateRoom] = facePositionParent.GetChild(2);
-        positions[FacePosition.JoinRandomRoom] = facePositionParent.GetChild(3);
-        positions[FacePosition.RoomList] = facePositionParent.GetChild(4);
-        positions[FacePosition.InsideRoom] = facePositionParent.GetChild(5);
+        positions[TargetPosition.Login] = positionParent.GetChild(0);
+        positions[TargetPosition.Selection] = positionParent.GetChild(1);
+        positions[TargetPosition.CreateRoom] = positionParent.GetChild(2);
+        positions[TargetPosition.JoinRandomRoom] = positionParent.GetChild(3);
+        positions[TargetPosition.RoomList] = positionParent.GetChild(4);
+        positions[TargetPosition.InsideRoom] = positionParent.GetChild(5);
 		
-		facePosition = FacePosition.Login;
+		targetPosition = TargetPosition.Login;
     }
 	
-	private void Update()
+	private void LateUpdate()
 	{
-		transform.position = Vector3.Lerp(transform.position, positions[facePosition].position, Time.deltaTime * speed);
-		transform.rotation = Quaternion.Lerp(transform.rotation, positions[facePosition].rotation, Time.deltaTime * speed);
+		if (!moveDistanceSet && transform.position != positions[targetPosition].position)
+		{
+			rotationStore = transform.rotation;
+			
+			moveDistance = Vector3.Distance(transform.position, positions[targetPosition].position);
+			moveDistanceSet = true;
+		}
+		
+		if (transform.position != positions[targetPosition].position)
+		{
+			transform.position = Vector3.Lerp(transform.position, positions[targetPosition].position, Time.deltaTime * speed);
+			
+			if (Vector3.Distance(transform.position, positions[targetPosition].position) < 0.001f)
+			{
+				transform.position = positions[targetPosition].position;
+				transform.rotation = positions[targetPosition].rotation;
+				
+				moveDistanceSet = false;
+			}
+			else
+			{
+				float t = 1.0f - (Vector3.Distance(transform.position, positions[targetPosition].position) / moveDistance);
+				t = Mathf.Pow(t, 4);
+				
+				transform.rotation = Quaternion.Lerp(rotationStore, positions[targetPosition].rotation, t);
+			}
+		}
 	}
 
     public void OnLoginButtonClicked()
 	{
-		facePosition = FacePosition.Selection;
+		targetPosition = TargetPosition.Selection;
 	}
 	
     public void OnRoomListButtonClicked()
 	{
-		facePosition = FacePosition.RoomList;
+		targetPosition = TargetPosition.RoomList;
 	}
 	
     public void OnBackButtonClicked()
 	{
-		facePosition = FacePosition.Selection;
+		targetPosition = TargetPosition.Selection;
 	}
 
     public void OnCreateRoomButtonClicked()
 	{
-		facePosition = FacePosition.CreateRoom;
+		targetPosition = TargetPosition.CreateRoom;
 	}
 
     public void OnJoinRandomRoomButtonClicked()
 	{
-		facePosition = FacePosition.JoinRandomRoom;
+		targetPosition = TargetPosition.JoinRandomRoom;
 	}
 
     public void OnStartGameButtonClicked()
 	{
-		facePosition = FacePosition.CreateRoom;
+		targetPosition = TargetPosition.CreateRoom;
 	}
 }

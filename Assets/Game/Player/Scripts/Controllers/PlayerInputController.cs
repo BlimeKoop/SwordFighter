@@ -49,8 +49,8 @@ public class PlayerInputController : MonoBehaviour
 		playerMap.UnPause.performed += context => playerController.UnPause();
 		playerMap.Stab.performed += context => playerController.StartStab();
 		playerMap.Stab.canceled += context => playerController.Stab();
-		playerMap.Restart.performed += context => Restart();
-		playerMap.Quit.performed += context => Application.Quit();
+		playerMap.ResetObjects.performed += context => ResetObjects();
+		playerMap.Quit.performed += context => QuitMatch();
     }
 	
 	private void Update()
@@ -58,16 +58,27 @@ public class PlayerInputController : MonoBehaviour
 		swingZeroTimer += Time.deltaTime;
 	}
 	
-	public void Restart()
+	public void ResetObjects()
 	{
-        playerInputActions.Disable();
-
-        GameObject.Find("Network Manager").GetComponent<NetworkManager>().LoadLevel(0);
+        MatchManager.ResetObjects();
+	}
+	
+	public void QuitMatch()
+	{
+		if (playerInputActions != null)
+			playerInputActions.Disable();
+		
+		NetworkSceneManager.LoadLevel("Menu");
 	}
 
 	public void EnableInput()
 	{
 		playerInputActions.Enable();
+	}
+	
+	public void DisableInput()
+	{
+		playerInputActions.Disable();
 	}
 	
 	private void RecordMoveInput()

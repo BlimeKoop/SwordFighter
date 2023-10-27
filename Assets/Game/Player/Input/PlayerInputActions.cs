@@ -82,18 +82,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Restart"",
+                    ""name"": ""ResetObjects"",
                     ""type"": ""Button"",
                     ""id"": ""f15eb6d1-eba6-4f5c-94bd-731bd22fa551"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Quit"",
-                    ""type"": ""Button"",
-                    ""id"": ""cd230678-00f3-4789-9b59-c3e31657ca68"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -121,6 +112,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""name"": ""Run"",
                     ""type"": ""Button"",
                     ""id"": ""22dadff8-9dfe-46a4-b8f5-2edd26b613f2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Quit"",
+                    ""type"": ""Button"",
+                    ""id"": ""0896cf5e-0d69-48b1-ba1f-b21f9e7e50dd"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -263,7 +263,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""4ecf137b-7768-4310-aba2-54e18c5aa666"",
-                    ""path"": ""<Keyboard>/p"",
+                    ""path"": ""<Keyboard>/escape"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""KeyboardMouse"",
@@ -289,7 +289,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""KeyboardMouse"",
-                    ""action"": ""Restart"",
+                    ""action"": ""ResetObjects"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -300,29 +300,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Restart"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""21eae80e-525f-4258-8fe8-93ce6ef0697e"",
-                    ""path"": ""<Keyboard>/escape"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""KeyboardMouse;Gamepad"",
-                    ""action"": ""Quit"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""75b16c25-71ef-4687-bf5a-103a7760f9b9"",
-                    ""path"": ""<Gamepad>/select"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""KeyboardMouse"",
-                    ""action"": ""Quit"",
+                    ""action"": ""ResetObjects"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -424,6 +402,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Swing"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""aed5ce23-49fa-4a23-90af-d9def834c57b"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Quit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0e4c01e5-26e1-4cd4-8c76-036a2cd141bf"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Quit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -466,11 +466,11 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_PlayerMap_UnPause = m_PlayerMap.FindAction("UnPause", throwIfNotFound: true);
         m_PlayerMap_Block = m_PlayerMap.FindAction("Block", throwIfNotFound: true);
         m_PlayerMap_Stab = m_PlayerMap.FindAction("Stab", throwIfNotFound: true);
-        m_PlayerMap_Restart = m_PlayerMap.FindAction("Restart", throwIfNotFound: true);
-        m_PlayerMap_Quit = m_PlayerMap.FindAction("Quit", throwIfNotFound: true);
+        m_PlayerMap_ResetObjects = m_PlayerMap.FindAction("ResetObjects", throwIfNotFound: true);
         m_PlayerMap_Crouch = m_PlayerMap.FindAction("Crouch", throwIfNotFound: true);
         m_PlayerMap_Jump = m_PlayerMap.FindAction("Jump", throwIfNotFound: true);
         m_PlayerMap_Run = m_PlayerMap.FindAction("Run", throwIfNotFound: true);
+        m_PlayerMap_Quit = m_PlayerMap.FindAction("Quit", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -538,11 +538,11 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerMap_UnPause;
     private readonly InputAction m_PlayerMap_Block;
     private readonly InputAction m_PlayerMap_Stab;
-    private readonly InputAction m_PlayerMap_Restart;
-    private readonly InputAction m_PlayerMap_Quit;
+    private readonly InputAction m_PlayerMap_ResetObjects;
     private readonly InputAction m_PlayerMap_Crouch;
     private readonly InputAction m_PlayerMap_Jump;
     private readonly InputAction m_PlayerMap_Run;
+    private readonly InputAction m_PlayerMap_Quit;
     public struct PlayerMapActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -553,11 +553,11 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @UnPause => m_Wrapper.m_PlayerMap_UnPause;
         public InputAction @Block => m_Wrapper.m_PlayerMap_Block;
         public InputAction @Stab => m_Wrapper.m_PlayerMap_Stab;
-        public InputAction @Restart => m_Wrapper.m_PlayerMap_Restart;
-        public InputAction @Quit => m_Wrapper.m_PlayerMap_Quit;
+        public InputAction @ResetObjects => m_Wrapper.m_PlayerMap_ResetObjects;
         public InputAction @Crouch => m_Wrapper.m_PlayerMap_Crouch;
         public InputAction @Jump => m_Wrapper.m_PlayerMap_Jump;
         public InputAction @Run => m_Wrapper.m_PlayerMap_Run;
+        public InputAction @Quit => m_Wrapper.m_PlayerMap_Quit;
         public InputActionMap Get() { return m_Wrapper.m_PlayerMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -585,12 +585,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Stab.started += instance.OnStab;
             @Stab.performed += instance.OnStab;
             @Stab.canceled += instance.OnStab;
-            @Restart.started += instance.OnRestart;
-            @Restart.performed += instance.OnRestart;
-            @Restart.canceled += instance.OnRestart;
-            @Quit.started += instance.OnQuit;
-            @Quit.performed += instance.OnQuit;
-            @Quit.canceled += instance.OnQuit;
+            @ResetObjects.started += instance.OnResetObjects;
+            @ResetObjects.performed += instance.OnResetObjects;
+            @ResetObjects.canceled += instance.OnResetObjects;
             @Crouch.started += instance.OnCrouch;
             @Crouch.performed += instance.OnCrouch;
             @Crouch.canceled += instance.OnCrouch;
@@ -600,6 +597,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Run.started += instance.OnRun;
             @Run.performed += instance.OnRun;
             @Run.canceled += instance.OnRun;
+            @Quit.started += instance.OnQuit;
+            @Quit.performed += instance.OnQuit;
+            @Quit.canceled += instance.OnQuit;
         }
 
         private void UnregisterCallbacks(IPlayerMapActions instance)
@@ -622,12 +622,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Stab.started -= instance.OnStab;
             @Stab.performed -= instance.OnStab;
             @Stab.canceled -= instance.OnStab;
-            @Restart.started -= instance.OnRestart;
-            @Restart.performed -= instance.OnRestart;
-            @Restart.canceled -= instance.OnRestart;
-            @Quit.started -= instance.OnQuit;
-            @Quit.performed -= instance.OnQuit;
-            @Quit.canceled -= instance.OnQuit;
+            @ResetObjects.started -= instance.OnResetObjects;
+            @ResetObjects.performed -= instance.OnResetObjects;
+            @ResetObjects.canceled -= instance.OnResetObjects;
             @Crouch.started -= instance.OnCrouch;
             @Crouch.performed -= instance.OnCrouch;
             @Crouch.canceled -= instance.OnCrouch;
@@ -637,6 +634,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Run.started -= instance.OnRun;
             @Run.performed -= instance.OnRun;
             @Run.canceled -= instance.OnRun;
+            @Quit.started -= instance.OnQuit;
+            @Quit.performed -= instance.OnQuit;
+            @Quit.canceled -= instance.OnQuit;
         }
 
         public void RemoveCallbacks(IPlayerMapActions instance)
@@ -680,10 +680,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnUnPause(InputAction.CallbackContext context);
         void OnBlock(InputAction.CallbackContext context);
         void OnStab(InputAction.CallbackContext context);
-        void OnRestart(InputAction.CallbackContext context);
-        void OnQuit(InputAction.CallbackContext context);
+        void OnResetObjects(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnRun(InputAction.CallbackContext context);
+        void OnQuit(InputAction.CallbackContext context);
     }
 }

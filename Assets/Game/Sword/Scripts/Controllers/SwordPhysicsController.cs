@@ -12,6 +12,7 @@ public class SwordPhysicsController
 	[HideInInspector] public PositionDeltaTracker positionDeltaTracker;
 	
 	public Rigidbody rigidbody;
+	private Transform rotationProxy;
 	
 	public Vector3 velocity { get { return rigidbody.velocity; } }
 	
@@ -42,6 +43,8 @@ public class SwordPhysicsController
 		
 		rigidbody = PlayerSwordInitialization.Rigidbody(playerController);
 		rigidbody = PlayerSwordInitialization.Rigidbody(playerController);
+		
+		rotationProxy = new GameObject($"{this} Rotation Proxy").transform;
     }
 
 	/*
@@ -127,10 +130,17 @@ public class SwordPhysicsController
 		if (collisionController.colliding)
 			return;
 		
-		Vector3 torque = Quaternions.FromToAngleAxis(rigidbody.rotation, rotateTo);
+		rotationProxy.rotation = rigidbody.rotation;
+		Vector3 fromForward = rotationProxy.forward;
 		
-		if (Mathf.Abs(torque.magnitude) > 0.01f)
-			rigidbody.AddTorque(torque * (1.0f + angularDamping) * (1.0f + rigidbody.mass * 15f));
+		rotationProxy.rotation = rotateTo;
+		Vector3 toForward = rotationProxy.forward;
+		
+		Vector3 axis = Vector3.Cross(fromForward, toForward).normalized;
+		float angle = Vector3.Angle(fromForward, toForward);
+		
+		if (Mathf.Abs(angle) > 0.01f)
+			rigidbody.AddTorque((axis * angle) * (1.0f + angularDamping) * (1.0f + rigidbody.mass * 15f));
 
 		/*
 		Vector3 dir = swordController.TipPosition() - swordController.BasePosition();

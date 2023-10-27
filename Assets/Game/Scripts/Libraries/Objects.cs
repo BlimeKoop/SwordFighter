@@ -61,4 +61,21 @@ public class Objects
 		
 		return component.GetComponentInParent<T>();
 	}
+	
+	public static string StripName(string name)
+	{
+		string nameR = "";
+		
+		for (int i = 0; i < name.Length; i++)
+		{
+			char slice = name[i];
+			
+			if (slice == ' ' || slice == '(' || int.TryParse(slice.ToString(), out int number))
+				break;
+			
+			nameR += slice;
+		}
+		
+		return nameR;
+	}
 }

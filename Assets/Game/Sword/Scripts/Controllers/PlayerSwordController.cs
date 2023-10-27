@@ -68,6 +68,7 @@ public class PlayerSwordController
 		swordPlayerConstraint = sword.gameObject.AddComponent<SwordPlayerConstraint>();
 		swordPlayerConstraint.Initialize(this);
     }
+	
     public void DoFixedUpdate()
     {
 		if (!playerController.block &&
@@ -194,10 +195,11 @@ public class PlayerSwordController
 		if (obj.GetComponentInParent<PlayerController>() == playerController)
 			return false;
 		
+		Vector3 swordPosDelta = physicsController.positionDeltaTracker.safeDelta;
 		Vector3 relativeVelocity = (
 			rigidbody != null ?
-			rigidbody.velocity - physicsController.positionDeltaTracker.positionDelta / Time.fixedDeltaTime :
-			physicsController.positionDeltaTracker.positionDelta / Time.fixedDeltaTime);
+			rigidbody.velocity - swordPosDelta / Time.fixedDeltaTime :
+			swordPosDelta / Time.fixedDeltaTime);
 		
 		if (obj.layer == Collisions.PlayerLayer)
 		{
@@ -220,9 +222,12 @@ public class PlayerSwordController
 				return false;
 		}
 
-		Vector3 cutAxis = Vector3.Cross(relativeVelocity, playerController.sword.transform.forward);
+		Vector3 cutAxis = Vector3.Cross(relativeVelocity, playerController.sword.transform.forward).normalized;
+		
+		Debug.DrawRay(collisionPoint, relativeVelocity.normalized * 10f, Color.red, 10f);
+		Debug.DrawRay(collisionPoint, playerController.sword.transform.forward * 10f, Color.green, 10f);
 
-        RoomManager.CutObject(obj, cutAxis, collisionPoint);
+        MatchObjectManager.CutObject(obj, cutAxis, collisionPoint);
 		
 		return true;
 	}

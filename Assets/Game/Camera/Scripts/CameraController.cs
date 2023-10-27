@@ -4,24 +4,39 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+	[HideInInspector] public PlayerController playerController;
+	
 	CameraInputController inputController;
 	
-	public GameObject target;
-	public CameraPivotController pivotController;
+	public Transform target;
+	public CameraPivotController pivot;
 	
-	private bool orbit;
+	private bool orbit, enabled;
 	
-	[HideInInspector] public PlayerController playerController;
+	private void OnEnable()
+	{
+		enabled = true;
+		pivot.enabled = true;
+	}
+	
+	private void OnDisable()
+	{
+		enabled = false;
+		pivot.enabled = false;
+		
+		if (inputController != null)
+			inputController.DisableInput();
+	}
 
     public void Initialize(PlayerController playerController)
     {
 		this.playerController = playerController;
 		
-		pivotController = InitializeCameraPivotController(pivotController);
+		pivot = InitializeCameraPivotController(pivot);
 		inputController = InitializeCameraInputController();
 		inputController.Initialize(this);
 		
-		transform.parent = pivotController.transform;
+		transform.parent = pivot.transform;
     }
 
 	private CameraPivotController InitializeCameraPivotController(CameraPivotController controller)
@@ -43,18 +58,21 @@ public class CameraController : MonoBehaviour
 	
 	public void DoUpdate()
 	{
+		if (!enabled)
+			return;
+		
 		inputController.DoUpdate();
 		
 		if (orbit)
-			pivotController.Rotate(inputController.orbitInput * 18f);
+			pivot.Rotate(inputController.orbitInput * 18f);
 	}
 	
 	public void ChangeDirection()
 	{
-		if (pivotController == null)
+		if (pivot == null)
 			return;
 		
-		pivotController.ChangeDirection(inputController.aimInputActive);
+		pivot.ChangeDirection(inputController.aimInputActive);
 		playerController.CancelStab();
 	}
 
@@ -63,14 +81,8 @@ public class CameraController : MonoBehaviour
 		if (orbit)
 			return;
 		
-		pivotController.SetAutoRotateDegrees(degrees);
+		pivot.SetAutoRotateDegrees(degrees);
 	}
-
-    public void Disable()
-    {
-		pivotController.enabled = false;
-		this.enabled = false;
-    }
 	
 	public void Orbit()
 	{
@@ -84,11 +96,9 @@ public class CameraController : MonoBehaviour
 	
 	private void OnDestroy()
 	{
-		inputController.DisableInput();
-	}
-	
-	private void OnDisable()
-	{
+		if (inputController == null)
+			return;
+		
 		inputController.DisableInput();
 	}
 }

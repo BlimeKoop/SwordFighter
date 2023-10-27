@@ -68,13 +68,13 @@ public class PlayerCollisionController : MonoBehaviour
 			return;
 		
 		if (Mathf.Abs(col.GetContact(0).normal.y) < 0.6f)
-		{
+		{			
 			collisionFlags["w"] = true;
 			collisions["w"] = col;
 		}
 	}
 	
-	private void OnCollisionExit(Collision col)
+	private void OnCollisionExit(Collision col)	
 	{
 		if(playerController.dead || !playerController.photonView.IsMine || !initialized)
 			return;

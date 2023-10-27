@@ -1,57 +1,74 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class UIController : MonoBehaviour
 {
+	private static PhotonView photonView;
+	
 	public Transform canvas;
 	
-	public GameObject startButton;
-	public GameObject winText;
-	public GameObject loseText;
-	public GameObject background;
+	private PlayerUIController playerUI;
+	
+	public GameObject _startButton;		private static GameObject startButton;
+	public GameObject _winText;			private static GameObject winText;
+	public GameObject _loseText;		private static GameObject loseText;
+	public GameObject _background;		private static GameObject background;
 	
 	private void Awake()
 	{
+		startButton = _startButton;
+		winText = _winText;
+		loseText = _loseText;
+		background = _background;
+		
+		photonView = GetComponent<PhotonView>();
 		canvas.gameObject.SetActive(true);
+		
+		playerUI = canvas.GetComponentInChildren<PlayerUIController>();
 	}
 	
-	public void EnableStartButton()
+	public static void EnableStartButton()
 	{
 		startButton.SetActive(true);
 	}
 	
-	public void DisableStartButton()
+	public static void DisableStartButton()
 	{
 		startButton.SetActive(false);
 	}
 	
-	public void EnableWinText()
+	public static void EnableWinText()
 	{
+		DisableLoseText();
+		
 		winText.SetActive(true);
 	}
 	
-	public void DisableWinText()
+	public static void DisableWinText()
 	{
 		winText.SetActive(false);
 	}
 	
-	public void EnableLoseText()
+	public static void EnableLoseText()
 	{
+		DisableWinText();
+		
 		loseText.SetActive(true);
 	}
 	
-	public void DisableLoseText()
+	public static void DisableLoseText()
 	{
 		loseText.SetActive(false);
 	}
 
-	public void EnableBackground()
+	public static void EnableBackground()
 	{
 		background.SetActive(true);
 	}
 
-	public void DisableBackground()
+	public static void DisableBackground()
 	{
 		background.SetActive(false);
 	}

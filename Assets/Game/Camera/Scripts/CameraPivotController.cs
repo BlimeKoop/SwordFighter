@@ -40,9 +40,21 @@ public class CameraPivotController : MonoBehaviour
 	private bool initialized;
 	private bool changingDirection, autoRotate, rotate;
 	
-    public void Initialize(GameObject _followTarget)
+	public bool enabled;
+	
+	private void OnEnable()
+	{
+		enabled = true;
+	}
+	
+	private void OnDisable()
+	{
+		enabled = false;
+	}
+	
+    public void Initialize(Transform _followTarget)
     {
-        followTarget = _followTarget.transform;
+        followTarget = _followTarget;
 		
 		transform.position = followTarget.position;
 		transform.forward = followTarget.forward;
@@ -54,7 +66,7 @@ public class CameraPivotController : MonoBehaviour
 
     public void DoLateUpdate()
     {
-		if (!initialized)
+		if (!enabled || !initialized)
 			return;
 		
         transform.position = Vector3.Lerp(

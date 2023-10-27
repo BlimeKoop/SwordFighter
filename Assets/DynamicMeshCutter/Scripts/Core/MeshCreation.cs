@@ -166,10 +166,10 @@ namespace DynamicMeshCutter
         static void CreateMesh(ref GameObject child, ref Transform parent, Info info, MeshTarget target,
 		Mesh mesh, VirtualMesh vMesh, Material[] materials, int bt, int index, bool forcePhysics = false)
         {
-			CreateChild(ref child, target, mesh, materials);
 			parent = GameObject.Find(info.rigidbodyNames[index]).transform;
+			
+			CreateChild(ref child, ref parent, target, mesh, materials);
 
-            child.transform.SetParent(parent, true);
             //child.transform.localScale = target.transform.localScale; //test this
 
             if (target.CreateRigidbody[bt])
@@ -188,16 +188,23 @@ namespace DynamicMeshCutter
             }
         }
 		
-		private static void CreateChild(ref GameObject child, MeshTarget target, Mesh mesh, Material[] materials)
+		private static void CreateChild(ref GameObject child, ref Transform parent, MeshTarget target, Mesh mesh, Material[] materials)
 		{
-            child = new GameObject($"{target.gameObject.name}");
+			string name = Objects.StripName(target.gameObject.name);
+			
+            child = new GameObject(name);
+			
+			child.transform.SetParent(parent, true);
+			
             child.transform.position = target.transform.position;
             child.transform.rotation = target.transform.rotation;
 
             child.gameObject.tag = target.transform.tag;
+			child.gameObject.layer = target.gameObject.layer;
 
             child.AddComponent<MeshFilter>().mesh = mesh;
             child.AddComponent<MeshRenderer>().materials = materials;
+			child.AddComponent<PhotonViewSuffix>();
 		}
 
         private static void ConfigureTargetRigidbody(MeshTarget target, Rigidbody targetRB, Mesh mesh)
