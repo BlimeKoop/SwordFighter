@@ -9,8 +9,10 @@ public class NetworkObjectManager : MonoBehaviour
 	public GameObject _MatchObjectManagerPrefab;	private static GameObject MatchObjectManagerPrefab;
 	public GameObject _MatchAudioManagerPrefab;		private static GameObject MatchAudioManagerPrefab;
 	
-	private void Start()
+	private void Awake()
 	{
+		DontDestroyOnLoad(gameObject);
+		
 		MatchManagerPrefab = _MatchManagerPrefab;
 		MatchObjectManagerPrefab = _MatchObjectManagerPrefab;
 		MatchAudioManagerPrefab = _MatchAudioManagerPrefab;

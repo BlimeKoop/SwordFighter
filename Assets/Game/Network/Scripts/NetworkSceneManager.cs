@@ -30,9 +30,6 @@ public class NetworkSceneManager : MonoBehaviourPunCallbacks
 		{
 			loadLevelOnLeaveRoom = true;
 			
-			if (fromLevelName == "Multiplayer" && PhotonNetwork.CurrentRoom.PlayerCount == 1)
-				PhotonNetwork.DestroyAll();
-			
 			PhotonNetwork.LeaveRoom();
 			
 			return;

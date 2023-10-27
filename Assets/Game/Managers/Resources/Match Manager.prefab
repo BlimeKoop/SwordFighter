@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8507784423494202271}
   - component: {fileID: 3359124078937028015}
+  - component: {fileID: 1695149046338183598}
   - component: {fileID: -7516902146563983049}
   m_Layer: 0
   m_Name: Match Manager
@@ -55,6 +56,18 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &1695149046338183598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4159672985015066415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b98daeb5a80446444987159697225535, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &-7516902146563983049
 MonoBehaviour:
   m_ObjectHideFlags: 0
