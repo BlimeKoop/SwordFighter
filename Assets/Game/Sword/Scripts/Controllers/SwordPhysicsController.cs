@@ -14,7 +14,7 @@ public class SwordPhysicsController
 	public Rigidbody rigidbody;
 	private Transform rotationProxy;
 	
-	public Vector3 velocity { get { return rigidbody.velocity; } }
+	[HideInInspector] public Vector3 velocity { get { return rigidbody.velocity; } }
 	
 	private Vector3 lastVelocity;
 	private Vector3 lastAngularVelocity;
@@ -26,6 +26,9 @@ public class SwordPhysicsController
 	[HideInInspector] public Vector3 distanceClampingForce;
 	[HideInInspector] public Vector3 playerForce;
 	
+	[Range(0.1f, 1f)] public float SlowRotationSpeed = 0.4f;
+	[Range(0.1f, 1f)] public float FastRotationSpeed = 1.0f;
+
 	[HideInInspector] public float linearDamping = 1.0f, angularDamping = 0.45f;
 	[HideInInspector] public float drag = 0.7f;
 	[HideInInspector] public float angularDrag = 0.75f;
@@ -139,17 +142,10 @@ public class SwordPhysicsController
 		Vector3 axis = Vector3.Cross(fromForward, toForward).normalized;
 		float angle = Vector3.Angle(fromForward, toForward);
 		
+		float t = Mathf.Lerp(SlowRotationSpeed, FastRotationSpeed, rigidbody.velocity.magnitude / 5f);
+		
 		if (Mathf.Abs(angle) > 0.01f)
-			rigidbody.AddTorque((axis * angle) * (1.0f + angularDamping) * (1.0f + rigidbody.mass * 15f));
-
-		/*
-		Vector3 dir = swordController.TipPosition() - swordController.BasePosition();
-		Vector3 nextDir = (swordController.TipPosition() + tipForce * Time.fixedDeltaTime) - swordController.BasePosition();
-		
-		Vector3 axis = Vector3.Cross(dir, nextDir).normalized;
-		
-		rigidbody.AddTorque(axis * tipForce.magnitude);
-		*/
+			rigidbody.AddTorque((axis * angle * t) * (1.0f + angularDamping) * (1.0f + rigidbody.mass * 15f));
 		
 		lastAngularVelocity = rigidbody.angularVelocity;
 	}

@@ -247,7 +247,7 @@ public class CameraPivotController : MonoBehaviour
 		}
 		
 		if (Mathf.Abs(degrees) > 300f)
-			degrees = 800f * Math.FloatN1P1(degrees);
+			degrees = 700f * Math.FloatN1P1(degrees);
 		
 		if (Mathf.Abs(degrees) > Mathf.Abs(rotateDegrees))
 			rotateDegrees = degrees;

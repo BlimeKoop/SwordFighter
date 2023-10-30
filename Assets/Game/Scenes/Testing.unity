@@ -2016,9 +2016,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1875551008866852209, guid: 10b762a1bc5edde4a9c827a3a4dd8cdc, type: 3}
+      propertyPath: sceneViewId
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2670234605381262139, guid: 10b762a1bc5edde4a9c827a3a4dd8cdc, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3490473573416185034, guid: 10b762a1bc5edde4a9c827a3a4dd8cdc, type: 3}
+      propertyPath: sceneViewId
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4052681873472240603, guid: 10b762a1bc5edde4a9c827a3a4dd8cdc, type: 3}
+      propertyPath: sceneViewId
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4199419663764227784, guid: 10b762a1bc5edde4a9c827a3a4dd8cdc, type: 3}
       propertyPath: m_Enabled
@@ -2031,6 +2043,10 @@ PrefabInstance:
     - target: {fileID: 5435736106260959437, guid: 10b762a1bc5edde4a9c827a3a4dd8cdc, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6483942104803187221, guid: 10b762a1bc5edde4a9c827a3a4dd8cdc, type: 3}
+      propertyPath: sceneViewId
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6678284719642066117, guid: 10b762a1bc5edde4a9c827a3a4dd8cdc, type: 3}
       propertyPath: m_Enabled

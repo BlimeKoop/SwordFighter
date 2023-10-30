@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 7437151374741213899}
   - component: {fileID: 7509649066411202015}
   - component: {fileID: 4067517712351735337}
-  - component: {fileID: 5252494176989183669}
   - component: {fileID: 3596739131502784657}
   - component: {fileID: 1756657174769340039}
   - component: {fileID: 4391209762027733466}
@@ -76,23 +75,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cutting: 0
   colliding: 0
---- !u!114 &5252494176989183669
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5056553883052315732}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 948f369322db07b41b5b3331fc92c1b1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Separation: 0.1
-  DestroyTargets: 1
-  UseAsync: 1
-  VertexCreationThreshold: 0
-  DefaultMaterial: {fileID: 2100000, guid: eb5748d5d094f884c9a12d3704a9d7d6, type: 2}
 --- !u!114 &3596739131502784657
 MonoBehaviour:
   m_ObjectHideFlags: 0

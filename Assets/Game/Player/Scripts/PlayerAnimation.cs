@@ -8,11 +8,18 @@ public class PlayerAnimation : MonoBehaviour
 	{
 		Vector3 approximateArmPos = playerController.animationController.ApproximateArmPosition();
 		Vector3 armToSwordApprox = playerController.sword.position - approximateArmPos;
+		Vector3 chestToSword = playerController.animationController.ChestToSword();
 
 		float hA = Mathf.Max(0.0f, HumerusAngle(animationController, armToSwordApprox.magnitude));
 
 		Vector3 rotateFrom = armToSwordApprox.normalized;
 		Vector3 rotateTo = Vector3.Cross(Vector3.up, armToSwordApprox).normalized;
+		Vector3 camRight = playerController.camera.transform.right;
+
+		Debug.DrawRay(approximateArmPos, armToSwordApprox, Color.cyan);
+
+		if (Vector3.Dot(chestToSword, camRight) > 0 && Vector3.Dot(rotateTo, camRight) < 0)
+			rotateTo -= camRight * Vector3.Dot(rotateTo, camRight) * 2;
 		
 		Vector3 rotatedDir = Vector3.RotateTowards(rotateFrom, rotateTo, hA, 1f).normalized;
 		
