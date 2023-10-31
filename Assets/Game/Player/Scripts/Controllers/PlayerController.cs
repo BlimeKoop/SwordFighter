@@ -298,6 +298,9 @@ public class PlayerController : MonoBehaviour
 		{
 			StopCoroutine(JumpInputGracePeriod());
 			StartCoroutine(JumpInputGracePeriod());
+
+			if (!collisionController.onGround)
+				Dash();
 			
 			return;
 		}

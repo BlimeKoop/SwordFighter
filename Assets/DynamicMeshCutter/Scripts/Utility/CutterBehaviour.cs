@@ -245,7 +245,12 @@ namespace DynamicMeshCutter
             MeshCreationData creationInfo = MeshCreation.CreateObjects(info, DefaultMaterial, VertexCreationThreshold);
 			
 			if (DestroyTargets && info.MeshTarget)
-				Destroy(info.MeshTarget.GameobjectRoot != null ? info.MeshTarget.GameobjectRoot : info.MeshTarget.gameObject);
+            {
+                for (int i = 0; i < info.MeshTarget.gameObject.transform.childCount; i++)
+                    info.MeshTarget.gameObject.transform.GetChild(0).parent = null;
+                
+                Destroy(info.MeshTarget.GameobjectRoot != null ? info.MeshTarget.GameobjectRoot : info.MeshTarget.gameObject);
+            }
 			
 			if (creationInfo == null)
 			{

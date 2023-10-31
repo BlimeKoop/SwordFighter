@@ -74,7 +74,7 @@ public class PlayerSwordMovementClamping
 		}
 		else
 		{
-			clampingR = ArmClamping(playerController, swordController, 130f,
+			clampingR = ArmClamping(playerController, swordController, 140f,
 			Vectors.FlattenVector(playerController.camera.forward), restorationMultiplier);
 			
 			if (!playerController.SwordFront())

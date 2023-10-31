@@ -220,6 +220,8 @@ namespace DynamicMeshCutter
             targetRB.mass = Mathf.Max(0.1f, (size.x * size.y * size.z) / density);
             targetRB.interpolation = RigidbodyInterpolation.Interpolate;
             // targetRB.collisionDetectionMode = CollisionDetectionMode.Continuous;
+
+            
         }
 
         /// <summary>
@@ -552,10 +554,10 @@ namespace DynamicMeshCutter
 
                 Transform createdObjectT = createdObjects[i].transform;
 
-                while (createdObjectT.GetComponent<Renderer>() == null && createdObjectT.childCount > 0)
+                while (createdObjectT.GetComponent<Collider>() == null && createdObjectT.childCount > 0)
                     createdObjectT = createdObjectT.GetChild(0);
 
-                Vector3 newPivot = createdObjectT.GetComponent<Renderer>().bounds.center;
+                Vector3 newPivot = createdObjectT.GetComponent<Collider>().bounds.center;
                 Transform parentStore = createdObjectT.parent;
 
                 createdObjectT.parent = null;

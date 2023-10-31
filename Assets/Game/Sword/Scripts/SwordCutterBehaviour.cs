@@ -111,7 +111,7 @@ namespace DynamicMeshCutter
 			if (obj.layer == Collisions.PlayerLayer)
 				meshTargetR.OverrideFaceMaterial = DefaultMaterial;
 			
-			meshTargetR.SeparateMeshes = false; // true;
+			meshTargetR.SeparateMeshes = false; // true; // Only two rigidbodies are spawned on the server beforehand
 			
 			return meshTargetR;
 		}

@@ -360,15 +360,16 @@ namespace DynamicMeshCutter
 
             for (int n = 0; n < fVertices.Count; n++)
             {
-                delta = fVertices[n] - center;
+                delta = fVertices[n] - center; Debug.Log(delta.magnitude);
                 int o = (n + 1) % fVertices.Count;
 
                 for (int j = 0; j < 2; j++)
                 {
+                    // Hello this is ben i added an arbitrary multiplication for the shits
                     uv[j] = Vector3.zero;
-                    uv[j].x = 0.5f + Vector3.Dot(delta, left);
-                    uv[j].y = 0.5f + Vector3.Dot(delta, upward);
-                    uv[j].z = 0.5f + Vector3.Dot(delta, data.Plane.LocalNormal);
+                    uv[j].x = 0.5f + Vector3.Dot(delta, left) * 0.5f;
+                    uv[j].y = 0.5f + Vector3.Dot(delta, upward) * 0.5f;
+                    uv[j].z = 0.5f + Vector3.Dot(delta, data.Plane.LocalNormal) * 0.5f;
 
                     //do modulo to account for looping of last vertex
                     delta = fVertices[o] - center;
@@ -408,11 +409,12 @@ namespace DynamicMeshCutter
         public Vector3 GetVerticeCenter(List<Vector3> fVertices)
         {
             Vector3 center = new Vector3();
+
             int length = fVertices.Count;
-            for(int i =0;i<length;i++)
-            {
+
+            for(int i = 0; i < length; i++)
                 center += fVertices[i];
-            }
+            
             return center / length;
         }
         public BoneWeight GetBoneweightCenter(List<BoneWeight> fBoneWeights)
