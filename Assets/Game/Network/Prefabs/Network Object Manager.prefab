@@ -47,3 +47,4 @@ MonoBehaviour:
   _MatchManagerPrefab: {fileID: 4159672985015066415, guid: 5bf43a323e038ab43b1819d0cdc376ae, type: 3}
   _MatchObjectManagerPrefab: {fileID: 2178635270670928474, guid: d2d5068a3495a6241884464b9a618792, type: 3}
   _MatchAudioManagerPrefab: {fileID: 7219835604452580862, guid: b522ae528a42ea44bae6769c342a5a3f, type: 3}
+  _StageManagerPrefab: {fileID: 7151574763429151192, guid: 81623f86dc8f3654c9cf941b489f1b9c, type: 3}

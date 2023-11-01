@@ -20,7 +20,7 @@ public class PlayerMatchData
 public class PlayerData : MonoBehaviourPunCallbacks
 {
 	private PhotonView photonView;
-	private static Dictionary<int, PlayerMatchData> playerMatchData = new Dictionary<int, PlayerMatchData>();
+	public static Dictionary<int, PlayerMatchData> playerMatchData = new Dictionary<int, PlayerMatchData>();
 	
 	private static int eliminatedPlayerCount = 0;
 	
@@ -28,6 +28,8 @@ public class PlayerData : MonoBehaviourPunCallbacks
 	{
 		DontDestroyOnLoad(gameObject);
 		photonView = GetComponent<PhotonView>();
+		
+		Reset();
 	}
 
 	[PunRPC]
@@ -91,5 +93,16 @@ public class PlayerData : MonoBehaviourPunCallbacks
 	public static bool MatchFinished()
 	{
 		return eliminatedPlayerCount >= playerMatchData.Keys.Count - 1;
+	}
+	
+	private static void OnDestroy()
+	{
+		Reset();
+	}
+	
+	private static void Reset()
+	{
+		playerMatchData = new Dictionary<int, PlayerMatchData>();
+		eliminatedPlayerCount = 0;
 	}
 }

@@ -1,13 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TrueClouds;
 
 public class CameraController : MonoBehaviour
 {
 	[HideInInspector] public PlayerController playerController;
+	public CloudCamera3D CloudCamera3D;
 	
 	CameraInputController inputController;
-	
+
 	public Transform target;
 	public CameraPivotController pivot;
 	
@@ -26,6 +28,11 @@ public class CameraController : MonoBehaviour
 		
 		if (inputController != null)
 			inputController.DisableInput();
+	}
+
+	private void Awake()
+	{
+		CloudCamera3D.Wind =  FindObjectOfType<StageManager>().Wind;
 	}
 
     public void Initialize(PlayerController playerController)

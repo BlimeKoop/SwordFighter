@@ -188,9 +188,6 @@ public class PlayerSwordController
 			Debug.Log($"{obj.name} tagged as CantCut");
 			return false;
 		}
-		
-		if (obj.layer == Collisions.SwordLayer)
-			return false;
 
 		if (obj.GetComponentInParent<PlayerController>() == playerController)
 			return false;
@@ -203,8 +200,10 @@ public class PlayerSwordController
 		
 		if (obj.layer == Collisions.PlayerLayer)
 		{
-			// if (relativeVelocity.magnitude < 1f)
-				// return false;
+			relativeVelocity = swordPosDelta / Time.fixedDeltaTime;
+			
+			if (relativeVelocity.magnitude < 2f)
+				return false;
 		}
 		else 
 		{

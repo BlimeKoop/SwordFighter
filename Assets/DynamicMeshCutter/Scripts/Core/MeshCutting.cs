@@ -360,16 +360,16 @@ namespace DynamicMeshCutter
 
             for (int n = 0; n < fVertices.Count; n++)
             {
-                delta = fVertices[n] - center; Debug.Log(delta.magnitude);
+                delta = fVertices[n] - center;
                 int o = (n + 1) % fVertices.Count;
 
                 for (int j = 0; j < 2; j++)
                 {
                     // Hello this is ben i added an arbitrary multiplication for the shits
                     uv[j] = Vector3.zero;
-                    uv[j].x = 0.5f + Vector3.Dot(delta, left) * 0.5f;
-                    uv[j].y = 0.5f + Vector3.Dot(delta, upward) * 0.5f;
-                    uv[j].z = 0.5f + Vector3.Dot(delta, data.Plane.LocalNormal) * 0.5f;
+                    uv[j].x = 0.5f + Vector3.Dot(delta, left) * 0.2f;
+                    uv[j].y = 0.5f + Vector3.Dot(delta, upward) * 0.2f;
+                    uv[j].z = 0.5f + Vector3.Dot(delta, data.Plane.LocalNormal) * 0.2f;
 
                     //do modulo to account for looping of last vertex
                     delta = fVertices[o] - center;

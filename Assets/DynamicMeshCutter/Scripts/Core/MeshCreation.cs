@@ -181,6 +181,12 @@ namespace DynamicMeshCutter
                 //only create when more than or equal unique vertices. if we don't run floodfill algorithm, the uniquevertice amount will be unset and equals -1
                 if (vMesh.UniqueVerticesCount < 0 || vMesh.UniqueVerticesCount > 3 && vMesh.Vertices.Length > 20)
                 {
+					if (vMesh.Vertices.Length < 3)
+					{
+						Debug.LogWarning("Less than 3 vertices in mesh when creating collider, returning");
+						return;
+					}
+						
                     MeshCollider collider = child.AddComponent<MeshCollider>();
                     //remark: BE CAREFUL ABOUT CONVEX MESH COLLIDER CREATION. THIS WILL THROW PHYSICS.PHYSX ERRORS IF MESH IS TOO SMALL.
                     collider.convex = true;

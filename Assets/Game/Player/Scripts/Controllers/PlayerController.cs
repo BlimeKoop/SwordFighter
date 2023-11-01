@@ -48,11 +48,12 @@ public class PlayerController : MonoBehaviour
 	public float groundDetectionRadius = 0.6f;
 	public float groundStepUpDistance = 0.4f;
 
+
 	public RaycastHit groundHit;
 
 	[HideInInspector] public Vector3 movement, movementActive;
 	
-	[HideInInspector] public bool crouching, block, alignStab, stab, holdStab, paused, dead;
+	[HideInInspector] public bool crouching, block, alignStab, stab, holdStab, dead;
 	
 	[HideInInspector]
 	public bool lockJump, jumpGrace, jumpInputGrace;
@@ -175,7 +176,7 @@ public class PlayerController : MonoBehaviour
 	
 	void FixedUpdate()
 	{		
-		if (!photonView.IsMine || dead || paused)
+		if (!photonView.IsMine || dead || GameManager.paused)
 			return;
 		
 		physicsController.MoveRigidbody(movement);
@@ -205,7 +206,7 @@ public class PlayerController : MonoBehaviour
 		
 		animationController.DoUpdate();
 		
-		if (paused)
+		if (GameManager.paused)
 			return;
 		
 		collisionController.DoUpdate();
@@ -261,7 +262,7 @@ public class PlayerController : MonoBehaviour
 
 	private void LateUpdate()
 	{
-		if(dead || !photonView.IsMine || paused)
+		if(dead || !photonView.IsMine || GameManager.paused)
 			return;
 		
 		cameraController.pivot.DoLateUpdate();
@@ -301,7 +302,10 @@ public class PlayerController : MonoBehaviour
 			StartCoroutine(JumpInputGracePeriod());
 
 			if (!collisionController.onGround)
+			{
 				Dash();
+				moveSpeed = walkSpeed;
+			}
 			
 			return;
 		}
@@ -350,21 +354,15 @@ public class PlayerController : MonoBehaviour
 
 	public void TogglePause()
 	{
-		paused = !paused;
+		GameManager.TogglePause();
 		
-		physicsController.SetFrozen(paused);
-		
-		Cursor.visible = paused;
-		Cursor.lockState = paused ? CursorLockMode.None : CursorLockMode.Locked;
+		if (GameManager.paused)
+			physicsController.Zero();
 	}
 	
 	public void UnPause()
 	{
-		paused = false;
-		physicsController.SetFrozen(false);
-		
-		Cursor.visible = false;
-		Cursor.lockState = CursorLockMode.Locked;
+		GameManager.UnPause();
 	}
 
     public void Die()

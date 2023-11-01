@@ -14,6 +14,7 @@ public class UIController : MonoBehaviour
 	public GameObject _startButton;		private static GameObject startButton;
 	public GameObject _winText;			private static GameObject winText;
 	public GameObject _loseText;		private static GameObject loseText;
+	public GameObject _pauseMenu;		private static GameObject pauseMenu;
 	public GameObject _background;		private static GameObject background;
 	
 	private void Awake()
@@ -21,12 +22,23 @@ public class UIController : MonoBehaviour
 		startButton = _startButton;
 		winText = _winText;
 		loseText = _loseText;
+		pauseMenu = _pauseMenu;
 		background = _background;
 		
 		photonView = GetComponent<PhotonView>();
 		canvas.gameObject.SetActive(true);
 		
 		playerUI = canvas.GetComponentInChildren<PlayerUIController>();
+	}
+	
+	public void OnExitButtonClicked()
+	{
+		NetworkSceneManager.LoadLevel("Menu");
+	}
+	
+	public void OnBackButtonClicked()
+	{
+		GameManager.UnPause();
 	}
 	
 	public static void EnableStartButton()
@@ -61,6 +73,16 @@ public class UIController : MonoBehaviour
 	public static void DisableLoseText()
 	{
 		loseText.SetActive(false);
+	}
+
+	public static void EnablePauseMenu()
+	{
+		pauseMenu.SetActive(true);
+	}
+
+	public static void DisablePauseMenu()
+	{
+		pauseMenu.SetActive(false);
 	}
 
 	public static void EnableBackground()

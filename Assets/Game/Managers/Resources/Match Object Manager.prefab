@@ -93,7 +93,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 948f369322db07b41b5b3331fc92c1b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Separation: 0.02
+  Separation: 0.05
   DestroyTargets: 1
   UseAsync: 1
   VertexCreationThreshold: 0

@@ -246,8 +246,11 @@ namespace DynamicMeshCutter
 			
 			if (DestroyTargets && info.MeshTarget)
             {
-                for (int i = 0; i < info.MeshTarget.gameObject.transform.childCount; i++)
-                    info.MeshTarget.gameObject.transform.GetChild(0).parent = null;
+				if (info.MeshTarget.gameObject.layer != Collisions.PlayerLayer)
+				{
+					for (int i = 0; i < info.MeshTarget.gameObject.transform.childCount; i++)
+						info.MeshTarget.gameObject.transform.GetChild(0).parent = null;
+				}
                 
                 Destroy(info.MeshTarget.GameobjectRoot != null ? info.MeshTarget.GameobjectRoot : info.MeshTarget.gameObject);
             }

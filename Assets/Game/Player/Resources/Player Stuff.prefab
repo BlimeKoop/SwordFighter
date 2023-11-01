@@ -1050,6 +1050,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerController: {fileID: 0}
+  CloudCamera3D: {fileID: 2373006360906983624}
   target: {fileID: 3584937818420271138}
   pivot: {fileID: 1528857247885982994}
 --- !u!114 &6930604769216325476
@@ -1988,7 +1989,6 @@ MonoBehaviour:
   alignStab: 0
   stab: 0
   holdStab: 0
-  paused: 0
   dead: 0
   lockJump: 0
   jumpGrace: 0

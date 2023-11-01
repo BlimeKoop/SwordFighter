@@ -49,33 +49,36 @@ public class SwordCollisionController : MonoBehaviour
 		if (cutting || colliding)
 			return;
 		
-		if (playerController == null)
+		if (playerController == null || !playerController.photonView.IsMine)
 		{
 			this.enabled = false;
 			
 			return;
 		}
 		
-		if (col.collider.GetComponentInParent<PlayerController>() == playerController)
+		if (col.gameObject.layer == Collisions.SwordLayer)
+		{
+			SwordAudioManager.PlayImpact(swordController.physicsController.rigidbody.velocity.magnitude / 7f);
 			return;
+		}
+
+		if (col.gameObject.layer == Collisions.PlayerLayer)
+		{
+			HandlePlayerCollision(col.collider);
+			return;
+		}
 
 		if (swordController.TryShatter(col.gameObject))
 			return;
 
-		if (cuttingObjects.Contains(col.gameObject))
-			return;
-
-		if (swordController.TryCut(col.gameObject, col.GetContact(0).point, col.rigidbody))
-		{
+		if (TryCut(col.collider, col.GetContact(0).point, col.rigidbody))
+		{			
 			StartCut(col.gameObject);
 
 			return;
 		}
 		
-		if (playerController.dead)
-			return;
-
-		if (!colliding)
+		if (!playerController.dead && !colliding)
 		{
 			colliding = true;
 			
@@ -100,27 +103,42 @@ public class SwordCollisionController : MonoBehaviour
 		if (cutting || colliding)
 			return;
 		
-		if (playerController == null)
+		if (playerController == null || !playerController.photonView.IsMine)
 		{
 			this.enabled = false;
 			
 			return;
-		}
+		}		
 		
-		if (col.gameObject.layer != Collisions.PlayerLayer)
-			return;
-		
+		if (col.gameObject.layer == Collisions.PlayerLayer)
+			HandlePlayerCollision(col);
+	}
+	
+	private void HandlePlayerCollision(Collider col)
+	{
 		if (col.GetComponentInParent<PlayerController>() == playerController)
 			return;
-		
-		if (!cuttingObjects.Contains(col.gameObject) &&
-			swordController.TryCut(col.gameObject, col.ClosestPoint(swordController.MiddlePoint()), col.GetComponentInParent<Rigidbody>()))
+
+		if (TryCut(col, col.ClosestPoint(swordController.MiddlePoint()), col.GetComponentInParent<Rigidbody>()))
 		{
 			StartCut(col.gameObject);
 			
+			if (PlayerData.playerMatchData[col.gameObject.GetComponentInParent<PhotonView>().Controller.ActorNumber].lives > 1)
+				SwordAudioManager.PlayFleshSlice(swordController.physicsController.rigidbody.velocity.magnitude / 7f);
+			else
+				SwordAudioManager.PlayNiceSlice(0.8f);
+			
 			return;
 		}
-	}	
+	}
+	
+	private bool TryCut(Collider col, Vector3 point, Rigidbody rigidbody)
+	{
+		if (cuttingObjects.Contains(col.gameObject))
+			return false;
+
+		return swordController.TryCut(col.gameObject, point, rigidbody);
+	}
 
 	private void StartCut(GameObject obj)
 	{

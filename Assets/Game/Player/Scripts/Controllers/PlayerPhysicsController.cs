@@ -78,7 +78,7 @@ public class PlayerPhysicsController
 	
 	private Vector3 MoveAndSlide(Vector3 movement, Vector3 point, Vector3 normal, float friction)
 	{
-		Vector3 cross = Vectors.SafeCross(Vector3.up, normal).normalized;
+		Vector3 cross = Vectors.SafeCross(Vector3.up, normal, Vector3.zero).normalized;
 		Vector3 movementR = movement + normal * Mathf.Max(0f, Vector3.Dot(movement, -normal));
 		
 		// Debug.DrawRay(collisionPoint, normal * 2f, Color.yellow);
@@ -133,17 +133,10 @@ public class PlayerPhysicsController
 	{
 		rigidbody.AddForce(direction * playerController.runSpeed * 0.7f, ForceMode.VelocityChange);
 	}
-	
-	// /*
-	public void ZeroVelocity()
+
+	public void Zero()
 	{
 		rigidbody.velocity *= 0;
 		rigidbody.angularVelocity *= 0;
 	}
-	
-	public void SetFrozen(bool setTo)
-	{
-		rigidbody.isKinematic = setTo;
-	}
-	// */
 }
