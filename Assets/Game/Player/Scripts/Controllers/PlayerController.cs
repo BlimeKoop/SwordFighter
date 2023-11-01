@@ -235,7 +235,8 @@ public class PlayerController : MonoBehaviour
 		
 		if (!aerialCameraRotation && collisionController.groundDistance > 5f)
 			aerialCameraRotation = true;
-		else if (aerialCameraRotation && collisionController.onGround)
+			
+		if (aerialCameraRotation && collisionController.onGround)
 			aerialCameraRotation = false;
 		
 		if (!aerialCameraRotation)
