@@ -219,6 +219,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1618443019}
+        m_TargetAssemblyTypeName: MenuSoundEffectManager, Assembly-CSharp
+        m_MethodName: PlayButtonSound
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &102823581
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -867,7 +879,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1869617922619578200, guid: 6852711b6f49a854c9c0ac443b0fd44f, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 1869617922619578200, guid: 6852711b6f49a854c9c0ac443b0fd44f, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1301,6 +1313,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1869617922619578200, guid: 6852711b6f49a854c9c0ac443b0fd44f, type: 3}
   m_PrefabInstance: {fileID: 1395775049}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1618443019 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4402635464273963822, guid: 9038566a7f0513747870e37ffe2844b7, type: 3}
+  m_PrefabInstance: {fileID: 4402635462668275749}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05411ac46ec9fef49a4daeb0d26f5497, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1663688968
 GameObject:
   m_ObjectHideFlags: 0
@@ -2060,6 +2083,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1618443019}
+        m_TargetAssemblyTypeName: MenuSoundEffectManager, Assembly-CSharp
+        m_MethodName: PlayButtonSound
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &379793233583125857
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2277,6 +2312,18 @@ MonoBehaviour:
       - m_Target: {fileID: 2012896127}
         m_TargetAssemblyTypeName: MenuCamera, Assembly-CSharp
         m_MethodName: OnBackButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1618443019}
+        m_TargetAssemblyTypeName: MenuSoundEffectManager, Assembly-CSharp
+        m_MethodName: PlayButtonSound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3381,6 +3428,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1618443019}
+        m_TargetAssemblyTypeName: MenuSoundEffectManager, Assembly-CSharp
+        m_MethodName: PlayButtonSound
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &379793234159069641
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4026,6 +4085,18 @@ MonoBehaviour:
       - m_Target: {fileID: 2012896127}
         m_TargetAssemblyTypeName: MenuCamera, Assembly-CSharp
         m_MethodName: OnRoomListButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1618443019}
+        m_TargetAssemblyTypeName: MenuSoundEffectManager, Assembly-CSharp
+        m_MethodName: PlayButtonSound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5124,6 +5195,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1618443019}
+        m_TargetAssemblyTypeName: MenuSoundEffectManager, Assembly-CSharp
+        m_MethodName: PlayButtonSound
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &379793234846146796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5520,6 +5603,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1618443019}
+        m_TargetAssemblyTypeName: MenuSoundEffectManager, Assembly-CSharp
+        m_MethodName: PlayButtonSound
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &379793234979738567
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5791,6 +5886,18 @@ MonoBehaviour:
       - m_Target: {fileID: 2012896127}
         m_TargetAssemblyTypeName: MenuCamera, Assembly-CSharp
         m_MethodName: OnJoinRandomRoomButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1618443019}
+        m_TargetAssemblyTypeName: MenuSoundEffectManager, Assembly-CSharp
+        m_MethodName: PlayButtonSound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6174,6 +6281,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1618443019}
+        m_TargetAssemblyTypeName: MenuSoundEffectManager, Assembly-CSharp
+        m_MethodName: PlayButtonSound
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &379793235258818370
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6425,6 +6544,18 @@ MonoBehaviour:
       - m_Target: {fileID: 2012896127}
         m_TargetAssemblyTypeName: MenuCamera, Assembly-CSharp
         m_MethodName: OnBackButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1618443019}
+        m_TargetAssemblyTypeName: MenuSoundEffectManager, Assembly-CSharp
+        m_MethodName: PlayButtonSound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6979,3 +7110,60 @@ PrefabInstance:
       objectReference: {fileID: 2012896125}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6852711b6f49a854c9c0ac443b0fd44f, type: 3}
+--- !u!1001 &4402635462668275749
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4402635464273963817, guid: 9038566a7f0513747870e37ffe2844b7, type: 3}
+      propertyPath: m_RootOrder
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4402635464273963817, guid: 9038566a7f0513747870e37ffe2844b7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -14.461445
+      objectReference: {fileID: 0}
+    - target: {fileID: 4402635464273963817, guid: 9038566a7f0513747870e37ffe2844b7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.5864385
+      objectReference: {fileID: 0}
+    - target: {fileID: 4402635464273963817, guid: 9038566a7f0513747870e37ffe2844b7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 51.26379
+      objectReference: {fileID: 0}
+    - target: {fileID: 4402635464273963817, guid: 9038566a7f0513747870e37ffe2844b7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4402635464273963817, guid: 9038566a7f0513747870e37ffe2844b7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4402635464273963817, guid: 9038566a7f0513747870e37ffe2844b7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4402635464273963817, guid: 9038566a7f0513747870e37ffe2844b7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4402635464273963817, guid: 9038566a7f0513747870e37ffe2844b7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4402635464273963817, guid: 9038566a7f0513747870e37ffe2844b7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4402635464273963817, guid: 9038566a7f0513747870e37ffe2844b7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4402635464273963823, guid: 9038566a7f0513747870e37ffe2844b7, type: 3}
+      propertyPath: m_Name
+      value: MenuSoundEffectManager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9038566a7f0513747870e37ffe2844b7, type: 3}

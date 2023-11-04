@@ -248,8 +248,51 @@ namespace DynamicMeshCutter
             {
 				if (info.MeshTarget.gameObject.layer != Collisions.PlayerLayer)
 				{
+					List<Transform> parents = new List<Transform>();
+					List<Transform> children = new List<Transform>();
+					
+					if (info.MeshTarget.gameObject.transform.parent != null)
+					{
+						Transform child = info.MeshTarget.gameObject.transform;
+						
+						while (child.parent != null)
+						{
+							if (child.parent.gameObject.tag == "Fall" && child.parent.childCount < 2)
+							{
+								Collider col = child.parent.GetComponent<Collider>();
+								
+								if (col != null && col.isTrigger)
+									col.isTrigger = false;
+								
+								if (col == null)
+									col = child.parent.gameObject.AddComponent<MeshCollider>();
+									
+								if (col.GetType() == typeof(MeshCollider))
+									((MeshCollider) col).convex = true;
+								
+								child.parent.gameObject.AddComponent<Rigidbody>();
+								
+								break;
+							}
+							
+							child = child.parent;
+						}
+					}
+					
+					// Do this first
 					for (int i = 0; i < info.MeshTarget.gameObject.transform.childCount; i++)
-						info.MeshTarget.gameObject.transform.GetChild(0).parent = null;
+						children.Add(info.MeshTarget.gameObject.transform.GetChild(0));
+					
+					// Now we won't be changing the children of the object as we loop through the object's children
+					foreach (Transform child in children)
+					{
+						Collider col = child.GetComponentInChildren<Collider>();
+						
+						if (col != null && ! col.isTrigger)
+							child.gameObject.AddComponent<Rigidbody>();
+						
+						child.parent = null;
+					}
 				}
                 
                 Destroy(info.MeshTarget.GameobjectRoot != null ? info.MeshTarget.GameobjectRoot : info.MeshTarget.gameObject);

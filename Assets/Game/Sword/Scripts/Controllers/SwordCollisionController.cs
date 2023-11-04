@@ -7,6 +7,7 @@ using TMPro;
 public class SwordCollisionController : MonoBehaviour
 {
 	private PlayerSwordController swordController;
+	public SwordAudioManager SwordAudioManager;
 
 	private PlayerController playerController;
 	
@@ -58,7 +59,7 @@ public class SwordCollisionController : MonoBehaviour
 		
 		if (col.gameObject.layer == Collisions.SwordLayer)
 		{
-			SwordAudioManager.PlayImpact(swordController.physicsController.rigidbody.velocity.magnitude / 7f);
+			SwordAudioManager.PlayMetalImpact(ImpactStrengthFromVelocity(swordController.physicsController.rigidbody.velocity));
 			return;
 		}
 
@@ -72,7 +73,8 @@ public class SwordCollisionController : MonoBehaviour
 			return;
 
 		if (TryCut(col.collider, col.GetContact(0).point, col.rigidbody))
-		{			
+		{
+			SwordAudioManager.PlaySlice(ImpactStrengthFromVelocity(swordController.physicsController.rigidbody.velocity));
 			StartCut(col.gameObject);
 
 			return;
@@ -83,6 +85,8 @@ public class SwordCollisionController : MonoBehaviour
 			colliding = true;
 			
 			collidingObjects.Add(col.gameObject);
+			
+			SwordAudioManager.PlayImpact(ImpactStrengthFromVelocity(swordController.physicsController.rigidbody.velocity) * 1.3f);
 			
 			// Debug.Log($"Colliding with {col.gameObject}");
 					
@@ -124,12 +128,20 @@ public class SwordCollisionController : MonoBehaviour
 			StartCut(col.gameObject);
 			
 			if (PlayerData.playerMatchData[col.gameObject.GetComponentInParent<PhotonView>().Controller.ActorNumber].lives > 1)
-				SwordAudioManager.PlayFleshSlice(swordController.physicsController.rigidbody.velocity.magnitude / 7f);
+				SwordAudioManager.PlaySlice(ImpactStrengthFromVelocity(swordController.physicsController.rigidbody.velocity));
 			else
-				SwordAudioManager.PlayNiceSlice(0.8f);
+				SwordAudioManager.PlayWinSlice(0.8f);
 			
 			return;
 		}
+	}
+	
+	private float ImpactStrengthFromVelocity(Vector3 velocity)
+	{
+		if (velocity.magnitude < 3f)
+			return 0;
+		
+		return velocity.magnitude / 7f;
 	}
 	
 	private bool TryCut(Collider col, Vector3 point, Rigidbody rigidbody)

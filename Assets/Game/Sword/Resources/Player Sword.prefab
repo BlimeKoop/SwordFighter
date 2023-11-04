@@ -74,6 +74,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9516941d5181e15459f30928b96cc245, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SwordAudioManager: {fileID: 4064494180727184817}
   cutting: 0
   colliding: 0
 --- !u!114 &3596739131502784657
@@ -222,8 +223,23 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5308155490360628844, guid: a352b4b6f97c9e44f83f353b2b9d43d5, type: 3}
+      propertyPath: m_Volume
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a352b4b6f97c9e44f83f353b2b9d43d5, type: 3}
+--- !u!114 &4064494180727184817 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7703347015969416257, guid: a352b4b6f97c9e44f83f353b2b9d43d5, type: 3}
+  m_PrefabInstance: {fileID: 5944807171937991152}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66012af27fd7d0149814338658ef2b38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &5567902552248644437 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2289266218790259365, guid: a352b4b6f97c9e44f83f353b2b9d43d5, type: 3}
